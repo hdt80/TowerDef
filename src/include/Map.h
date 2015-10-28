@@ -19,11 +19,11 @@ public:
 
 	Path* getPath() { return &enemyPath; }
 
-protected:
-	Path enemyPath;
-
 	std::vector<Enemy*> enemies;
 	std::vector<Tower*> towers;
+
+protected:
+	Path enemyPath;
 
 	int wave;		// Current wave
 	float waveTime;	// Time passed since last wave

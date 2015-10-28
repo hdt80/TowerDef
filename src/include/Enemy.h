@@ -10,7 +10,7 @@ class Map;
 class Enemy : public Target {
 public:
 	Enemy();
-	Enemy(int health, int speed);
+	Enemy(int health, int speed, Path* p);
 	~Enemy();
 
 	// Update the enemy depending on its target, updating its coords
@@ -23,12 +23,14 @@ public:
 	int getSpeed() { return _speed; }
 	Target* getTarget() { return _target; }
 	bool hasEnded() { return _ended; }
+	Path* getPath() { return _path; }
 
 	void setHealth(int health) { this->_health = health; }
 	void setMaxHealth(int h) { this->_maxHealth = h; }
 	void setSpeed(int speed) { this->_speed = speed; }
 	void setTarget(Target* t) { this->_target = t; }
 	void setEnded(bool b) { this->_ended = b; }
+	void setPath(Path* p) { this->_path = p; }
 
 protected:
 	int _health;	// Current health of an enemy

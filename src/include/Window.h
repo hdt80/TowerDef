@@ -9,6 +9,9 @@
 #include "FPS.h"
 #include "Vector2.h"
 
+#define PATH_WIDTH  25 // Width in pixels
+#define ENEMY_WIDTH 10
+
 class Window {
 	public:
 		Window(std::string name, int width, int height, bool fullscreen = false);
@@ -31,6 +34,7 @@ class Window {
 		void setClose(bool b) {_close = b; }
 	private:
 		bool _close; // If the Window is queued to close
+		bool _paused;
 		int  _width;
 		int  _height;
 

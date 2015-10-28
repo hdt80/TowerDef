@@ -1,17 +1,20 @@
 #include "Enemy.h"
 
+#include "Logger.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 // Constuctor and deconstrctor
 ///////////////////////////////////////////////////////////////////////////////
-Enemy::Enemy() :
-	Target(0, 0), _health(1), _maxHealth(_health), _speed(1), 
-	_path(nullptr), _pathPoint(0) {
-
+Enemy::Enemy() : Target(0, 0) {
+	Enemy(0, 0, nullptr);
 }
 
-Enemy::Enemy(int health, int speed) :
-	Target(0, 0), _health(health), _maxHealth(health), _speed(speed) {
+Enemy::Enemy(int health, int speed, Path* p) :
+	Target(0, 0), _health(health), _maxHealth(health), _speed(speed), 
+	_target(nullptr), _path(p), _pathPoint(0), _ended(false) {
 
+	setPosition(p->getPoint(0)->X, p->getPoint(0)->Y);
+	_target = new Target(p->getPoint(1));
 }
 
 Enemy::~Enemy() {

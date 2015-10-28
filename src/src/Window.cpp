@@ -5,6 +5,7 @@
 
 #include "sfLine.h"
 #include "Vector2.h"
+#include "Enemy.h"
 
 #include <chrono>
 #include <thread>
@@ -18,11 +19,11 @@
 // Constuctor
 ///////////////////////////////////////////////////////////////////////////////
 Window::Window(std::string name, int w, int h, bool fullscreen) :
-	_close(false), _width(w), _height(h) {
+	_close(false), _paused(false), _width(w), _height(h) {
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
 	sf::ContextSettings currVidSettings;
-	currVidSettings.antialiasingLevel = 8;
+	//currVidSettings.antialiasingLevel = 8;
 
 	if (fullscreen) {
 		_window.create(sf::VideoMode(_width, _height, currVidMode.bitsPerPixel),
@@ -59,6 +60,8 @@ void Window::loop() {
 	tStart = std::chrono::high_resolution_clock::now();
 	long long tDiff;
 
+	_map.spawnWave();
+
 	while (!shouldClose()) {
 		tEnd = tStart;
 		tStart = std::chrono::high_resolution_clock::now();
@@ -67,13 +70,16 @@ void Window::loop() {
 
 		// Real loop
 		pollEvents();
-		_map.update(tDiff);
+		if (!_paused) {
+			_map.update(tDiff);
+		}
 		render();
 
 		_fps.update();
 		_window.setTitle(convert::toString(_fps.getFPS()));
 		// End real loop
 
+		// If 16666ms haven't passed yet sleep for the time left
 		tEnd = std::chrono::high_resolution_clock::now();
 		if(tEnd - (std::chrono::microseconds(REFRESH_RATE)) < tStart) {
 			std::this_thread::sleep_for(
@@ -97,28 +103,42 @@ void Window::render() {
 // Render sub methods
 ///////////////////////////////////////////////////////////////////////////////
 void Window::renderMap() {
+	// Drawing the path enemies will take
 	Path* path = _map.getPath();
 
-	sf::Vector2f prev(0, 0); // Previous point we drew from
+	// Start the path at the first point
+	sf::Vector2f prev(path->getPoint(0)->X, path->getPoint(0)->Y);
 	sf::Vector2f curr(0, 0); // Current point we're drawing the line to
 
-	int lineThickness = 15;
-	for (unsigned int i = 0; i < path->size(); ++i) {
+	// Start at the second point, we've already gotten to first point
+	for (unsigned int i = 1; i < path->size(); ++i) {
 		curr.x = path->getPoint(i)->X;
 		curr.y = path->getPoint(i)->Y;
 
-		sfLine s(prev, curr, lineThickness);
+		sfLine s(prev, curr, PATH_WIDTH);
 
 		// Create a circle at the end of the line for curved edges
-		sf::CircleShape c(lineThickness / 2);
+		// Radius is the thickness / 2
+		sf::CircleShape c(PATH_WIDTH / 2);
 		// Position is based on the top left point, so center it based on
 		// the radius
-		c.setPosition(sf::Vector2f(curr.x - lineThickness / 2, 
-								   curr.y - lineThickness / 2));
+		c.setPosition(sf::Vector2f(curr.x - PATH_WIDTH / 2, 
+								   curr.y - PATH_WIDTH / 2));
 		prev = curr;
 
 		_window.draw(s);
 		_window.draw(c);
+	}
+
+	// Drawing all the enemies on the map
+	Enemy* e = nullptr;
+	sf::CircleShape s(ENEMY_WIDTH);
+	s.setFillColor(sf::Color::Red);
+	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
+		e = _map.enemies[i];
+		s.setPosition(e->getX() - ENEMY_WIDTH, e->getY() - ENEMY_WIDTH);
+
+		_window.draw(s);
 	}
 }
 
@@ -149,13 +169,13 @@ void Window::pollEvents() {
 void Window::keyEvent(sf::Event e) {
 	if (e.key.code == sf::Keyboard::Escape) {
 		setClose(true);
-	} else if (e.key.code == sf::Keyboard::R) {
-
+	} else if (e.key.code == sf::Keyboard::N) {
+		_map.spawnWave();
 	}
 }
 
 void Window::mouseEvent(sf::Event e) {
-	
+	CORE_INFO("CLICK: (%i, %i)", e.mouseButton.x, e.mouseButton.y);
 }
 
 void Window::resizeEvent(sf::Event e) {
