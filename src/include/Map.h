@@ -16,6 +16,7 @@ public:
 
 	void update(int diff);
 	void spawnWave();
+	void spawnTower(float x, float y);
 
 	Path* getPath() { return &enemyPath; }
 

@@ -19,7 +19,8 @@
 // Constuctor
 ///////////////////////////////////////////////////////////////////////////////
 Window::Window(std::string name, int w, int h, bool fullscreen) :
-	_close(false), _paused(false), _width(w), _height(h) {
+	_close(false), _paused(false), _width(w), _height(h),
+	_pauseColor(128, 128, 128, 128) {
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
 	sf::ContextSettings currVidSettings;
@@ -92,9 +93,16 @@ void Window::loop() {
 // Main render method
 ///////////////////////////////////////////////////////////////////////////////
 void Window::render() {
-	_window.clear(sf::Color::Black); // Remove anything that's on the window
+	if (!_paused) {
+		_window.clear(sf::Color::Black); // Remove anything that's on the window
 
-	renderMap();
+		renderMap();
+	} else {
+		sf::RectangleShape box(sf::Vector2f(_width, _height));
+		box.setPosition(0, 0);
+		box.setFillColor(_pauseColor);
+		_window.draw(box);
+	}
 
 	_window.display(); // After we're done the drawing end the current frame
 }
@@ -171,6 +179,8 @@ void Window::keyEvent(sf::Event e) {
 		setClose(true);
 	} else if (e.key.code == sf::Keyboard::N) {
 		_map.spawnWave();
+	} else if (e.key.code == sf::Keyboard::P) {
+		_paused = !_paused;
 	}
 }
 

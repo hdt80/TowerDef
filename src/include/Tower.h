@@ -1,12 +1,14 @@
 #ifndef _TOWER_H
 #define _TOWER_H
 
+#include "Target.h"
+
 class Tower {
 public:
 	Tower();
 	~Tower();
-private:
-
+protected:
+	int _fireRate;
 };
 
 #endif

@@ -18,7 +18,7 @@ public:
 	float getX() const { return x; }
 	float getY() const { return y; }
 
-	void setPosition(float x, float y) {
+	virtual void setPosition(float x, float y) {
 		this->x = x;
 		this->y = y;
 	}
