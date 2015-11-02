@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Map.h"
 
 #include "Logger.h"
 
@@ -9,7 +10,7 @@
 // 	Enemy(0, 0, nullptr);
 // }
 
-Enemy::Enemy(Map* map, int health, int speed, Path* p, int collRadius) :
+Enemy::Enemy(Map* map, float health, int speed, Path* p, int collRadius) :
 	Object(map, 0, 0, collRadius, speed),
 	_health(health), _maxHealth(health), _path(p), _pathPoint(0) {
 
@@ -18,7 +19,7 @@ Enemy::Enemy(Map* map, int health, int speed, Path* p, int collRadius) :
 }
 
 Enemy::~Enemy() {
-
+	_map->setHealthRelative(-1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

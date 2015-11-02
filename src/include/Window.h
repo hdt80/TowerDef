@@ -10,7 +10,8 @@
 #include "Vector2.h"
 
 #define PATH_WIDTH  25 // Width in pixels
-#define ENEMY_WIDTH 10
+#define ENEMY_WIDTH 10 // Radius
+#define TOWER_WIDTH 10
 
 class Window {
 public:
@@ -35,6 +36,7 @@ public:
 private:
 	bool _close; // If the Window is queued to close
 	bool _paused;
+	bool _pausedDrawn; // If the paused box is drawn
 	int  _width;
 	int  _height;
 

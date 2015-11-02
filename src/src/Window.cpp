@@ -77,7 +77,10 @@ void Window::loop() {
 		render();
 
 		_fps.update();
-		_window.setTitle(convert::toString(_fps.getFPS()));
+		_window.setTitle(convert::toString(_fps.getFPS()) 
+			+ " : "+ convert::toString(_map.getHealth())
+			+ " | " + convert::toString(_map.enemies.size())
+			+ " | " + convert::toString(_map.towers.size()));
 		// End real loop
 
 		// If 16666ms haven't passed yet sleep for the time left
@@ -97,14 +100,17 @@ void Window::render() {
 		_window.clear(sf::Color::Black); // Remove anything that's on the window
 
 		renderMap();
+		_window.display(); // After we're done the drawing end the current frame
 	} else {
-		sf::RectangleShape box(sf::Vector2f(_width, _height));
-		box.setPosition(0, 0);
-		box.setFillColor(_pauseColor);
-		_window.draw(box);
+		if (!_pausedDrawn) {
+			sf::RectangleShape box(sf::Vector2f(_width, _height));
+			box.setPosition(0, 0);
+			box.setFillColor(_pauseColor);
+			_window.draw(box);
+			_pausedDrawn = true;
+			_window.display();
+		}
 	}
-
-	_window.display(); // After we're done the drawing end the current frame
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -148,6 +154,15 @@ void Window::renderMap() {
 
 		_window.draw(s);
 	}
+
+	s.setFillColor(sf::Color::Green);
+	Tower* t = nullptr;
+	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
+		t = _map.towers[i];
+		s.setPosition(t->getX() - TOWER_WIDTH, t->getY() - TOWER_WIDTH);
+
+		_window.draw(s);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,11 +196,13 @@ void Window::keyEvent(sf::Event e) {
 		_map.spawnWave();
 	} else if (e.key.code == sf::Keyboard::P) {
 		_paused = !_paused;
+		_pausedDrawn = false;
 	}
 }
 
 void Window::mouseEvent(sf::Event e) {
 	CORE_INFO("CLICK: (%i, %i)", e.mouseButton.x, e.mouseButton.y);
+	_map.spawnTower(e.mouseButton.x, e.mouseButton.y);
 }
 
 void Window::resizeEvent(sf::Event e) {
