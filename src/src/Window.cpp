@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Window::Window(std::string name, int w, int h, bool fullscreen) :
 	_close(false), _paused(false), _width(w), _height(h),
-	_pauseColor(128, 128, 128, 128) {
+	_pauseColor(128, 128, 128, 128), _selected(nullptr) {
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
 	sf::ContextSettings currVidSettings;
@@ -100,6 +100,8 @@ void Window::render() {
 		_window.clear(sf::Color::Black); // Remove anything that's on the window
 
 		renderMap();
+		renderEnemies();
+		renderTowers();
 
 		_window.display(); // After we're done the drawing end the current frame
 	} else {
@@ -147,34 +149,68 @@ void Window::renderMap() {
 		_window.draw(c);
 	}
 
-	// Drawing all the enemies on the map
-	Enemy* e = nullptr;
-	sf::CircleShape s(ENEMY_WIDTH);
-	s.setFillColor(sf::Color::Red);
-	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-		e = _map.enemies[i];
-		s.setPosition(e->getX() - ENEMY_WIDTH, e->getY() - ENEMY_WIDTH);
+	// Draw the selected tower on the bottom so it doesn't mess up other draws
+	if (_selected != nullptr) {
+		sf::CircleShape r(_selected->getRange());
+		r.setPosition(_selected->getX() - _selected->getRange(),
+			_selected->getY() - _selected->getRange());
 
+		r.setFillColor(sf::Color(127, 255, 127, 127));
+		_window.draw(r);
+	}
+}
+
+// Rendering enemies and their health
+void Window::renderEnemies() {
+	Enemy* o = nullptr;
+	sf::CircleShape s(ENEMY_WIDTH);
+	// 4 being the health bar height in pixels
+	sf::RectangleShape hp(sf::Vector2f(ENEMY_WIDTH * 2, 4));
+	s.setFillColor(sf::Color::Red);
+	hp.setFillColor(sf::Color::Green);
+	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
+		o = _map.enemies[i];
+		// Subtract width to center it on the center pixel, not top left
+		s.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH);
+
+		hp.setSize(sf::Vector2f(
+			ENEMY_WIDTH * 2 * (o->getHealth() / o->getMaxHealth()), 4));
+		// Draw it 6 pixels above, but since it's got a height of 4
+		// it's really drawn 2 pixels above  
+		hp.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH - 6);
+
+		_window.draw(hp);
 		_window.draw(s);
 	}
+}
 
-	// Drawing towers
+// Rendering towers and their targets
+void Window::renderTowers() {
+	Object* o = nullptr;
+	sf::CircleShape s(TOWER_WIDTH);
 	s.setFillColor(sf::Color::Green);
-	Tower* t = nullptr;
 	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
-		t = _map.towers[i];
-		s.setPosition(t->getX() - TOWER_WIDTH, t->getY() - TOWER_WIDTH);
+		o = _map.towers[i];
+		// Subtract width to center it on the center pixel, not top left
+		s.setPosition(o->getX() - TOWER_WIDTH, o->getY() - TOWER_WIDTH);
 
 		// Tower is shooting at something?
-		if (t->getTarget() != nullptr) {
-			sfLine l(sf::Vector2f(t->getX(), t->getY()),
-				sf::Vector2f(t->getTarget()->getX(), t->getTarget()->getY()),
-				1, sf::Color::Blue);
+		if (o->getTarget() != nullptr) {
+			sfLine l(sf::Vector2f(o->getX(), o->getY()),
+				sf::Vector2f(o->getTarget()->getX(), o->getTarget()->getY()),
+				1, sf::Color(255, 0, 0, 128));
 
 			_window.draw(l);
 		}
 
 		_window.draw(s);
+	}
+}
+
+void Window::renderProjectiles() {
+	Object* o = nullptr;
+	for (unsigned int i = 0; i < _map.projectiles.size(); ++i) {
+		
 	}
 }
 
@@ -214,8 +250,18 @@ void Window::keyEvent(sf::Event e) {
 }
 
 void Window::mouseEvent(sf::Event e) {
-	CORE_INFO("CLICK: (%i, %i)", e.mouseButton.x, e.mouseButton.y);
-	_map.spawnTower(e.mouseButton.x, e.mouseButton.y);
+	int x = e.mouseButton.x;
+	int y = e.mouseButton.y;
+	if (_map.towerAt(x, y) != nullptr) {
+		_selected = _map.towerAt(x, y);
+	} else {
+		// If we've selected something we just want to deselected it
+		if (_selected != nullptr) {
+			_selected = nullptr;
+		} else {
+			_map.spawnTower(x, y);
+		}
+	}
 }
 
 void Window::resizeEvent(sf::Event e) {

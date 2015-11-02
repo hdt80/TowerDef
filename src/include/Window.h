@@ -5,8 +5,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-#include "Map.h"
-#include "FPS.h"
+#include "Map.h" // Map, Tower*
+#include "FPS.h" // FPS
 #include "Vector2.h"
 
 #define PATH_WIDTH  25 // Width in pixels
@@ -47,8 +47,13 @@ private:
 	sf::Font _font;
 	sf::Color _pauseColor;
 
+	Tower* _selected; // Tower we've clicked on and want to see it's stats
+
 	// We split the code up so it's easier to fix when stuff breaks
 	void renderMap();
+	void renderEnemies();
+	void renderTowers();
+	void renderProjectiles();
 };
 
 #endif

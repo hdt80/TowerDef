@@ -61,6 +61,10 @@ void Map::update(int diff) {
 		towers[i]->update(diff);
 	}
 
+	for (unsigned int i = 0; i < projectiles.size(); ++i) {
+		projectiles[i]->update(diff);
+	}
+
 	// Now that all the updating is done we can safely remove all objects
 	// that are marked for removal
 	for (unsigned int i = 0; i < toRemove.size(); ++i) {
@@ -70,11 +74,31 @@ void Map::update(int diff) {
 
 }
 
+// Spawn a new wave
 void Map::spawnWave() { 
 	CORE_INFO("Spawning wave %i", ++_wave);
 	enemies.push_back(new Enemy(this, 10.0f, 50, &_enemyPath, 20));
 }
 
+// Spawn a tower at (x, y)
 void Map::spawnTower(float x, float y) {
+	CORE_INFO("Spawning tower at (%f, %f)", x, y);
 	towers.push_back(new Tower(this, x, y));
+}
+
+// Return the Object at (x, y)
+// If no Object is there return nullptr 
+Tower* Map::towerAt(float x, float y) {
+	for (unsigned int i = 0; i < towers.size(); ++i) {
+		// Point within region that tower is in
+		if (towers[i]->contains(x, y)) {
+			return towers[i];
+		}
+	}
+	return nullptr;
+}
+
+// Tower t is shooting at e, so spawn a projectile and begin tracking it
+void Map::shoot(Tower* t, Enemy* e) {
+	projectiles.push_back(new Projectile(this, e, t));
 }

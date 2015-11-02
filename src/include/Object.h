@@ -14,6 +14,9 @@ public:
 	virtual void onCollision(Object* o);
 	bool collidesWith(Object* o);
 
+	// If that point is within our collision box
+	bool contains(float x, float y);
+
 	// Moves the object depending on it's target, updating it's position
 	// diff - Milliseconds the object is supposed to move for
 	virtual void move(int diff);

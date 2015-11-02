@@ -16,6 +16,8 @@ public:
 	virtual void update(int diff);
 	virtual bool isSimpleTarget() { return false; }
 
+	void applyDamage(float d);
+
 	float getHealth() { return _health; }
 	float getMaxHealth() { return _maxHealth; }
 	Path* getPath() { return _path; }

@@ -11,14 +11,18 @@ public:
 	~Tower();
 
 	void update(int diff);
+	// Shoot at the target
+	void shoot();
 
 	void setRange(int range) { _stats.range = range; }
 	void setFireRate(float r) { _stats.fireRate = r; }
 	void setDamage(float d) { _stats.damage = d; }
+	void setSpeed(int s) { _stats.speed = s; }
 
 	int getRange() const { return _stats.range; }
 	float getFireRate() const { return _stats.fireRate; }
 	float getDamage() const { return _stats.damage; }
+	int getSpeed() const { return _stats.speed; }
 
 protected:
 	TowerStats _stats;

@@ -20,11 +20,11 @@ Tower::~Tower() {
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
-
 void Tower::update(int diff) {
 	_lastShot += diff * 0.000001f;
 	if (_lastShot > _stats.fireRate) {
 		_lastShot = 0;
+		shoot();
 	}
 
 	// Find the nearest target if we don't have one
@@ -48,8 +48,9 @@ void Tower::update(int diff) {
 		if (o == nullptr) {
 			// If the cast didn't work, and _target isn't an Object just
 			// check the range between the two points. This should never occur
-			CORE_WARNING("Tower[%i] isn't targetting an enemy[%i]", this, _target);
+			CORE_WARNING("Tower[%i] isn't firing an enemy[%i]", this, _target);
 			if (distanceWith(_target) > getRange()) {
+				delete _target;
 				_target = nullptr;
 			}
 		} else {
@@ -57,8 +58,22 @@ void Tower::update(int diff) {
 			// going to be removed next update. If it is we should find a
 			// new _target
 			if (distanceWith(o) > getRange() || o->isToRemove()) {
-			_target = nullptr;
+				_target = nullptr;
 			}
 		}
+	}
+}
+
+void Tower::shoot() {
+	if (_target == nullptr) {
+		return;
+	}
+
+	Enemy* e = nullptr;
+	if (!_target->isSimpleTarget()) {
+		e = static_cast<Enemy*>(_target);
+		_map->shoot(this, e);
+	} else {
+		CORE_WARNING("Failed to shoot at %i", _target);
 	}
 }

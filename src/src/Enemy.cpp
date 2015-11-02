@@ -52,3 +52,11 @@ void Enemy::update(int diff) {
 		}
 	}
 }
+
+// Positive damage values take health away while negative values add health
+void Enemy::applyDamage(float amount) {
+	_health -= amount;
+	if (_health <= 0) {
+		_toRemove = true;
+	}
+}

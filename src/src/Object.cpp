@@ -19,7 +19,14 @@ void Object::onCollision(Object* o) {
 }
 
 bool Object::collidesWith(Object* o) {
+	return false;
+}
 
+bool Object::contains(float px, float py) {
+	return (px >= getX() - _collisionRadius &&
+			px <= getX() + _collisionRadius &&
+			py >= getY() - _collisionRadius &&
+			py <= getY() + _collisionRadius);
 }
 
 void Object::move(int diff) {
