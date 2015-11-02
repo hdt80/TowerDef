@@ -32,7 +32,7 @@ public:
 	void resizeEvent(sf::Event e);
 
 	bool shouldClose() { return _close; }
-	void setClose(bool b) {_close = b; }
+	void setClose(bool b) { _close = b; }
 private:
 	bool _close; // If the Window is queued to close
 	bool _paused;

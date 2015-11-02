@@ -24,7 +24,7 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
 	sf::ContextSettings currVidSettings;
-	//currVidSettings.antialiasingLevel = 8;
+	currVidSettings.antialiasingLevel = 8;
 
 	if (fullscreen) {
 		_window.create(sf::VideoMode(_width, _height, currVidMode.bitsPerPixel),
@@ -86,8 +86,8 @@ void Window::loop() {
 		// If 16666ms haven't passed yet sleep for the time left
 		tEnd = std::chrono::high_resolution_clock::now();
 		if(tEnd - (std::chrono::microseconds(REFRESH_RATE)) < tStart) {
-			std::this_thread::sleep_for(
-				std::chrono::microseconds(REFRESH_RATE) - (tEnd - tStart));
+			//std::this_thread::sleep_for(
+			//	std::chrono::microseconds(REFRESH_RATE) - (tEnd - tStart));
 		}
 	}
 }
@@ -100,15 +100,18 @@ void Window::render() {
 		_window.clear(sf::Color::Black); // Remove anything that's on the window
 
 		renderMap();
+
 		_window.display(); // After we're done the drawing end the current frame
 	} else {
+		// Don't continually draw the pause screen as it will cover the screen 
+		// and make it black, so just draw it once
 		if (!_pausedDrawn) {
 			sf::RectangleShape box(sf::Vector2f(_width, _height));
 			box.setPosition(0, 0);
 			box.setFillColor(_pauseColor);
 			_window.draw(box);
-			_pausedDrawn = true;
 			_window.display();
+			_pausedDrawn = true;
 		}
 	}
 }
@@ -155,11 +158,21 @@ void Window::renderMap() {
 		_window.draw(s);
 	}
 
+	// Drawing towers
 	s.setFillColor(sf::Color::Green);
 	Tower* t = nullptr;
 	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
 		t = _map.towers[i];
 		s.setPosition(t->getX() - TOWER_WIDTH, t->getY() - TOWER_WIDTH);
+
+		// Tower is shooting at something?
+		if (t->getTarget() != nullptr) {
+			sfLine l(sf::Vector2f(t->getX(), t->getY()),
+				sf::Vector2f(t->getTarget()->getX(), t->getTarget()->getY()),
+				1, sf::Color::Blue);
+
+			_window.draw(l);
+		}
 
 		_window.draw(s);
 	}

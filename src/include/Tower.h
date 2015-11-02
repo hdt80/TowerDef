@@ -16,12 +16,14 @@ public:
 	void setFireRate(float r) { _stats.fireRate = r; }
 	void setDamage(float d) { _stats.damage = d; }
 
-	int getRange() { return _stats.range; }
-	float getFireRate() { return _stats.fireRate; }
-	float getDamage() { return _stats.damage; }
+	int getRange() const { return _stats.range; }
+	float getFireRate() const { return _stats.fireRate; }
+	float getDamage() const { return _stats.damage; }
 
 protected:
 	TowerStats _stats;
+	float _lastShot; // Time the last shot was fired. If the diff between
+					 // this is greater than the fireRate you can fire 
 };
 
 #endif

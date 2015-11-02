@@ -6,7 +6,7 @@ public:
 	TowerStats();
 
 	int range;    // Range in pixels
-	float fireRate; // Shots per second
+	float fireRate; // Time between each shot
 	float damage;   // Damage of one shot
 };
 

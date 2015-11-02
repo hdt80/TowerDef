@@ -19,7 +19,9 @@ Enemy::Enemy(Map* map, float health, int speed, Path* p, int collRadius) :
 }
 
 Enemy::~Enemy() {
-	_map->setHealthRelative(-1);
+	if (_ended) {
+		_map->setHealthRelative(-1);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,6 +43,7 @@ void Enemy::update(int diff) {
 	if (_target->isSimpleTarget() && distanceWith(_target) < deltaMove * 2) {
 		// If there is still points in the path left
 		if (++_pathPoint >= _path->size()) {
+			_ended = true;
 			_toRemove = true;
 			setTarget(nullptr);
 		} else {

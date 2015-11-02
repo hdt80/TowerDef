@@ -28,6 +28,8 @@ public:
 	std::vector<Enemy*> enemies;
 	std::vector<Tower*> towers;
 
+	std::vector<Object*> toRemove;
+
 protected:
 	Path _enemyPath; // Path enemies follow
 

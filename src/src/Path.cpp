@@ -21,7 +21,7 @@ void Path::addPoint(float x, float y) {
 
 // Return a point at a specifed index, or if it's outside the range return null
 Vector2* Path::getPoint(unsigned int index) {
-	if (index < 0 || index > points.size()) {
+	if (index < 0 || index >= points.size()) {
 		return nullptr;
 	}
 	return points[index]; 

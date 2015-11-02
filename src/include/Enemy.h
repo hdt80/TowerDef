@@ -31,6 +31,8 @@ protected:
 
 	Path* _path;	// Path the enemy will follow
 	unsigned int _pathPoint;// Index in path of the point it's travelling to
+
+	bool _ended; // If this enemy reached the end of the path
 };
 
 #endif
