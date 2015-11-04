@@ -20,7 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 Window::Window(std::string name, int w, int h, bool fullscreen) :
 	_close(false), _paused(false), _width(w), _height(h),
-	_pauseColor(128, 128, 128, 128), _selected(nullptr) {
+	_pauseColor(128, 128, 128, 128), _enemyColor(sf::Color::Red),
+	_towerColor(sf::Color::Green), _tracerColor(255, 0, 0, 128),
+	_towerRangeColor(127, 255, 127, 127), _projectileColor(0, 0, 0, 127),
+	_selected(nullptr) {
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
 	sf::ContextSettings currVidSettings;
@@ -72,6 +75,9 @@ void Window::loop() {
 		// Real loop
 		pollEvents();
 		if (!_paused) {
+			for (unsigned int i = 0; i < _emitters.size(); ++i) {
+				_emitters[i]->update(tDiff);
+			}
 			_map.update(tDiff);
 		}
 		render();
@@ -102,6 +108,13 @@ void Window::render() {
 		renderMap();
 		renderEnemies();
 		renderTowers();
+		renderProjectiles();
+
+		updateEmitters();
+
+		for (unsigned int i = 0; i < _emitters.size(); ++i) {
+			_window.draw(*_emitters[i]);
+		}
 
 		_window.display(); // After we're done the drawing end the current frame
 	} else {
@@ -155,7 +168,7 @@ void Window::renderMap() {
 		r.setPosition(_selected->getX() - _selected->getRange(),
 			_selected->getY() - _selected->getRange());
 
-		r.setFillColor(sf::Color(127, 255, 127, 127));
+		r.setFillColor(_towerRangeColor);
 		_window.draw(r);
 	}
 }
@@ -166,7 +179,7 @@ void Window::renderEnemies() {
 	sf::CircleShape s(ENEMY_WIDTH);
 	// 4 being the health bar height in pixels
 	sf::RectangleShape hp(sf::Vector2f(ENEMY_WIDTH * 2, 4));
-	s.setFillColor(sf::Color::Red);
+	s.setFillColor(_enemyColor);
 	hp.setFillColor(sf::Color::Green);
 	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
 		o = _map.enemies[i];
@@ -188,7 +201,7 @@ void Window::renderEnemies() {
 void Window::renderTowers() {
 	Object* o = nullptr;
 	sf::CircleShape s(TOWER_WIDTH);
-	s.setFillColor(sf::Color::Green);
+	s.setFillColor(_towerColor);
 	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
 		o = _map.towers[i];
 		// Subtract width to center it on the center pixel, not top left
@@ -198,7 +211,7 @@ void Window::renderTowers() {
 		if (o->getTarget() != nullptr) {
 			sfLine l(sf::Vector2f(o->getX(), o->getY()),
 				sf::Vector2f(o->getTarget()->getX(), o->getTarget()->getY()),
-				1, sf::Color(255, 0, 0, 128));
+				1, _tracerColor);
 
 			_window.draw(l);
 		}
@@ -207,10 +220,27 @@ void Window::renderTowers() {
 	}
 }
 
+// Rendering projectiles
 void Window::renderProjectiles() {
 	Object* o = nullptr;
+	sf::CircleShape s(PROJECTILE_WIDTH);
+	s.setFillColor(_projectileColor);
 	for (unsigned int i = 0; i < _map.projectiles.size(); ++i) {
-		
+		o = _map.projectiles[i];
+		s.setPosition(o->getX() - PROJECTILE_WIDTH,
+			o->getY() - PROJECTILE_WIDTH);
+
+		_window.draw(s);
+	}
+}
+
+// Remove any unneeded emitters
+void Window::updateEmitters() {
+	for (unsigned int i = 0; i < _emitters.size(); ++i) {
+		if (_emitters[i]->done() == true) {
+			delete _emitters[i];
+			_emitters.erase(_emitters.begin() + i);
+		}
 	}
 }
 
@@ -252,6 +282,7 @@ void Window::keyEvent(sf::Event e) {
 void Window::mouseEvent(sf::Event e) {
 	int x = e.mouseButton.x;
 	int y = e.mouseButton.y;
+
 	if (_map.towerAt(x, y) != nullptr) {
 		_selected = _map.towerAt(x, y);
 	} else {
@@ -271,3 +302,14 @@ void Window::resizeEvent(sf::Event e) {
 	_height = e.size.height;
 	//updateAreaSizes();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Static methods
+///////////////////////////////////////////////////////////////////////////////
+void Window::emitParticles(float x, float y, int amount, sf::Color c) {
+	ParticleEmitter* pe = new ParticleEmitter(sf::Vector2f(x, y), amount, c);
+	_emitters.push_back(pe);
+}
+
+// Create a reference to the ParticleEmitters
+std::vector<ParticleEmitter*> Window::_emitters;

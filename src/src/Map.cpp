@@ -63,6 +63,10 @@ void Map::update(int diff) {
 
 	for (unsigned int i = 0; i < projectiles.size(); ++i) {
 		projectiles[i]->update(diff);
+		if (projectiles[i]->isToRemove()) { 
+			toRemove.push_back(projectiles[i]);
+			projectiles.erase(projectiles.begin() + i);
+		}
 	}
 
 	// Now that all the updating is done we can safely remove all objects

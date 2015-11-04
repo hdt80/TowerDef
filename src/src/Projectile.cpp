@@ -24,7 +24,8 @@ Projectile::~Projectile() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Projectile::onHit() {
-	CORE_INFO("I hit shit!");
+	_toRemove = true;
+	_enemy->applyDamage(_damage);
 }
 
 void Projectile::update(int diff) {
