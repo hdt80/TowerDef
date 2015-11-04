@@ -5,6 +5,7 @@
 #include "Tower.h"
 #include "Enemy.h"
 #include "Projectile.h"
+#include "Color.h"
 
 #include <vector>
 
@@ -19,7 +20,7 @@ public:
 	void update(int diff);
 	void spawnWave();
 	void spawnTower(float x, float y);
-	void shoot(Tower* shooter, Enemy* e);
+	void shoot(Tower* shooter, Enemy* e, Color c);
 
 	Path* getPath() { return &_enemyPath; }
 	int getHealth() { return _health; }

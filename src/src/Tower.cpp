@@ -4,6 +4,7 @@
 #include <vector>
 #include "Map.h"
 #include "Enemy.h"
+#include "Color.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Constuctor and deconstrctor
@@ -72,7 +73,7 @@ void Tower::shoot() {
 	Enemy* e = nullptr;
 	if (!_target->isSimpleTarget()) {
 		e = static_cast<Enemy*>(_target);
-		_map->shoot(this, e);
+		_map->shoot(this, e, Color(127, 127, 127, 255));
 	} else {
 		CORE_WARNING("Failed to shoot at %i", _target);
 	}

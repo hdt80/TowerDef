@@ -1,4 +1,5 @@
 #include "Map.h"
+
 #include "Logger.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,6 +104,6 @@ Tower* Map::towerAt(float x, float y) {
 }
 
 // Tower t is shooting at e, so spawn a projectile and begin tracking it
-void Map::shoot(Tower* t, Enemy* e) {
-	projectiles.push_back(new Projectile(this, e, t));
+void Map::shoot(Tower* t, Enemy* e, Color c) {
+	projectiles.push_back(new Projectile(this, e, t, c));
 }

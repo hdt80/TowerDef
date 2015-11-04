@@ -13,7 +13,7 @@
 #define PATH_WIDTH  25 // Width in pixels
 #define ENEMY_WIDTH 10 // Radius in pixels
 #define TOWER_WIDTH 10
-#define PROJECTILE_WIDTH 2
+#define PROJECTILE_WIDTH 3
 
 class Window {
 public:

@@ -4,9 +4,10 @@
 #include <SFML/Graphics.hpp>
 
 class Window;
+struct Color;
 
 namespace ParticleEmit {
-	void emit(float x, float y, int amount, int r, int g, int b);
+	void emit(float x, float y, int amount, Color c);
 
 	extern Window* window;
 };

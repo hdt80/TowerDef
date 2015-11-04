@@ -23,7 +23,7 @@ Enemy::~Enemy() {
 	if (_ended) {
 		_map->setHealthRelative(-1);
 	}
-	ParticleEmit::emit(x, y, 50, 255, 0, 0);
+	ParticleEmit::emit(x, y, 50, Color(255, 0, 0, 255));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

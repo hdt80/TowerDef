@@ -167,6 +167,14 @@ void Window::renderMap() {
 
 	// Draw the selected tower on the bottom so it doesn't mess up other draws
 	if (_selected != nullptr) {
+		// Tower is shooting at something?
+		if (_selected->getTarget() != nullptr) {
+			sfLine l(sf::Vector2f(_selected->getX(), _selected->getY()),
+				sf::Vector2f(_selected->getTarget()->getX(),
+				_selected->getTarget()->getY()), 1, _tracerColor);
+
+			_window.draw(l);
+		}
 		sf::CircleShape r(_selected->getRange());
 		r.setPosition(_selected->getX() - _selected->getRange(),
 			_selected->getY() - _selected->getRange());
@@ -210,14 +218,14 @@ void Window::renderTowers() {
 		// Subtract width to center it on the center pixel, not top left
 		s.setPosition(o->getX() - TOWER_WIDTH, o->getY() - TOWER_WIDTH);
 
-		// Tower is shooting at something?
-		if (o->getTarget() != nullptr) {
-			sfLine l(sf::Vector2f(o->getX(), o->getY()),
-				sf::Vector2f(o->getTarget()->getX(), o->getTarget()->getY()),
-				1, _tracerColor);
+		// // Tower is shooting at something?
+		// if (o->getTarget() != nullptr) {
+		// 	sfLine l(sf::Vector2f(o->getX(), o->getY()),
+		// 		sf::Vector2f(o->getTarget()->getX(), o->getTarget()->getY()),
+		// 		1, _tracerColor);
 
-			_window.draw(l);
-		}
+		// 	_window.draw(l);
+		// }
 
 		_window.draw(s);
 	}
