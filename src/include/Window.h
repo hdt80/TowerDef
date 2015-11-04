@@ -36,8 +36,7 @@ public:
 	bool shouldClose() { return _close; }
 	void setClose(bool b) { _close = b; }
 
-	static void emitParticles(float x, float y, int a,
-		sf::Color c = sf::Color::White);
+	std::vector<ParticleEmitter*> emitters;
 private:
 	bool _close; // If the Window is queued to close
 	bool _paused;
@@ -47,7 +46,6 @@ private:
 
 	Map _map;
 	FPS _fps;
-	static std::vector<ParticleEmitter*> _emitters;
 
 	sf::RenderWindow _window;
 	sf::Font _font;

@@ -6,6 +6,7 @@
 #include "sfLine.h"
 #include "Vector2.h"
 #include "Enemy.h"
+#include "ParticleEmitter.h"
 
 #include <chrono>
 #include <thread>
@@ -45,6 +46,8 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 
 	CORE_INFO("Created window: Width: %i, Height: %i, Bits per Pixel: %i",
 		_width, _height, currVidMode.bitsPerPixel);
+
+	ParticleEmit::window = this;
 }
 
 Window::~Window() {
@@ -75,8 +78,8 @@ void Window::loop() {
 		// Real loop
 		pollEvents();
 		if (!_paused) {
-			for (unsigned int i = 0; i < _emitters.size(); ++i) {
-				_emitters[i]->update(tDiff);
+			for (unsigned int i = 0; i < emitters.size(); ++i) {
+				emitters[i]->update(tDiff);
 			}
 			_map.update(tDiff);
 		}
@@ -112,8 +115,8 @@ void Window::render() {
 
 		updateEmitters();
 
-		for (unsigned int i = 0; i < _emitters.size(); ++i) {
-			_window.draw(*_emitters[i]);
+		for (unsigned int i = 0; i < emitters.size(); ++i) {
+			_window.draw(*emitters[i]);
 		}
 
 		_window.display(); // After we're done the drawing end the current frame
@@ -236,10 +239,10 @@ void Window::renderProjectiles() {
 
 // Remove any unneeded emitters
 void Window::updateEmitters() {
-	for (unsigned int i = 0; i < _emitters.size(); ++i) {
-		if (_emitters[i]->done() == true) {
-			delete _emitters[i];
-			_emitters.erase(_emitters.begin() + i);
+	for (unsigned int i = 0; i < emitters.size(); ++i) {
+		if (emitters[i]->done() == true) {
+			delete emitters[i];
+			emitters.erase(emitters.begin() + i);
 		}
 	}
 }
@@ -302,14 +305,3 @@ void Window::resizeEvent(sf::Event e) {
 	_height = e.size.height;
 	//updateAreaSizes();
 }
-
-///////////////////////////////////////////////////////////////////////////////
-// Static methods
-///////////////////////////////////////////////////////////////////////////////
-void Window::emitParticles(float x, float y, int amount, sf::Color c) {
-	ParticleEmitter* pe = new ParticleEmitter(sf::Vector2f(x, y), amount, c);
-	_emitters.push_back(pe);
-}
-
-// Create a reference to the ParticleEmitters
-std::vector<ParticleEmitter*> Window::_emitters;

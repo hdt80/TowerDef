@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Map.h"
+#include "ParticleEmitter.h"
 
 #include "Logger.h"
 
@@ -22,6 +23,7 @@ Enemy::~Enemy() {
 	if (_ended) {
 		_map->setHealthRelative(-1);
 	}
+	ParticleEmit::emit(x, y, 50, 255, 0, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
