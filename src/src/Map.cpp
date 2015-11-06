@@ -82,13 +82,21 @@ void Map::update(int diff) {
 // Spawn a new wave
 void Map::spawnWave() { 
 	CORE_INFO("Spawning wave %i", ++_wave);
-	enemies.push_back(new Enemy(this, 10.0f, 50, &_enemyPath, 20));
+	Stats enemyStats;
+	enemyStats.speed = 50;
+	enemies.push_back(new Enemy(this, 10.0f, enemyStats, &_enemyPath, 20));
 }
 
 // Spawn a tower at (x, y)
 void Map::spawnTower(float x, float y) {
 	CORE_INFO("Spawning tower at (%f, %f)", x, y);
-	towers.push_back(new Tower(this, x, y));
+	Stats towerStats;
+	towerStats.range = 200;
+	towerStats.fireRate = 1.0f;
+	towerStats.damage = 1.0f;
+	// We don't call move() in tower, so it's safe to set to projectile speed
+	towerStats.speed = 200; 
+	towers.push_back(new Tower(this, x, y, towerStats));
 }
 
 // Return the Object at (x, y)

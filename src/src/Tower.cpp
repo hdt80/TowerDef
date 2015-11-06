@@ -1,15 +1,16 @@
 #include "Tower.h"
 
 #include "Logger.h"
-#include <vector>
 #include "Map.h"
 #include "Enemy.h"
 #include "Color.h"
 
+#include <vector>
+
 ///////////////////////////////////////////////////////////////////////////////
 // Constuctor and deconstrctor
 ///////////////////////////////////////////////////////////////////////////////
-Tower::Tower(Map* map, float x, float y) : Object(map, x, y, 20, 0), 
+Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s), 
 	_lastShot(0.0f) {
 
 }

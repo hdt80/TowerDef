@@ -11,8 +11,8 @@
 // 	Enemy(0, 0, nullptr);
 // }
 
-Enemy::Enemy(Map* map, float health, int speed, Path* p, int collRadius) :
-	Object(map, 0, 0, collRadius, speed),
+Enemy::Enemy(Map* map, float health, Stats s, Path* p, int collRadius) :
+	Object(map, 0, 0, collRadius, s),
 	_health(health), _maxHealth(health), _path(p), _pathPoint(0) {
 
 	setPosition(p->getPoint(0)->X, p->getPoint(0)->Y);
@@ -39,7 +39,7 @@ void Enemy::update(int diff) {
 	}
 
 	// Calc how far they've should have moved since the last update
-	double deltaMove = (double)(_speed) * 0.000001f * diff;
+	double deltaMove = (double)getSpeed() * 0.000001f * diff;
 
 	// If we've reached the end of our target
 	if (_target->isSimpleTarget() && distanceWith(_target) < deltaMove * 2) {

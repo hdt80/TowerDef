@@ -1,9 +1,9 @@
-#ifndef _TOWER_STATS_H
-#define _TOWER_STATS_H
+#ifndef _STATS_H
+#define _STATS_H
 
-class TowerStats {
+class Stats {
 public:
-	TowerStats();
+	Stats();
 
 	int range;    // Range in pixels
 	float fireRate; // Time between each shot

@@ -3,12 +3,18 @@
 
 #include "Target.h"
 
+#include "Stats.h"
+
+#include <string>
+#include <vector>
+
 class Map;
+class Perk;
 
 class Object : public Target {
 public:
 	//Object();
-	Object(Map* map, float x, float y, int collRadius, int speed = 0);
+	Object(Map* map, float x, float y, int collRadius, Stats s);
 	virtual ~Object();
 
 	virtual void onCollision(Object* o);
@@ -28,14 +34,36 @@ public:
 	// A simple target is just an (x, y) coord point. Because an Object
 	// isn't just a coord point it isn't a simple target
 	virtual bool isSimpleTarget() { return false; }
-	virtual int getSpeed() { return 0; }
 
+	// Stats
+	// Apply new stats to the object
+	// If it's relative change stats relative to current stats
+	void applyStat(Stats s, bool relative = true);
+	// Stats getters
+	Stats* getStats() { return &_stats; }
+	int getSpeed() { return _stats.speed; }
+	int getRange() const { return _stats.range; }
+	float getFireRate() const { return _stats.fireRate; }
+	float getDamage() const { return _stats.damage; }
+	// Stats setters
+	void setRange(int r) { _stats.range = r; }
+	void setFireRate(float r) { _stats.fireRate = r; }
+	void setDamage(float d) { _stats.damage = d; }
+	void setSpeed(int s) { _stats.speed = s; }
+
+	// Perk methods
+	virtual void addPerk(Perk* p);
+	Perk* getPerk(std::string name); // nullptr if no Perk with that name
+
+	// Other getters
 	Map* getMap() const { return _map; }
+	std::vector<Perk*>& getPerks() { return _perks; }
 	Target* getTarget() const { return _target; }
 	Vector2 getDirection() const { return _direction; }
 	bool isToRemove() const { return _toRemove; }
 	int getCollisionRadius() const { return _collisionRadius; }
 
+	// Other setters
 	void setTarget(Target* t);
 	void setToRemove(bool b) { _toRemove = b; }
 
@@ -44,12 +72,15 @@ public:
 protected:
 	Map* _map; // Map this object is located on
 
+	std::vector<Perk*> _perks;
+
+	Stats _stats;
+
 	Target* _target; // Target the enemy is running to (can be coord or enemy)
 	Vector2 _direction; // Direction they're moving to
 
 	bool _toRemove; // Is this object marked for removal?
 	int  _collisionRadius;
-	int  _speed; // Pixels per second
 };
 
 #endif

@@ -17,7 +17,6 @@ public:
 
 	void update(int diff);
 protected:
-	float _damage;
 	Color _color;
 
 	Enemy* _enemy;

@@ -3,11 +3,11 @@
 
 #include "Target.h"
 #include "Object.h"
-#include "TowerStats.h"
+#include "Stats.h"
 
 class Tower : public Object {
 public:
-	Tower(Map* map, float x, float y);
+	Tower(Map* map, float x, float y, Stats s);
 	~Tower();
 
 	void update(int diff);
@@ -25,9 +25,10 @@ public:
 	int getSpeed() const { return _stats.speed; }
 
 protected:
-	TowerStats _stats;
-	float _lastShot; // Time the last shot was fired. If the diff between
-					 // this is greater than the fireRate you can fire 
+	// Microseconds now that we shot.
+	//If we shot one second ago _lastShot will be 1,000,000
+	// If fireRate is >= to _lastShot you can shoot
+	float _lastShot;
 };
 
 #endif

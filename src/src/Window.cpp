@@ -23,7 +23,7 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 	_close(false), _paused(false), _width(w), _height(h),
 	_pauseColor(128, 128, 128, 128), _enemyColor(sf::Color::Red),
 	_towerColor(sf::Color::Green), _tracerColor(255, 0, 0, 128),
-	_towerRangeColor(127, 255, 127, 127), _projectileColor(0, 0, 0, 127),
+	_towerRangeColor(127, 255, 127, 127), _projectileColor(120, 120, 120),
 	_selected(nullptr) {
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
@@ -75,6 +75,8 @@ void Window::loop() {
 		tDiff = std::chrono::duration_cast
 			<std::chrono::microseconds>(tStart - tEnd).count();
 
+		CORE_INFO("Diff: %lli", tDiff);
+
 		// Real loop
 		pollEvents();
 		if (!_paused) {
@@ -106,7 +108,7 @@ void Window::loop() {
 ///////////////////////////////////////////////////////////////////////////////
 void Window::render() {
 	if (!_paused) {
-		_window.clear(sf::Color::Black); // Remove anything that's on the window
+		_window.clear(sf::Color::Black); // Remove anything thats on the window
 
 		renderMap();
 		renderEnemies();
@@ -166,8 +168,15 @@ void Window::renderMap() {
 	}
 
 	// Draw the selected tower on the bottom so it doesn't mess up other draws
-	if (_selected != nullptr) {
-		// Tower is shooting at something?
+	if (_selected != nullptr) {	
+		sf::CircleShape r(_selected->getRange());
+		r.setPosition(_selected->getX() - _selected->getRange(),
+			_selected->getY() - _selected->getRange());
+
+		r.setFillColor(_towerRangeColor);
+		_window.draw(r);
+
+		// Tower is shooting at something? Draw on top of range
 		if (_selected->getTarget() != nullptr) {
 			sfLine l(sf::Vector2f(_selected->getX(), _selected->getY()),
 				sf::Vector2f(_selected->getTarget()->getX(),
@@ -175,12 +184,6 @@ void Window::renderMap() {
 
 			_window.draw(l);
 		}
-		sf::CircleShape r(_selected->getRange());
-		r.setPosition(_selected->getX() - _selected->getRange(),
-			_selected->getY() - _selected->getRange());
-
-		r.setFillColor(_towerRangeColor);
-		_window.draw(r);
 	}
 }
 
@@ -193,7 +196,8 @@ void Window::renderEnemies() {
 	s.setFillColor(_enemyColor);
 	hp.setFillColor(sf::Color::Green);
 	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-		o = _map.enemies[i];
+		// Draw from back to front so health bar aren't covered up by other enemies
+		o = _map.enemies[_map.enemies.size() - 1 - i];
 		// Subtract width to center it on the center pixel, not top left
 		s.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH);
 
@@ -203,8 +207,8 @@ void Window::renderEnemies() {
 		// it's really drawn 2 pixels above  
 		hp.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH - 6);
 
-		_window.draw(hp);
 		_window.draw(s);
+		_window.draw(hp);
 	}
 }
 
@@ -217,15 +221,6 @@ void Window::renderTowers() {
 		o = _map.towers[i];
 		// Subtract width to center it on the center pixel, not top left
 		s.setPosition(o->getX() - TOWER_WIDTH, o->getY() - TOWER_WIDTH);
-
-		// // Tower is shooting at something?
-		// if (o->getTarget() != nullptr) {
-		// 	sfLine l(sf::Vector2f(o->getX(), o->getY()),
-		// 		sf::Vector2f(o->getTarget()->getX(), o->getTarget()->getY()),
-		// 		1, _tracerColor);
-
-		// 	_window.draw(l);
-		// }
 
 		_window.draw(s);
 	}

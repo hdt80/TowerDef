@@ -10,8 +10,7 @@
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
 Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
-	Object(map, t->getX(), t->getY(), 1, t->getSpeed()),
-	_damage(t->getDamage()),
+	Object(map, t->getX(), t->getY(), 1, *t->getStats()),
 	_color(c) {
 
 	_target = e;
@@ -26,9 +25,9 @@ Projectile::~Projectile() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Projectile::onHit() {
-	ParticleEmit::emit(x, y, 10, Color(127, 127, 127, 255));
+	ParticleEmit::emit(x, y, 10, _color);
 	_toRemove = true;
-	_enemy->applyDamage(_damage);
+	_enemy->applyDamage(getDamage());
 }
 
 void Projectile::update(int diff) {
@@ -39,7 +38,7 @@ void Projectile::update(int diff) {
 	}
 	move(diff);
 
-	double deltaMove = (double)(_speed) * 0.000001f * diff;
+	double deltaMove = (double)getSpeed() * 0.000001f * diff;
 	if (distanceWith(_enemy) < deltaMove * 2) {
 		onHit();
 	}
