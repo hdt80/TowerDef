@@ -18,7 +18,7 @@ public:
 	void update(int diff);
 protected:
 	Color _color;
-
+	Tower* _shooter; // Tower shot from
 	Enemy* _enemy;
 };
 

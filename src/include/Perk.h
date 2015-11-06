@@ -2,15 +2,17 @@
 #define _PERK_H
 
 #include <string>
+#include "Stats.h"
 
 class Perk {
 public:
-	Perk(std::string name, float dur, bool stackable = false);
+	Perk(std::string name, Stats s, float dur, bool stacks = false);
 	~Perk();
 
 	void update(int diff);
 
 	std::string getName() const { return _name; }
+	Stats* getStats() { return &_stats; }
 	float getDuration() const { return _duration; }
 	int getStacks() const { return _stacks; }
 	bool isStackable() const { return _stackable; }
@@ -22,6 +24,7 @@ public:
 
 protected:
 	std::string _name; // Display name of the perk
+	Stats _stats; // Stats applied to the Object
 	float _duration; // -1 duration means infinite
 
 	int _stacks;

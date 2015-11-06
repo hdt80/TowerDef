@@ -6,7 +6,3 @@ Stats::Stats() {
 	damage = 0.0f;
 	speed = 0;
 }
-
-Stats STAT_DefaultEnemy;
-Stats STAT_DefaultTower;
-Stats STAT_DefaultProjectile;

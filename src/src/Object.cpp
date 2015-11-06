@@ -2,6 +2,7 @@
 
 #include "Perk.h"
 #include <string>
+#include "Logger.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor
@@ -61,7 +62,22 @@ void Object::update(int diff) {
 	}
 }
 
+void Object::applyStat(Stats s, bool relative) {
+	CORE_INFO("Applying stat, %i", relative);
+	if (relative) {
+		_stats.range += s.range;
+		CORE_INFO("fireRate: %f", _stats.fireRate);
+		_stats.fireRate += s.fireRate;
+		CORE_INFO("fireRate: %f", _stats.fireRate);
+		_stats.damage += s.damage;
+		_stats.speed += s.speed;
+	} else {
+		_stats = s;
+	}
+}
+
 void Object::addPerk(Perk* p) {
+	applyStat(*p->getStats());
 	// If we already have the buff
 	if (getPerk(p->getName()) != nullptr) {
 		if (p->isStackable()) {
@@ -71,6 +87,7 @@ void Object::addPerk(Perk* p) {
 		}
 	} else {
 		_perks.push_back(p);
+		applyStat(*p->getStats());
 	}
 }
 

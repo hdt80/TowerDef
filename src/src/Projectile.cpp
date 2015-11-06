@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Tower.h"
 #include "ParticleEmitter.h"
+#include "Perk.h"
 
 #include "Logger.h"
 
@@ -11,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
 	Object(map, t->getX(), t->getY(), 1, *t->getStats()),
-	_color(c) {
+	_color(c), _shooter(t) {
 
 	_target = e;
 	_enemy = e;
@@ -26,8 +27,15 @@ Projectile::~Projectile() {
 ///////////////////////////////////////////////////////////////////////////////
 void Projectile::onHit() {
 	ParticleEmit::emit(x, y, 10, _color);
-	_toRemove = true;
 	_enemy->applyDamage(getDamage());
+
+	Stats perk;
+	perk.fireRate = -(_shooter->getFireRate() / 2);
+	Perk p("AS", perk, -1);
+
+	_shooter->addPerk(&p);
+
+	_toRemove = true;
 }
 
 void Projectile::update(int diff) {

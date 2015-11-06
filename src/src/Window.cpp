@@ -75,8 +75,6 @@ void Window::loop() {
 		tDiff = std::chrono::duration_cast
 			<std::chrono::microseconds>(tStart - tEnd).count();
 
-		CORE_INFO("Diff: %lli", tDiff);
-
 		// Real loop
 		pollEvents();
 		if (!_paused) {
