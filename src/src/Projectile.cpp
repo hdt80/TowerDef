@@ -29,11 +29,13 @@ void Projectile::onHit() {
 	ParticleEmit::emit(x, y, 10, _color);
 	_enemy->applyDamage(getDamage());
 
-	Stats perk;
-	perk.fireRate = -(_shooter->getFireRate() / 2);
-	Perk p("AS", perk, -1);
+	Stats* perk = new Stats;
+	//CORE_INFO("Current fr: %f", _shooter->getFireRate());
+	perk->fireRate = -(_shooter->getFireRate() / 2.0f);
+	//CORE_INFO("Change: %f", -(_shooter->getFireRate() / 2.0f));
+	Perk* p = new Perk("AS", *perk, 3, 3);
 
-	_shooter->addPerk(&p);
+	_shooter->addPerk(p);
 
 	_toRemove = true;
 }

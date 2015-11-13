@@ -64,6 +64,7 @@ void Tower::update(int diff) {
 			}
 		}
 	}
+	Object::update(diff);
 }
 
 void Tower::shoot() {

@@ -6,7 +6,8 @@
 
 class Perk {
 public:
-	Perk(std::string name, Stats s, float dur, bool stacks = false);
+	// More than one max stack means a perk is stackable
+	Perk(std::string name, Stats s, float dur, int maxStacks = 0);
 	~Perk();
 
 	void update(int diff);
@@ -15,11 +16,12 @@ public:
 	Stats* getStats() { return &_stats; }
 	float getDuration() const { return _duration; }
 	int getStacks() const { return _stacks; }
+	int getMaxStacks() const { return _maxStacks; }
 	bool isStackable() const { return _stackable; }
 	bool isToRemove() const { return _toRemove; }
 
 	void setDuration(float d) { _duration = d; }
-	void addStack() { _stacks++; }
+	void addStack();
 	void removeStack() { _stacks--; }
 
 protected:
@@ -28,14 +30,13 @@ protected:
 	float _duration; // -1 duration means infinite
 
 	int _stacks;
+	int _maxStacks;
 	// If statckable applying a new perk with the same name will add a stack
 	// If not stackable and applying the same perk the _duration will be reset
 	// to the new perks duration
-	bool _stackable; 
+	bool _stackable;
 
 	bool _toRemove; // Marked for removal
-
-	
 };
 
 #endif

@@ -53,6 +53,8 @@ public:
 
 	// Perk methods
 	virtual void addPerk(Perk* p);
+	virtual void removePerk(Perk* p);
+	bool hasPerk(std::string name) { return getPerk(name) != nullptr; }
 	Perk* getPerk(std::string name); // nullptr if no Perk with that name
 
 	// Other getters

@@ -59,16 +59,18 @@ void Object::move(int diff) {
 void Object::update(int diff) {
 	for (unsigned int i = 0; i < _perks.size(); ++i) {
 		_perks[i]->update(diff);
+		if (_perks[i]->isToRemove()) {
+			removePerk(_perks[i]);
+			_perks.erase(_perks.begin() + i);
+		}
+		//CORE_INFO("\'%s\': %i", _perks[i]->getName().c_str(), _perks[i]->getStacks());
 	}
 }
 
 void Object::applyStat(Stats s, bool relative) {
-	CORE_INFO("Applying stat, %i", relative);
 	if (relative) {
 		_stats.range += s.range;
-		CORE_INFO("fireRate: %f", _stats.fireRate);
 		_stats.fireRate += s.fireRate;
-		CORE_INFO("fireRate: %f", _stats.fireRate);
 		_stats.damage += s.damage;
 		_stats.speed += s.speed;
 	} else {
@@ -76,15 +78,20 @@ void Object::applyStat(Stats s, bool relative) {
 	}
 }
 
+void Object::removePerk(Perk* p) {
+	applyStat(-*p->getStats());
+}
+
 void Object::addPerk(Perk* p) {
-	applyStat(*p->getStats());
 	// If we already have the buff
 	if (getPerk(p->getName()) != nullptr) {
-		if (p->isStackable()) {
-			getPerk(p->getName())->addStack();
-		} else {
-			getPerk(p->getName())->setDuration(p->getDuration());
+		Perk* curP = getPerk(p->getName());
+		// Stackable and we can add a stack? Apply stat change and add 1 stack
+		if (p->isStackable() && (curP->getStacks() < curP->getMaxStacks())) {
+			curP->addStack();
+			applyStat(*p->getStats());
 		}
+		curP->setDuration(p->getDuration());
 	} else {
 		_perks.push_back(p);
 		applyStat(*p->getStats());
