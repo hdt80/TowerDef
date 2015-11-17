@@ -25,6 +25,8 @@ public:
 	int getSpeed() const { return _stats.speed; }
 
 protected:
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+
 	// Microseconds now that we shot.
 	//If we shot one second ago _lastShot will be 1,000,000
 	// If fireRate is >= to _lastShot you can shoot

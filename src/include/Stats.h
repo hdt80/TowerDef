@@ -6,18 +6,11 @@ public:
 	Stats();
 
 	// Negative operator
-	// Return a Stats with the opposite values of the Stats
-	// Used when removing a Perk, it'll just add the negative Stats
-	// which since it's negative in the first place, it'll return positive
-	// values that can be added to get it's original value
-	Stats operator- () const {
-		Stats s;
-		s.range    = -range;
-		s.fireRate = -fireRate;
-		s.damage   = -damage;
-		s.speed    = -speed;
-		return s;
-	}
+	Stats operator- () const;
+	Stats operator+ (const Stats& s) const;
+	void operator+=(const Stats& s);
+
+	void print();
 
 	int range;    	// Range in pixels
 	float fireRate; // Time between each shot

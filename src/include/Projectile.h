@@ -17,6 +17,8 @@ public:
 
 	void update(int diff);
 protected:
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+
 	Color _color;
 	Tower* _shooter; // Tower shot from
 	Enemy* _enemy;

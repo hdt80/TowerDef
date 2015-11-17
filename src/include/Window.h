@@ -14,6 +14,7 @@
 #define ENEMY_WIDTH 10 // Radius in pixels
 #define TOWER_WIDTH 10
 #define PROJECTILE_WIDTH 3
+#define PERK_BOX_WIDTH 150
 
 class Window {
 public:
@@ -62,6 +63,7 @@ private:
 
 	// We split the code up so it's easier to fix when stuff breaks
 	void renderMap();
+	void renderSelected();
 	void renderEnemies();
 	void renderTowers();
 	void renderProjectiles();

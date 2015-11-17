@@ -4,6 +4,8 @@
 #include <string>
 #include "Stats.h"
 
+// A permentant stat change. When a Perk is added the base stats will be
+// changed, and when removed the opposite of the Perk is removed. 
 class Perk {
 public:
 	// More than one max stack means a perk is stackable
@@ -13,8 +15,12 @@ public:
 	void update(int diff);
 
 	std::string getName() const { return _name; }
+	std::string getTitle() const;
 	Stats* getStats() { return &_stats; }
 	float getDuration() const { return _duration; }
+	int getShortDuration() const { return (int)(_duration + 0.5f); }
+	float getMaxDuration() const { return _maxDuration; }
+	int getShortMaxDuration() const { return (int)_maxDuration; }
 	int getStacks() const { return _stacks; }
 	int getMaxStacks() const { return _maxStacks; }
 	bool isStackable() const { return _stackable; }
@@ -28,6 +34,7 @@ protected:
 	std::string _name; // Display name of the perk
 	Stats _stats; // Stats applied to the Object
 	float _duration; // -1 duration means infinite
+	float _maxDuration;
 
 	int _stacks;
 	int _maxStacks;

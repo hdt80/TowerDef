@@ -28,6 +28,8 @@ public:
 	void setPath(Path* p) { this->_path = p; }
 
 protected:
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+
 	float _health;	// Current health of an enemy
 	float _maxHealth;	// Max health of the enemy
 

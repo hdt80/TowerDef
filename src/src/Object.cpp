@@ -18,6 +18,10 @@ Object::~Object() {}
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
+void Object::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	states.transform *= getTransform();
+}
+
 void Object::onCollision(Object* o) {
 
 }
@@ -63,16 +67,15 @@ void Object::update(int diff) {
 			removePerk(_perks[i]);
 			_perks.erase(_perks.begin() + i);
 		}
-		//CORE_INFO("\'%s\': %i", _perks[i]->getName().c_str(), _perks[i]->getStacks());
 	}
 }
 
 void Object::applyStat(Stats s, bool relative) {
 	if (relative) {
-		_stats.range += s.range;
+		_stats.range    += s.range;
 		_stats.fireRate += s.fireRate;
-		_stats.damage += s.damage;
-		_stats.speed += s.speed;
+		_stats.damage   += s.damage;
+		_stats.speed    += s.speed;
 	} else {
 		_stats = s;
 	}
@@ -88,9 +91,12 @@ void Object::addPerk(Perk* p) {
 		Perk* curP = getPerk(p->getName());
 		// Stackable and we can add a stack? Apply stat change and add 1 stack
 		if (p->isStackable() && (curP->getStacks() < curP->getMaxStacks())) {
+			// Add the stat mod to the current perk so removal is correct
+			*curP->getStats() += *p->getStats();
 			curP->addStack();
 			applyStat(*p->getStats());
 		}
+		// Reset duration
 		curP->setDuration(p->getDuration());
 	} else {
 		_perks.push_back(p);

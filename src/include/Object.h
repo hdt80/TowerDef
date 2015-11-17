@@ -7,11 +7,12 @@
 
 #include <string>
 #include <vector>
+#include <SFML/Graphics.hpp>
 
 class Map;
 class Perk;
 
-class Object : public Target {
+class Object : public Target, public sf::Drawable, sf::Transformable {
 public:
 	//Object();
 	Object(Map* map, float x, float y, int collRadius, Stats s);
@@ -55,6 +56,7 @@ public:
 	virtual void addPerk(Perk* p);
 	virtual void removePerk(Perk* p);
 	bool hasPerk(std::string name) { return getPerk(name) != nullptr; }
+	Perk* getPerk(int index) { return _perks[index];}
 	Perk* getPerk(std::string name); // nullptr if no Perk with that name
 
 	// Other getters
@@ -65,6 +67,9 @@ public:
 	bool isToRemove() const { return _toRemove; }
 	int getCollisionRadius() const { return _collisionRadius; }
 
+	// Utility getters
+	unsigned int perkCount() const { return _perks.size(); }
+
 	// Other setters
 	void setTarget(Target* t);
 	void setToRemove(bool b) { _toRemove = b; }
@@ -72,6 +77,7 @@ public:
 	virtual void setPosition(float x, float y);
 
 protected:
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 	Map* _map; // Map this object is located on
 
 	std::vector<Perk*> _perks;

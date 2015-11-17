@@ -7,6 +7,7 @@
 #include "Vector2.h"
 #include "Enemy.h"
 #include "ParticleEmitter.h"
+#include "Perk.h"
 
 #include <chrono>
 #include <thread>
@@ -47,7 +48,7 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 	CORE_INFO("Created window: Width: %i, Height: %i, Bits per Pixel: %i",
 		_width, _height, currVidMode.bitsPerPixel);
 
-	ParticleEmit::window = this;
+	ParticleEmit::window = this; // Tell the ParticleEmitter what window to use
 }
 
 Window::~Window() {
@@ -109,6 +110,7 @@ void Window::render() {
 		_window.clear(sf::Color::Black); // Remove anything thats on the window
 
 		renderMap();
+		renderSelected();
 		renderEnemies();
 		renderTowers();
 		renderProjectiles();
@@ -164,24 +166,72 @@ void Window::renderMap() {
 		_window.draw(s);
 		_window.draw(c);
 	}
+}
 
-	// Draw the selected tower on the bottom so it doesn't mess up other draws
-	if (_selected != nullptr) {	
-		sf::CircleShape r(_selected->getRange());
-		r.setPosition(_selected->getX() - _selected->getRange(),
-			_selected->getY() - _selected->getRange());
+void Window::renderSelected() {
+	// Don't draw anything if nothing is selected
+	if (_selected == nullptr) {
+		return;
+	}
 
-		r.setFillColor(_towerRangeColor);
-		_window.draw(r);
+	// Draw range of the object
+	sf::CircleShape r(_selected->getRange());
+	r.setPosition(_selected->getX() - _selected->getRange(),
+		_selected->getY() - _selected->getRange());
 
-		// Tower is shooting at something? Draw on top of range
-		if (_selected->getTarget() != nullptr) {
-			sfLine l(sf::Vector2f(_selected->getX(), _selected->getY()),
-				sf::Vector2f(_selected->getTarget()->getX(),
-				_selected->getTarget()->getY()), 1, _tracerColor);
+	r.setFillColor(_towerRangeColor);
+	_window.draw(r);
 
-			_window.draw(l);
-		}
+	// Tower is shooting at something? Draw on top of range
+	if (_selected->getTarget() != nullptr) {
+		sfLine l(sf::Vector2f(_selected->getX(), _selected->getY()),
+			sf::Vector2f(_selected->getTarget()->getX(),
+			_selected->getTarget()->getY()), 1, _tracerColor);
+
+		_window.draw(l);
+	}
+
+	sf::Text atext(convert::toString(_selected->getFireRate()), _font);
+	atext.setPosition(500, 500);
+	_window.draw(atext);
+
+	// Drawing perks
+
+	// Box we'll be drawing everything from
+	sf::RectangleShape box(sf::Vector2f(PERK_BOX_WIDTH, _height));
+
+	// Draw background box
+	box.setFillColor(sf::Color(112, 112, 112));
+	box.setOutlineColor(sf::Color(200, 200, 200));
+	box.setOutlineThickness(2); // Defaults to 0, or no outline
+	box.setPosition(_width - PERK_BOX_WIDTH, 0);
+	_window.draw(box);
+
+	for (unsigned int i = 0; i < _selected->perkCount(); ++i) {
+		box.setSize(sf::Vector2f(PERK_BOX_WIDTH, _height / 8));
+		box.setFillColor(sf::Color(64, 64, 64));
+		box.setPosition(_width - PERK_BOX_WIDTH, (_height / 8) * i);
+
+		// Draw we'll draw the name to
+		sf::Text text(_selected->getPerk(i)->getTitle(), _font);
+		text.setPosition(box.getPosition());
+		text.setColor(sf::Color(255, 255, 255));
+		_window.draw(box);
+		_window.draw(text);
+
+		// Draw red background for duration bar
+		box.setFillColor(sf::Color::Red);
+		box.setSize(sf::Vector2f(PERK_BOX_WIDTH, _height / 16));
+		box.setPosition(_width - PERK_BOX_WIDTH,
+			(_height / 16) + ((_height / 8) * i));
+		_window.draw(box);
+
+		// Draw green background for duration bar
+		float percent = _selected->getPerk(i)->getDuration() /
+			_selected->getPerk(i)->getMaxDuration();
+		box.setFillColor(sf::Color::Green);
+		box.setSize(sf::Vector2f(PERK_BOX_WIDTH * percent, _height / 16));
+		_window.draw(box);
 	}
 }
 
@@ -194,7 +244,7 @@ void Window::renderEnemies() {
 	s.setFillColor(_enemyColor);
 	hp.setFillColor(sf::Color::Green);
 	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-		// Draw from back to front so health bar aren't covered up by other enemies
+		// Draw from back to front so hp bar aren't covered up by other enemies
 		o = _map.enemies[_map.enemies.size() - 1 - i];
 		// Subtract width to center it on the center pixel, not top left
 		s.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH);
@@ -286,17 +336,21 @@ void Window::keyEvent(sf::Event e) {
 void Window::mouseEvent(sf::Event e) {
 	int x = e.mouseButton.x;
 	int y = e.mouseButton.y;
-
-	if (_map.towerAt(x, y) != nullptr) {
-		_selected = _map.towerAt(x, y);
-	} else {
-		// If we've selected something we just want to deselected it
-		if (_selected != nullptr) {
-			_selected = nullptr;
+	if (e.mouseButton.button == sf::Mouse::Left) {
+		if (_map.towerAt(x, y) != nullptr) {
+			_selected = _map.towerAt(x, y);
 		} else {
-			_map.spawnTower(x, y);
+			// If we've selected something we just want to deselected it
+			if (_selected != nullptr) {
+				_selected = nullptr;
+			} else {
+				_map.spawnTower(x, y);
+			}
 		}
+	} else if (e.mouseButton.button == sf::Mouse::Middle) {
+		_map.getPath()->addPoint(x, y);
 	}
+
 }
 
 void Window::resizeEvent(sf::Event e) {
