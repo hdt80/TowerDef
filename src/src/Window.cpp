@@ -8,6 +8,7 @@
 #include "Enemy.h"
 #include "ParticleEmitter.h"
 #include "Perk.h"
+#include "SkillTree.h"
 
 #include <chrono>
 #include <thread>
@@ -64,6 +65,34 @@ void Window::start() {
 }
 
 void Window::loop() {
+	SkillTree s;
+	Perk* p1 = new Perk("Tree access", Stats(), -1.0f);
+	Perk* p2 = new Perk("Fast as fuck", Stats(), -1.0f);
+	Perk* p3 = new Perk("Fly as fuck", Stats(), -1.0f);
+	Perk* p4 = new Perk("Sanic", Stats(), -1.0f);
+	SkillNode* n1 = new SkillNode(nullptr, p1);
+	n1 = s.addPerk(nullptr, p1);
+	CORE_INFO("1");
+	s.print(s.getHead());
+	CORE_INFO("2");
+	s.print(s.getHead());
+	SkillNode* n2 = s.addPerk(n1, p2);
+	CORE_INFO("3");
+	s.print(s.getHead());
+	SkillNode* n3 = s.addPerk(n1, p3);
+	CORE_INFO("4");
+	s.print(s.getHead());
+	SkillNode* n4 = s.addPerk(n2, p4);
+	CORE_INFO("5");
+	s.print(s.getHead());
+
+	_window.draw(s);
+	_window.display();
+
+	while (!shouldClose()) {
+		pollEvents();
+	}
+
 	std::chrono::time_point<std::chrono::high_resolution_clock> tStart, tEnd;
 	tStart = std::chrono::high_resolution_clock::now();
 	long long tDiff;
@@ -191,10 +220,6 @@ void Window::renderSelected() {
 		_window.draw(l);
 	}
 
-	sf::Text atext(convert::toString(_selected->getFireRate()), _font);
-	atext.setPosition(500, 500);
-	_window.draw(atext);
-
 	// Drawing perks
 
 	// Box we'll be drawing everything from
@@ -240,27 +265,6 @@ void Window::renderEnemies() {
 	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
 		_window.draw(*(_map.enemies[_map.enemies.size() - i - 1]));
 	}
-	// Enemy* o = nullptr;
-	// sf::CircleShape s(ENEMY_WIDTH);
-	// // 4 being the health bar height in pixels
-	// sf::RectangleShape hp(sf::Vector2f(ENEMY_WIDTH * 2, 4));
-	// s.setFillColor(_enemyColor);
-	// hp.setFillColor(sf::Color::Green);
-	// for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-	// 	// Draw from back to front so hp bar aren't covered up by other enemies
-	// 	o = _map.enemies[_map.enemies.size() - 1 - i];
-	// 	// Subtract width to center it on the center pixel, not top left
-	// 	s.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH);
-
-	// 	hp.setSize(sf::Vector2f(
-	// 		ENEMY_WIDTH * 2 * (o->getHealth() / o->getMaxHealth()), 4));
-	// 	// Draw it 6 pixels above, but since it's got a height of 4
-	// 	// it's really drawn 2 pixels above  
-	// 	hp.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH - 6);
-
-	// 	_window.draw(s);
-	// 	_window.draw(hp);
-	// }
 }
 
 // Rendering towers and their targets
@@ -268,16 +272,6 @@ void Window::renderTowers() {
 	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
 		_window.draw(*_map.towers[i]);
 	}
-	// Object* o = nullptr;
-	// sf::CircleShape s(TOWER_WIDTH);
-	// s.setFillColor(_towerColor);
-	// for (unsigned int i = 0; i < _map.towers.size(); ++i) {
-	// 	o = _map.towers[i];
-	// 	// Subtract width to center it on the center pixel, not top left
-	// 	s.setPosition(o->getX() - TOWER_WIDTH, o->getY() - TOWER_WIDTH);
-
-	// 	_window.draw(s);
-	// }
 }
 
 // Rendering projectiles
@@ -285,16 +279,6 @@ void Window::renderProjectiles() {
 	for (unsigned int i = 0; i < _map.projectiles.size(); ++i) { 
 		_window.draw(*_map.projectiles[i]);
 	}
-	// Object* o = nullptr;
-	// sf::CircleShape s(PROJECTILE_WIDTH);
-	// s.setFillColor(_projectileColor);
-	// for (unsigned int i = 0; i < _map.projectiles.size(); ++i) {
-	// 	o = _map.projectiles[i];
-	// 	s.setPosition(o->getX() - PROJECTILE_WIDTH,
-	// 		o->getY() - PROJECTILE_WIDTH);
-
-	// 	_window.draw(s);
-	// }
 }
 
 // Remove any unneeded emitters

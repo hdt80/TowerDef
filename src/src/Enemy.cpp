@@ -34,6 +34,7 @@ void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	sf::CircleShape s(ENEMY_WIDTH);
 	s.setFillColor(sf::Color(255, 0, 0));
 	s.setPosition(getX() - ENEMY_WIDTH, getY() - ENEMY_WIDTH);
+	
 	// 4 being the hp bar height in pixels
 	sf::RectangleShape hp(sf::Vector2f(
 		ENEMY_WIDTH * 2 * (getHealth() / getMaxHealth()), 4));
