@@ -4,6 +4,7 @@
 #include "Tower.h"
 #include "ParticleEmitter.h"
 #include "Perk.h"
+#include "Common.h"
 
 #include "Logger.h"
 
@@ -26,7 +27,10 @@ Projectile::~Projectile() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	
+	sf::CircleShape s(PROJECTILE_WIDTH);
+	s.setFillColor(sf::Color(120, 120, 120));
+	s.setPosition(getX() - PROJECTILE_WIDTH, getY() - PROJECTILE_WIDTH);
+	target.draw(s);
 }
 
 void Projectile::onHit() {

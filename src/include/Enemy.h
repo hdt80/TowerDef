@@ -18,8 +18,8 @@ public:
 
 	void applyDamage(float d);
 
-	float getHealth() { return _health; }
-	float getMaxHealth() { return _maxHealth; }
+	float getHealth() const { return _health; }
+	float getMaxHealth() const { return _maxHealth; }
 	Path* getPath() { return _path; }
 
 	void setHealth(float health) { this->_health = health; }

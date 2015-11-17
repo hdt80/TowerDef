@@ -237,55 +237,64 @@ void Window::renderSelected() {
 
 // Rendering enemies and their health
 void Window::renderEnemies() {
-	Enemy* o = nullptr;
-	sf::CircleShape s(ENEMY_WIDTH);
-	// 4 being the health bar height in pixels
-	sf::RectangleShape hp(sf::Vector2f(ENEMY_WIDTH * 2, 4));
-	s.setFillColor(_enemyColor);
-	hp.setFillColor(sf::Color::Green);
 	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-		// Draw from back to front so hp bar aren't covered up by other enemies
-		o = _map.enemies[_map.enemies.size() - 1 - i];
-		// Subtract width to center it on the center pixel, not top left
-		s.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH);
-
-		hp.setSize(sf::Vector2f(
-			ENEMY_WIDTH * 2 * (o->getHealth() / o->getMaxHealth()), 4));
-		// Draw it 6 pixels above, but since it's got a height of 4
-		// it's really drawn 2 pixels above  
-		hp.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH - 6);
-
-		_window.draw(s);
-		_window.draw(hp);
+		_window.draw(*(_map.enemies[_map.enemies.size() - i - 1]));
 	}
+	// Enemy* o = nullptr;
+	// sf::CircleShape s(ENEMY_WIDTH);
+	// // 4 being the health bar height in pixels
+	// sf::RectangleShape hp(sf::Vector2f(ENEMY_WIDTH * 2, 4));
+	// s.setFillColor(_enemyColor);
+	// hp.setFillColor(sf::Color::Green);
+	// for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
+	// 	// Draw from back to front so hp bar aren't covered up by other enemies
+	// 	o = _map.enemies[_map.enemies.size() - 1 - i];
+	// 	// Subtract width to center it on the center pixel, not top left
+	// 	s.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH);
+
+	// 	hp.setSize(sf::Vector2f(
+	// 		ENEMY_WIDTH * 2 * (o->getHealth() / o->getMaxHealth()), 4));
+	// 	// Draw it 6 pixels above, but since it's got a height of 4
+	// 	// it's really drawn 2 pixels above  
+	// 	hp.setPosition(o->getX() - ENEMY_WIDTH, o->getY() - ENEMY_WIDTH - 6);
+
+	// 	_window.draw(s);
+	// 	_window.draw(hp);
+	// }
 }
 
 // Rendering towers and their targets
 void Window::renderTowers() {
-	Object* o = nullptr;
-	sf::CircleShape s(TOWER_WIDTH);
-	s.setFillColor(_towerColor);
 	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
-		o = _map.towers[i];
-		// Subtract width to center it on the center pixel, not top left
-		s.setPosition(o->getX() - TOWER_WIDTH, o->getY() - TOWER_WIDTH);
-
-		_window.draw(s);
+		_window.draw(*_map.towers[i]);
 	}
+	// Object* o = nullptr;
+	// sf::CircleShape s(TOWER_WIDTH);
+	// s.setFillColor(_towerColor);
+	// for (unsigned int i = 0; i < _map.towers.size(); ++i) {
+	// 	o = _map.towers[i];
+	// 	// Subtract width to center it on the center pixel, not top left
+	// 	s.setPosition(o->getX() - TOWER_WIDTH, o->getY() - TOWER_WIDTH);
+
+	// 	_window.draw(s);
+	// }
 }
 
 // Rendering projectiles
 void Window::renderProjectiles() {
-	Object* o = nullptr;
-	sf::CircleShape s(PROJECTILE_WIDTH);
-	s.setFillColor(_projectileColor);
-	for (unsigned int i = 0; i < _map.projectiles.size(); ++i) {
-		o = _map.projectiles[i];
-		s.setPosition(o->getX() - PROJECTILE_WIDTH,
-			o->getY() - PROJECTILE_WIDTH);
-
-		_window.draw(s);
+	for (unsigned int i = 0; i < _map.projectiles.size(); ++i) { 
+		_window.draw(*_map.projectiles[i]);
 	}
+	// Object* o = nullptr;
+	// sf::CircleShape s(PROJECTILE_WIDTH);
+	// s.setFillColor(_projectileColor);
+	// for (unsigned int i = 0; i < _map.projectiles.size(); ++i) {
+	// 	o = _map.projectiles[i];
+	// 	s.setPosition(o->getX() - PROJECTILE_WIDTH,
+	// 		o->getY() - PROJECTILE_WIDTH);
+
+	// 	_window.draw(s);
+	// }
 }
 
 // Remove any unneeded emitters

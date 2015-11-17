@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Enemy.h"
 #include "Color.h"
+#include "Common.h"
 
 #include <vector>
 
@@ -23,7 +24,10 @@ Tower::~Tower() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	
+	sf::CircleShape s(TOWER_WIDTH);
+	s.setFillColor(sf::Color(0, 255, 0));
+	s.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
+	target.draw(s);
 }
 
 void Tower::update(int diff) {
