@@ -16,6 +16,11 @@ Enemy::Enemy(Map* map, float health, Stats s, Path* p, int collRadius) :
 	Object(map, 0, 0, collRadius, s),
 	_health(health), _maxHealth(health), _path(p), _pathPoint(0) {
 
+	_shape.setRadius(ENEMY_WIDTH);
+	_shape.setFillColor(sf::Color(255, 0, 0));
+
+	_hpBar.setFillColor(sf::Color::Green);
+
 	setPosition(p->getPoint(0)->X, p->getPoint(0)->Y);
 	_target = new Target(p->getPoint(1));
 }
@@ -31,18 +36,8 @@ Enemy::~Enemy() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	sf::CircleShape s(ENEMY_WIDTH);
-	s.setFillColor(sf::Color(255, 0, 0));
-	s.setPosition(getX() - ENEMY_WIDTH, getY() - ENEMY_WIDTH);
-	
-	// 4 being the hp bar height in pixels
-	sf::RectangleShape hp(sf::Vector2f(
-		ENEMY_WIDTH * 2 * (getHealth() / getMaxHealth()), 4));
-	hp.setFillColor(sf::Color::Green);
-	hp.setPosition(getX() - ENEMY_WIDTH, getY() - ENEMY_WIDTH - 6);
-
-	target.draw(s);
-	target.draw(hp);
+	target.draw(_shape);
+	target.draw(_hpBar);
 }
 
 void Enemy::update(int diff) {
@@ -53,6 +48,10 @@ void Enemy::update(int diff) {
 		_direction = Vector2();
 		return;
 	}
+
+	// Update shape positions
+	_shape.setPosition(getX() - ENEMY_WIDTH, getY() - ENEMY_WIDTH);
+	_hpBar.setPosition(getX() - ENEMY_WIDTH, getY() - ENEMY_WIDTH - 6);
 
 	// Calc how far they've should have moved since the last update
 	double deltaMove = (double)getSpeed() * 0.000001f * diff;
@@ -74,6 +73,8 @@ void Enemy::update(int diff) {
 // Positive damage values take health away while negative values add health
 void Enemy::applyDamage(float amount) {
 	_health -= amount;
+	_hpBar.setSize(sf::Vector2f(
+		ENEMY_WIDTH * 2 * (getHealth() / getMaxHealth()), 4));
 	if (_health <= 0) {
 		_toRemove = true;
 	}

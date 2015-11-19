@@ -29,6 +29,8 @@ public:
 
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+	sf::CircleShape _shape;
+	sf::RectangleShape _hpBar;
 
 	float _health;	// Current health of an enemy
 	float _maxHealth;	// Max health of the enemy

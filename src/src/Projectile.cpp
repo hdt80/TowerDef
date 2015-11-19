@@ -15,6 +15,9 @@ Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
 	Object(map, t->getX(), t->getY(), 1, *t->getStats()),
 	_color(c), _shooter(t) {
 
+	_shape.setRadius(PROJECTILE_WIDTH);
+	_shape.setFillColor(sf::Color(120, 120, 120));
+
 	_target = e;
 	_enemy = e;
 }
@@ -27,10 +30,7 @@ Projectile::~Projectile() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	sf::CircleShape s(PROJECTILE_WIDTH);
-	s.setFillColor(sf::Color(120, 120, 120));
-	s.setPosition(getX() - PROJECTILE_WIDTH, getY() - PROJECTILE_WIDTH);
-	target.draw(s);
+	target.draw(_shape);
 }
 
 void Projectile::onHit() {
@@ -53,6 +53,7 @@ void Projectile::update(int diff) {
 		return;
 	}
 	move(diff);
+	_shape.setPosition(getX() - PROJECTILE_WIDTH, getY() - PROJECTILE_WIDTH);
 
 	double deltaMove = (double)getSpeed() * 0.000001f * diff;
 	if (distanceWith(_enemy) < deltaMove * 2) {

@@ -89,9 +89,9 @@ void Window::loop() {
 	_window.draw(s);
 	_window.display();
 
-	while (!shouldClose()) {
-		pollEvents();
-	}
+	// while (!shouldClose()) {
+	// 	pollEvents();
+	// }
 
 	std::chrono::time_point<std::chrono::high_resolution_clock> tStart, tEnd;
 	tStart = std::chrono::high_resolution_clock::now();

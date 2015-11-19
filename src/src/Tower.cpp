@@ -14,6 +14,10 @@
 Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s), 
 	_lastShot(0.0f) {
 
+	_shape.setRadius(TOWER_WIDTH);
+	_shape.setFillColor(sf::Color(0, 255, 0));
+	// Towers can't move, so no need to update it's position every update
+	_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 }
 
 Tower::~Tower() {
@@ -24,10 +28,7 @@ Tower::~Tower() {
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	sf::CircleShape s(TOWER_WIDTH);
-	s.setFillColor(sf::Color(0, 255, 0));
-	s.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
-	target.draw(s);
+	target.draw(_shape);
 }
 
 void Tower::update(int diff) {

@@ -26,6 +26,7 @@ public:
 
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+	sf::CircleShape _shape;
 
 	// Microseconds now that we shot.
 	//If we shot one second ago _lastShot will be 1,000,000

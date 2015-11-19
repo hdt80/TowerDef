@@ -30,6 +30,7 @@ bool Object::collidesWith(Object* o) {
 	return false;
 }
 
+// Returns if a point is within the collision box of an Object
 bool Object::contains(float px, float py) {
 	return (px >= getX() - _collisionRadius &&
 			px <= getX() + _collisionRadius &&
