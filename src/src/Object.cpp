@@ -13,6 +13,10 @@ Object::Object(Map* map, float x, float y, int collRadius, Stats s) :
 
 }
 
+Object::Object() : Target(0, 0) {
+	Object(nullptr, 0, 0, 0, Stats());
+}
+
 Object::~Object() {}
 
 ///////////////////////////////////////////////////////////////////////////////

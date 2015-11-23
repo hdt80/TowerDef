@@ -12,6 +12,8 @@
 #define WAVE_DELAY 30 // Time between each wave in seconds
 #define MAP_HEALTH 10 // Enemies that can reach the end before you lose
 
+bool isEnemy(Object* o) { return dynamic_cast<Enemy*>(o) != nullptr; }
+
 class Map {
 public:
 	Map();
@@ -21,7 +23,7 @@ public:
 	void calcCollisions();
 	void spawnWave();
 	void spawnTower(float x, float y);
-	void shoot(Tower* shooter, Enemy* e, Color c);
+	void shoot(Tower* shooter, Projectile* p);
 
 	Path* getPath() { return &_enemyPath; }
 	int getHealth() { return _health; }
@@ -32,9 +34,11 @@ public:
 
 	Tower* towerAt(float x, float y);
 
-	std::vector<Enemy*> enemies;
-	std::vector<Tower*> towers;
-	std::vector<Projectile*> projectiles; 
+	std::vector<Object*> objects;
+
+	// std::vector<Enemy*> enemies;
+	// std::vector<Tower*> towers;
+	// std::vector<Projectile*> projectiles; 
 
 	std::vector<Object*> toRemove;
 

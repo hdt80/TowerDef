@@ -15,7 +15,8 @@ public:
 	int range;    	// Range in pixels
 	float fireRate; // Time between each shot
 	float damage;   // Damage of one shot
-	float speed;	// How fast the bullets move
+	float projSpeed;// Projectile speed, pixels per second
+	float speed;	// Objects speed, pixels per second
 	float accel;	// How much the speed will change each second
 };
 

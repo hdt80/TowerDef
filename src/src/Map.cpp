@@ -41,7 +41,6 @@ void Map::update(int diff) {
 	}
 	_waveTime += diff * 0.000001f;
 
-	calcCollisions();
 
 	// Update enemies first as everything depends on their position
 	for (unsigned int i = 0; i < enemies.size(); ++i) {
@@ -84,6 +83,8 @@ void Map::update(int diff) {
 		delete toRemove[i];
 	}
 	toRemove.clear();
+	
+	calcCollisions();
 }
 
 void Map::calcCollisions() {
@@ -111,8 +112,8 @@ void Map::spawnTower(float x, float y) {
 	towerStats.range = 200;
 	towerStats.fireRate = 1.0f;
 	towerStats.damage = 1.0f;
-	// We don't call move() in tower, so it's safe to set to projectile speed
-	towerStats.speed = 200; 
+	towerStats.speed = 0.0f;
+	towerStats.projSpeed = 200.0f; 
 	towers.push_back(new Tower(this, x, y, towerStats));
 }
 
@@ -129,6 +130,7 @@ Tower* Map::towerAt(float x, float y) {
 }
 
 // Tower t is shooting at e, so spawn a projectile and begin tracking it
-void Map::shoot(Tower* t, Enemy* e, Color c) {
-	projectiles.push_back(new Projectile(this, e, t, c));
+void Map::shoot(Tower* t, Projectile* p) {
+	projectiles.push_back(p);
+	//projectiles.push_back(new Projectile(this, e, t, c));
 }

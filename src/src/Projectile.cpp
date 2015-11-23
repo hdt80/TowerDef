@@ -15,12 +15,15 @@ Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
 	Object(map, t->getX(), t->getY(), 1, *t->getStats()),
 	_color(c), _shooter(t) {
 
+	// Speed of this Projectile is stored in Tower's projSpeed, not speed
+	// so set it to the proper value
+	setSpeed(t->getProjSpeed());
+
 	_shape.setRadius(PROJECTILE_WIDTH);
 	_shape.setFillColor(sf::Color(120, 120, 120));
 
 	// Set the angle we move at towards the enemy
-	_direction = (Vector2(e->getX(), e->getY()) - Vector2(x, y)).
-		normalize();
+	_direction = (Vector2(e->getX(), e->getY()) - Vector2(x, y)).normalize();
 }
 
 Projectile::~Projectile() {

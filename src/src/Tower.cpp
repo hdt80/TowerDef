@@ -16,8 +16,12 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 
 	_shape.setRadius(TOWER_WIDTH);
 	_shape.setFillColor(sf::Color(0, 255, 0));
-	// Towers can't move, so no need to update it's position every update
-	_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
+
+	// Some towers used as projectiles can move, but if it can't, only set
+	// its shape's position once
+	if (getSpeed() <= 0.0f) {
+		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
+	}
 }
 
 Tower::~Tower() {
@@ -84,7 +88,8 @@ void Tower::shoot() {
 	Enemy* e = nullptr;
 	if (!_target->isSimpleTarget()) {
 		e = static_cast<Enemy*>(_target);
-		_map->shoot(this, e, Color(127, 127, 127, 255));
+		Projectile* p = new Projectile(_map, e, this, Color(127, 127, 127, 255));
+		_map->shoot(this, p);
 	} else {
 		CORE_WARNING("Failed to shoot at %i", _target);
 	}

@@ -14,7 +14,7 @@ class Perk;
 
 class Object : public Target, public sf::Drawable, sf::Transformable {
 public:
-	//Object();
+	Object();
 	Object(Map* map, float x, float y, int collRadius, Stats s);
 	virtual ~Object();
 
@@ -47,11 +47,15 @@ public:
 	int getRange() const { return _stats.range; }
 	float getFireRate() const { return _stats.fireRate; }
 	float getDamage() const { return _stats.damage; }
+	float getAccel() const { return _stats.accel; }
+	float getProjSpeed() const { return _stats.projSpeed; }
 	// Stats setters
 	void setRange(int r) { _stats.range = r; }
 	void setFireRate(float r) { _stats.fireRate = r; }
 	void setDamage(float d) { _stats.damage = d; }
 	void setSpeed(int s) { _stats.speed = s; }
+	void setAccel(float f) { _stats.accel = f; }
+	void setProjSpeed(float f) { _stats.projSpeed = f; }
 
 	// Perk methods
 	virtual void addPerk(Perk* p);
