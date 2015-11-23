@@ -58,7 +58,7 @@ void Enemy::update(int diff) {
 
 	// If we've reached the end of our target
 	if (_target->isSimpleTarget() && distanceWith(_target) < deltaMove * 2) {
-		// If there is still points in the path left
+		// If there is still points in the path left4
 		if (++_pathPoint >= _path->size()) {
 			_ended = true;
 			_toRemove = true;

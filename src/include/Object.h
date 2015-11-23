@@ -23,6 +23,7 @@ public:
 
 	// If that point is within our collision box
 	bool contains(float x, float y);
+	virtual sf::FloatRect getCollisionBox() { return _shape.getGlobalBounds(); }
 
 	// Moves the object depending on it's target, updating it's position
 	// diff - Milliseconds the object is supposed to move for
@@ -78,6 +79,8 @@ public:
 
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+	sf::CircleShape _shape;
+
 	Map* _map; // Map this object is located on
 
 	std::vector<Perk*> _perks;

@@ -18,6 +18,7 @@ public:
 	~Map();
 
 	void update(int diff);
+	void calcCollisions();
 	void spawnWave();
 	void spawnTower(float x, float y);
 	void shoot(Tower* shooter, Enemy* e, Color c);
@@ -26,6 +27,7 @@ public:
 	int getHealth() { return _health; }
 	int getMaxHealth() { return _maxHealth; }
 
+	void setSize(int w, int h) { _width = w; _height = h;}
 	void setHealthRelative(int i) { _health += i; }
 
 	Tower* towerAt(float x, float y);
@@ -38,6 +40,9 @@ public:
 
 protected:
 	Path _enemyPath; // Path enemies follow
+
+	int _width;
+	int _height;
 
 	int _wave;		// Current wave number
 	float _waveTime;// Time passed since last wave

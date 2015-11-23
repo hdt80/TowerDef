@@ -14,22 +14,13 @@ public:
 	// Shoot at the target
 	void shoot();
 
-	void setRange(int range) { _stats.range = range; }
-	void setFireRate(float r) { _stats.fireRate = r; }
-	void setDamage(float d) { _stats.damage = d; }
-	void setSpeed(int s) { _stats.speed = s; }
-
-	int getRange() const { return _stats.range; }
-	float getFireRate() const { return _stats.fireRate; }
-	float getDamage() const { return _stats.damage; }
-	int getSpeed() const { return _stats.speed; }
-
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
-	sf::CircleShape _shape;
+
+	Object _projectile; // What we'll be shooting at our _target
 
 	// Microseconds now that we shot.
-	//If we shot one second ago _lastShot will be 1,000,000
+	// If we shot one second ago _lastShot will be 1,000,000
 	// If fireRate is >= to _lastShot you can shoot
 	float _lastShot;
 };

@@ -41,6 +41,8 @@ void Map::update(int diff) {
 	}
 	_waveTime += diff * 0.000001f;
 
+	calcCollisions();
+
 	// Update enemies first as everything depends on their position
 	for (unsigned int i = 0; i < enemies.size(); ++i) {
 		enemies[i]->update(diff);
@@ -64,7 +66,13 @@ void Map::update(int diff) {
 
 	for (unsigned int i = 0; i < projectiles.size(); ++i) {
 		projectiles[i]->update(diff);
-		if (projectiles[i]->isToRemove()) { 
+		if (projectiles[i]->isToRemove() ||
+				// Projectile outside map?
+				(projectiles[i]->getX() < 0 ||
+				projectiles[i]->getX() > _width ||
+				projectiles[i]->getY() < 0 ||
+				projectiles[i]->getY() > _height)) {
+
 			toRemove.push_back(projectiles[i]);
 			projectiles.erase(projectiles.begin() + i);
 		}
@@ -76,7 +84,16 @@ void Map::update(int diff) {
 		delete toRemove[i];
 	}
 	toRemove.clear();
+}
 
+void Map::calcCollisions() {
+	for (unsigned int i = 0; i < projectiles.size(); ++i) {
+		for (unsigned int j = 0; j < enemies.size(); ++j) {
+			if (projectiles[i]->collidesWith(enemies[j])) {
+				projectiles[i]->onCollision(enemies[j]);
+			}
+		}
+	}
 }
 
 // Spawn a new wave

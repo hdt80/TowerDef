@@ -16,6 +16,8 @@ public:
 	virtual void update(int diff);
 	virtual bool isSimpleTarget() { return false; }
 
+	sf::FloatRect getCollisionBox() { return _shape.getGlobalBounds(); }
+
 	void applyDamage(float d);
 
 	float getHealth() const { return _health; }
@@ -29,7 +31,6 @@ public:
 
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
-	sf::CircleShape _shape;
 	sf::RectangleShape _hpBar;
 
 	float _health;	// Current health of an enemy

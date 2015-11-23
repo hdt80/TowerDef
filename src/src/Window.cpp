@@ -50,6 +50,7 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 		_width, _height, currVidMode.bitsPerPixel);
 
 	ParticleEmit::window = this; // Tell the ParticleEmitter what window to use
+	_map.setSize(_width, _height);
 }
 
 Window::~Window() {

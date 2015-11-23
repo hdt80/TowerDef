@@ -13,16 +13,17 @@ public:
 	~Projectile();
 
 	// Called when the projectile hits their target
-	void onHit();
+	void onCollision(Object* o);
 
+	sf::FloatRect getCollisionBox() { return _shape.getGlobalBounds(); }
+
+	void move(int diff);
 	void update(int diff);
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
-	sf::CircleShape _shape;
 
 	Color _color;
 	Tower* _shooter; // Tower shot from
-	Enemy* _enemy;
 };
 
 #endif

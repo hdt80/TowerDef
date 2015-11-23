@@ -18,8 +18,9 @@ Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
 	_shape.setRadius(PROJECTILE_WIDTH);
 	_shape.setFillColor(sf::Color(120, 120, 120));
 
-	_target = e;
-	_enemy = e;
+	// Set the angle we move at towards the enemy
+	_direction = (Vector2(e->getX(), e->getY()) - Vector2(x, y)).
+		normalize();
 }
 
 Projectile::~Projectile() {
@@ -33,10 +34,14 @@ void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_shape);
 }
 
-void Projectile::onHit() {
+void Projectile::onCollision(Object* o) {
+	// Did we collide with an enemy?
+	Enemy* e = dynamic_cast<Enemy*>(o);
+	if (e == nullptr) {
+		return;
+	}
 	ParticleEmit::emit(x, y, 10, _color);
-	_enemy->applyDamage(getDamage());
-
+	e->applyDamage(getDamage());
 	Stats* perk = new Stats;
 	perk->fireRate = -(_shooter->getFireRate() / 2.0f);
 	Perk* p = new Perk("AS", *perk, 3, 3);
@@ -46,17 +51,16 @@ void Projectile::onHit() {
 	_toRemove = true;
 }
 
-void Projectile::update(int diff) {
-	// If the enemy we're going to is removed why update?
-	if (_enemy->isToRemove()) {
-		_toRemove = true;
-		return;
-	}
-	move(diff);
-	_shape.setPosition(getX() - PROJECTILE_WIDTH, getY() - PROJECTILE_WIDTH);
-
+// Overload default Object move, we don't want it to stop ocne we reach the
+// target, we want it to keep moving
+void Projectile::move(int diff) {
 	double deltaMove = (double)getSpeed() * 0.000001f * diff;
-	if (distanceWith(_enemy) < deltaMove * 2) {
-		onHit();
-	}
+	x += _direction.X * deltaMove;
+	y += _direction.Y * deltaMove;
+}
+
+void Projectile::update(int diff) {
+	move(diff);
+
+	_shape.setPosition(getX() - PROJECTILE_WIDTH, getY() - PROJECTILE_WIDTH);
 }

@@ -8,8 +8,8 @@
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
 Object::Object(Map* map, float x, float y, int collRadius, Stats s) :
-	Target(x, y), _map(map), _stats(s), _target(nullptr), _toRemove(false),
-	_collisionRadius(collRadius) {
+	Target(x, y), _map(map), _stats(s), _target(nullptr),
+	_toRemove(false), _collisionRadius(collRadius) {
 
 }
 
@@ -23,11 +23,11 @@ void Object::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Object::onCollision(Object* o) {
-
+	CORE_INFO("%i collided with %i", this, o);
 }
 
 bool Object::collidesWith(Object* o) {
-	return false;
+	return (getCollisionBox().intersects(o->getCollisionBox()));
 }
 
 // Returns if a point is within the collision box of an Object
