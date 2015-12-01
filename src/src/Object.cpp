@@ -11,7 +11,6 @@ Object::Object(Map* map, float x, float y, int collRadius, Stats s) :
 	Target(x, y), _map(map), _stats(s), _target(nullptr),
 	_toRemove(false), _collisionRadius(collRadius) {
 
-	CORE_INFO("I'm %x (obj)", this);
 }
 
 Object::Object() :
@@ -19,9 +18,7 @@ Object::Object() :
 	_toRemove(false), _collisionRadius(0) {
 }
 
-Object::~Object() {
-	CORE_INFO("obj ~ (%x)", this);
-}
+Object::~Object() {}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Methods

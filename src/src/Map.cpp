@@ -54,7 +54,6 @@ void Map::update(int diff) {
 	// Now that all the updating is done we can safely remove all objects
 	// that are marked for removal
 	for (unsigned int i = 0; i < toRemove.size(); ++i) {
-		CORE_INFO("Deleting %x", toRemove[i]);
 		delete toRemove[i];
 	}
 	toRemove.clear();

@@ -38,4 +38,5 @@ $RECYCLE.BIN/
 
 # Project specific
 dep/SFML-build
+dep/Lua-build
 *.swp

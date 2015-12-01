@@ -6,11 +6,10 @@ UNAME := $(shell uname)
 
 # Running Linux? 
 ifeq ($(UNAME), Linux)
-LINKER_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
-endif
+	LINKER_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 # Windows?
-ifeq ($(UNAME), Windows)
-
+else
+	LINKER_FLAGS = -Llib -lsfml-graphics -lsfml-window -lsfml-system
 endif
 
 CXX_FLAGS = -Wall -c -g -O0 -fbuiltin -std=c++11 -I include -I $(SRCDIR)/../include

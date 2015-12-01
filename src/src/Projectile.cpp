@@ -24,12 +24,9 @@ Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
 
 	// Set the angle we move at towards the enemy
 	_direction = (Vector2(e->getX(), e->getY()) - Vector2(x, y)).normalize();
-	CORE_INFO("I'm %x (proj)", this);
 }
 
-Projectile::~Projectile() {
-	CORE_INFO("proj ~ (%x)", this);
-}
+Projectile::~Projectile() {}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
@@ -40,12 +37,10 @@ void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 void Projectile::onCollision(Object* o) {
 	// Did we collide with an enemy?
-	CORE_INFO("coll");
 	Enemy* e = dynamic_cast<Enemy*>(o);
 	if (e == nullptr) {
 		return;
 	}
-	CORE_INFO("coll2");
 	ParticleEmit::emit(x, y, 10, _color);
 	e->applyDamage(getDamage());
 	Stats* perk = new Stats;
@@ -55,7 +50,6 @@ void Projectile::onCollision(Object* o) {
 	_shooter->addPerk(p);
 
 	_toRemove = true;
-	CORE_INFO("coll3");
 }
 
 // Overload default Object move, we don't want it to stop ocne we reach the

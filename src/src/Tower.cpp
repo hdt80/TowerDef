@@ -22,12 +22,9 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	if (getSpeed() <= 0.0f) {
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
-	CORE_INFO("I'm %x (tower)", this);
 }
 
-Tower::~Tower() {
-	CORE_INFO("WHAT?");
-}
+Tower::~Tower() {}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
