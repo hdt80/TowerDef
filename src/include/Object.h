@@ -71,9 +71,14 @@ public:
 	Vector2 getDirection() const { return _direction; }
 	bool isToRemove() const { return _toRemove; }
 	int getCollisionRadius() const { return _collisionRadius; }
+	int getAttackerCount() { return _attackerCount; }
 
 	// Utility getters
 	unsigned int perkCount() const { return _perks.size(); }
+
+	// Attacker changes
+	void incAttackerCount() { ++_attackerCount; }
+	void decAttackerCount() { --_attackerCount; }
 
 	// Other setters
 	void setTarget(Target* t);
@@ -88,6 +93,8 @@ protected:
 	Map* _map; // Map this object is located on
 
 	std::vector<Perk*> _perks;
+
+	int _attackerCount; // Number of Objects attcking us
 
 	Stats _stats;
 

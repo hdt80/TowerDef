@@ -8,6 +8,7 @@
 #include "Color.h"
 
 #include <vector>
+#include <string>
 
 #define WAVE_DELAY 30 // Time between each wave in seconds
 #define MAP_HEALTH 10 // Enemies that can reach the end before you lose
@@ -15,6 +16,7 @@
 extern bool isEnemy(Object* o);
 extern bool isTower(Object* o);
 extern bool isProjectile(Object* o);
+extern std::string getType(Object* o);
 
 class Map {
 public:
@@ -35,6 +37,7 @@ public:
 	void setHealthRelative(int i) { _health += i; }
 
 	Tower* towerAt(float x, float y);
+	bool inMap(Object* o);
 
 	std::vector<Object*> objects;
 

@@ -1,10 +1,23 @@
 #include "Map.h"
+#include <string>
 
 #include "Logger.h"
 
 bool isEnemy(Object* o) { return dynamic_cast<Enemy*>(o) != nullptr; }
 bool isTower(Object* o) { return dynamic_cast<Tower*>(o) != nullptr; }
 bool isProjectile(Object* o) { return dynamic_cast<Projectile*>(o) != nullptr; }
+
+std::string getType(Object* o) {
+	if (isEnemy(o)) {
+		return "Enemy";
+	} else if (isProjectile(o)) {
+		return "Projectile";
+	} else if (isTower(o)) {
+		return "Tower";
+	} else {
+		return "Object (Unknown)";
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor and deconstructor
@@ -39,15 +52,20 @@ void Map::update(int diff) {
 	}
 	_waveTime += diff * 0.000001f;
 
-	calcCollisions();
 	for (unsigned int i = 0; i < objects.size(); ++i) {
 		objects[i]->update(diff);
-		if (objects[i]->isToRemove() || (objects[i]->getX() < 0 ||
-										 objects[i]->getX() > _width ||
-										 objects[i]->getY() < 0 ||
-										 objects[i]->getY() > _height)) {
-			toRemove.push_back(objects[i]);
-			objects.erase(objects.begin() + i);
+		// if (objects[i]->getAttackerCount() > 0) {
+		// 	CORE_INFO("%s[%x] has %i attackers", getType(objects[i]).c_str(), objects[i], objects[i]->getAttackerCount());
+		// }
+		if (objects[i]->isToRemove() || !inMap(objects[i])) {
+			// If it's being attacked we can't remove it or Tower's _target
+			// will cause a segfault. We've marked it for removal so the next
+			// update all Objects will update accordingly and the Object will
+			// be deleted from the map
+			if (objects[i]->getAttackerCount() <= 0) {
+				objects.erase(objects.begin() + i);
+				toRemove.push_back(objects[i]);
+			}
 		}
 	}
 
@@ -57,6 +75,8 @@ void Map::update(int diff) {
 		delete toRemove[i];
 	}
 	toRemove.clear();
+
+	calcCollisions();
 }
 
 void Map::calcCollisions() {
@@ -104,6 +124,11 @@ Tower* Map::towerAt(float x, float y) {
 		}
 	}
 	return nullptr;
+}
+
+bool Map::inMap(Object* o) {
+	return (o->getX() > 0 || o->getX() < _width ||
+			o->getY() > 0 || o->getY() < _height);
 }
 
 // Tower t is shooting at e, so spawn a projectile and begin tracking it

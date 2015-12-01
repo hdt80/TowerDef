@@ -47,6 +47,8 @@ void Tower::update(int diff) {
 			if (isEnemy(enemies[i])) {
 				if (distanceWith(enemies[i]) < getRange()) {
 					_target = enemies[i];
+					// We are attacking this enemy. Add one attacker
+					enemies[i]->incAttackerCount();
 					break;
 				}
 			}
@@ -73,6 +75,8 @@ void Tower::update(int diff) {
 			// going to be removed next update. If it is we should find a
 			// new _target
 			if (distanceWith(o) > getRange() || o->isToRemove()) {
+				// We are no longer attacking this enemy, remove us as attacker
+				o->decAttackerCount();
 				_target = nullptr;
 			}
 		}
