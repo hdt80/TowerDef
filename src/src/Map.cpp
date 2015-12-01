@@ -62,9 +62,10 @@ void Map::update(int diff) {
 			// will cause a segfault. We've marked it for removal so the next
 			// update all Objects will update accordingly and the Object will
 			// be deleted from the map
-			if (objects[i]->getAttackerCount() <= 0) {
-				objects.erase(objects.begin() + i);
+			if (objects[i]->getAttackerCount() == 0) {
+				// Push back before removal or seg faults
 				toRemove.push_back(objects[i]);
+				objects.erase(objects.begin() + i);
 			}
 		}
 	}

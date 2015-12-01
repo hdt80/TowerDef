@@ -14,7 +14,8 @@
 
 Enemy::Enemy(Map* map, float health, Stats s, Path* p, int collRadius) :
 	Object(map, 0, 0, collRadius, s),
-	_health(health), _maxHealth(health), _path(p), _pathPoint(0) {
+	_health(health), _maxHealth(health), _path(p), _pathPoint(0),
+	_ended(false) {
 
 	_shape.setRadius(ENEMY_WIDTH);
 	_shape.setFillColor(sf::Color(255, 0, 0));
