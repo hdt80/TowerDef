@@ -14,6 +14,9 @@ public:
 	// Shoot at the target
 	void shoot();
 
+	Object* getProjectile();
+	void setProjectile(Object& o);
+
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 

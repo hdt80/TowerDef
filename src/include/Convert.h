@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <stdio.h>
+#include <cstdlib>
 
 #ifdef WINDOWS
 	#include <direct.h>

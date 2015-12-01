@@ -68,23 +68,14 @@ void Window::start() {
 void Window::loop() {
 	SkillTree s;
 	Perk* p1 = new Perk("Tree access", Stats(), -1.0f);
-	Perk* p2 = new Perk("Fast as fuck", Stats(), -1.0f);
-	Perk* p3 = new Perk("Fly as fuck", Stats(), -1.0f);
+	Perk* p2 = new Perk("Fast as heck", Stats(), -1.0f);
+	Perk* p3 = new Perk("Fly as heck", Stats(), -1.0f);
 	Perk* p4 = new Perk("Sanic", Stats(), -1.0f);
 	SkillNode* n1 = new SkillNode(nullptr, p1);
 	n1 = s.addPerk(nullptr, p1);
-	CORE_INFO("1");
-	s.print(s.getHead());
-	CORE_INFO("2");
-	s.print(s.getHead());
 	SkillNode* n2 = s.addPerk(n1, p2);
-	CORE_INFO("3");
-	s.print(s.getHead());
 	SkillNode* n3 = s.addPerk(n1, p3);
-	CORE_INFO("4");
-	s.print(s.getHead());
 	SkillNode* n4 = s.addPerk(n2, p4);
-	CORE_INFO("5");
 	s.print(s.getHead());
 
 	_window.draw(s);
@@ -118,9 +109,9 @@ void Window::loop() {
 
 		_fps.update();
 		_window.setTitle(convert::toString(_fps.getFPS()) 
-			+ " : "+ convert::toString(_map.getHealth())
-			+ " | " + convert::toString(_map.enemies.size())
-			+ " | " + convert::toString(_map.towers.size()));
+			+ " : "+ convert::toString(_map.getHealth()));
+			// + " | " + convert::toString(_map.enemies.size())
+			// + " | " + convert::toString(_map.towers.size()));
 		// End real loop
 
 		// If 16666ms haven't passed yet sleep for the time left
@@ -141,9 +132,12 @@ void Window::render() {
 
 		renderMap();
 		renderSelected();
-		renderEnemies();
-		renderTowers();
-		renderProjectiles();
+		for (unsigned int i = 0; i < _map.objects.size(); ++i) {
+			_window.draw(*_map.objects[i]);
+		}
+		// renderEnemies();
+		// renderTowers();
+		// renderProjectiles();
 
 		updateEmitters();
 
@@ -263,23 +257,23 @@ void Window::renderSelected() {
 
 // Rendering enemies and their health
 void Window::renderEnemies() {
-	for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-		_window.draw(*(_map.enemies[_map.enemies.size() - i - 1]));
-	}
+	// for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
+	// 	_window.draw(*(_map.enemies[_map.enemies.size() - i - 1]));
+	// }
 }
 
 // Rendering towers and their targets
 void Window::renderTowers() {
-	for (unsigned int i = 0; i < _map.towers.size(); ++i) {
-		_window.draw(*_map.towers[i]);
-	}
+	// for (unsigned int i = 0; i < _map.towers.size(); ++i) {
+	// 	_window.draw(*_map.towers[i]);
+	// }
 }
 
 // Rendering projectiles
 void Window::renderProjectiles() {
-	for (unsigned int i = 0; i < _map.projectiles.size(); ++i) { 
-		_window.draw(*_map.projectiles[i]);
-	}
+	// for (unsigned int i = 0; i < _map.projectiles.size(); ++i) { 
+	// 	_window.draw(*_map.projectiles[i]);
+	// }
 }
 
 // Remove any unneeded emitters

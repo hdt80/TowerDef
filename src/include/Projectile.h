@@ -10,7 +10,7 @@ class Enemy;
 class Projectile : public Object {
 public:
 	Projectile(Map* map, Enemy* e, Tower* t, Color c);
-	~Projectile();
+	virtual ~Projectile();
 
 	// Called when the projectile hits their target
 	void onCollision(Object* o);

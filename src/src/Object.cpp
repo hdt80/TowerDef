@@ -11,19 +11,22 @@ Object::Object(Map* map, float x, float y, int collRadius, Stats s) :
 	Target(x, y), _map(map), _stats(s), _target(nullptr),
 	_toRemove(false), _collisionRadius(collRadius) {
 
+	CORE_INFO("I'm %x (obj)", this);
 }
 
-Object::Object() : Target(0, 0) {
-	Object(nullptr, 0, 0, 0, Stats());
+Object::Object() :
+	Target(0, 0), _map(nullptr), _stats(Stats()), _target(nullptr),
+	_toRemove(false), _collisionRadius(0) {
 }
 
-Object::~Object() {}
+Object::~Object() {
+	CORE_INFO("obj ~ (%x)", this);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Object::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
 }
 
 void Object::onCollision(Object* o) {

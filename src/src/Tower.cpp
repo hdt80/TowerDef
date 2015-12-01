@@ -22,10 +22,11 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	if (getSpeed() <= 0.0f) {
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
+	CORE_INFO("I'm %x (tower)", this);
 }
 
 Tower::~Tower() {
-	
+	CORE_INFO("WHAT?");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,11 +45,13 @@ void Tower::update(int diff) {
 
 	// Find the nearest target if we don't have one
 	if (_target == nullptr) {
-		std::vector<Enemy*>& enemies = _map->enemies;
+		std::vector<Object*>& enemies = _map->objects;
 		for (unsigned int i = 0; i < enemies.size(); ++i) {
-			if (distanceWith(enemies[i]) < getRange()) {
-				_target = enemies[i];
-				break;
+			if (isEnemy(enemies[i])) {
+				if (distanceWith(enemies[i]) < getRange()) {
+					_target = enemies[i];
+					break;
+				}
 			}
 		}
 	} else {

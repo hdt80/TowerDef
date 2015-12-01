@@ -12,7 +12,9 @@
 #define WAVE_DELAY 30 // Time between each wave in seconds
 #define MAP_HEALTH 10 // Enemies that can reach the end before you lose
 
-bool isEnemy(Object* o) { return dynamic_cast<Enemy*>(o) != nullptr; }
+extern bool isEnemy(Object* o);
+extern bool isTower(Object* o);
+extern bool isProjectile(Object* o);
 
 class Map {
 public:
@@ -35,10 +37,6 @@ public:
 	Tower* towerAt(float x, float y);
 
 	std::vector<Object*> objects;
-
-	// std::vector<Enemy*> enemies;
-	// std::vector<Tower*> towers;
-	// std::vector<Projectile*> projectiles; 
 
 	std::vector<Object*> toRemove;
 

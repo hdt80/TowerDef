@@ -23,13 +23,16 @@ Enemy::Enemy(Map* map, float health, Stats s, Path* p, int collRadius) :
 
 	setPosition(p->getPoint(0)->X, p->getPoint(0)->Y);
 	_target = new Target(p->getPoint(1));
+	CORE_INFO("I'm %x", this);
 }
 
 Enemy::~Enemy() {
+	CORE_INFO("enemy ~ 1 (%x)", this);
 	if (_ended) {
 		_map->setHealthRelative(-1);
 	}
 	ParticleEmit::emit(x, y, 50, Color(255, 0, 0, 255));
+	CORE_INFO("enemy ~ 2 (%x)", this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

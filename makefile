@@ -2,8 +2,19 @@
 CXX = g++
 CC = gcc
 
-CXX_FLAGS = -Wall -c -g -std=c++11 -I include -I $(SRCDIR)/../include
-LINKER_FLAGS = -L lib -lsfml-graphics -lsfml-window -lsfml-system
+UNAME := $(shell uname)
+
+# Running Linux? 
+ifeq ($(UNAME), Linux)
+LINKER_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+endif
+# Windows?
+ifeq ($(UNAME), Windows)
+
+endif
+
+CXX_FLAGS = -Wall -c -g -O0 -fbuiltin -std=c++11 -I include -I $(SRCDIR)/../include
+# LINKER_FLAGS = -L lib -lsfml-graphics -lsfml-window -lsfml-system
 
 # Directories used for input and output
 SRCDIR = src/src
@@ -28,11 +39,12 @@ $(OBJS): $(BUILDDIR)/%.o : $(SRCDIR)/%.cpp
 
 # Running the created exe
 run:
-	./$(EXEDIR)/$(OUTPUT_NAME).exe
+	./$(EXEDIR)/$(OUTPUT_NAME)
 
 debug:
-	gdb ./$(EXEDIR)/$(OUTPUT_NAME).exe
-
+	gdb ./$(EXEDIR)/$(OUTPUT_NAME)
+val:
+	valgrind ./$(EXEDIR)/$(OUTPUT_NAME)
 # Cleaning everything up
 clean:
 	rm $(BUILDDIR)/*.o && rm $(EXEDIR)/$(OUTPUT_NAME).exe
