@@ -77,13 +77,14 @@ void Window::loop() {
 	SkillNode* n3 = s.addPerk(n1, p3);
 	SkillNode* n4 = s.addPerk(n2, p4);
 	s.print(s.getHead());
+	CORE_INFO("Max depth: %i", s.maxDepth(s.getHead()));
 
 	_window.draw(s);
 	_window.display();
 
-	// while (!shouldClose()) {
-	// 	pollEvents();
-	// }
+	while (!shouldClose()) {
+		pollEvents();
+	}
 
 	std::chrono::time_point<std::chrono::high_resolution_clock> tStart, tEnd;
 	tStart = std::chrono::high_resolution_clock::now();
@@ -92,6 +93,7 @@ void Window::loop() {
 	_map.spawnWave();
 
 	while (!shouldClose()) {
+		// Timing variables
 		tEnd = tStart;
 		tStart = std::chrono::high_resolution_clock::now();
 		tDiff = std::chrono::duration_cast
@@ -108,10 +110,9 @@ void Window::loop() {
 		render();
 
 		_fps.update();
-		_window.setTitle(convert::toString(_fps.getFPS()) 
-			+ " : "+ convert::toString(_map.getHealth()));
-			// + " | " + convert::toString(_map.enemies.size())
-			// + " | " + convert::toString(_map.towers.size()));
+		_window.setTitle(convert::toString(_fps.getFPS())
+			+ " : " + convert::toString(_map.getHealth())
+			);
 		// End real loop
 
 		// If 16666ms haven't passed yet sleep for the time left
@@ -135,9 +136,6 @@ void Window::render() {
 		for (unsigned int i = 0; i < _map.objects.size(); ++i) {
 			_window.draw(*_map.objects[i]);
 		}
-		// renderEnemies();
-		// renderTowers();
-		// renderProjectiles();
 
 		updateEmitters();
 
@@ -253,27 +251,6 @@ void Window::renderSelected() {
 		box.setSize(sf::Vector2f(PERK_BOX_WIDTH * percent, _height / 16));
 		_window.draw(box);
 	}
-}
-
-// Rendering enemies and their health
-void Window::renderEnemies() {
-	// for (unsigned int i = 0; i < _map.enemies.size(); ++i) {
-	// 	_window.draw(*(_map.enemies[_map.enemies.size() - i - 1]));
-	// }
-}
-
-// Rendering towers and their targets
-void Window::renderTowers() {
-	// for (unsigned int i = 0; i < _map.towers.size(); ++i) {
-	// 	_window.draw(*_map.towers[i]);
-	// }
-}
-
-// Rendering projectiles
-void Window::renderProjectiles() {
-	// for (unsigned int i = 0; i < _map.projectiles.size(); ++i) { 
-	// 	_window.draw(*_map.projectiles[i]);
-	// }
 }
 
 // Remove any unneeded emitters

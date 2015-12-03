@@ -65,9 +65,6 @@ private:
 	// We split the code up so it's easier to fix when stuff breaks
 	void renderMap();
 	void renderSelected();
-	void renderEnemies();
-	void renderTowers();
-	void renderProjectiles();
 
 	// Update all emitters and remove any that are done
 	void updateEmitters();

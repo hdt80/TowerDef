@@ -5,6 +5,8 @@
 
 #include "Logger.h"
 
+#include <algorithm> // std::max
+
 ///////////////////////////////////////////////////////////////////////////////
 // SkillNode
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,13 +66,31 @@ void SkillTree::print(SkillNode* node) {
 			if (node->nodePrereq->right == node) {
 				rel = 'R';
 			}
-			printf("(\'%s\':%i) [%c:\'%s\':%i]\n", node->perk->getName().c_str(),
-				node, rel, node->nodePrereq->perk->getName().c_str(), node->nodePrereq);
+			printf("%s> (\'%s\':%x, %i) [%c:\'%s\':%x]\n",
+				(node->unlocked() == true) ? "UNLOCK" : " LOCK ",
+				node->name().c_str(), node, node->depth, rel,
+				node->nodePrereq->name().c_str(), node->nodePrereq);
 		} else {
-			printf("(\'%s\':%i) [%s]\n", node->perk->getName().c_str(), node, "Root");
+			printf("%s> (\'%s\':%x, %i) [%s]\n",
+				(node->unlocked() == true) ? "UNLOCK" : " LOCK ",
+				node->name().c_str(), node, node->depth, "Root");
 		}
 		print(node->right);
 	}
+}
+
+const int SkillTree::maxDepth(SkillNode* node) {
+	if (node == nullptr) {
+		return 0;
+	}
+	return std::max(depth(node->left), depth(node->right)) + 1;
+}
+
+const int SkillTree::depth(const SkillNode* node) {
+	if (node == nullptr) {
+		return 0;
+	}
+	return depth(node->nodePrereq) + 1;
 }
 
 SkillNode* SkillTree::addPerk(SkillNode* parent, Perk* perk) {
@@ -105,7 +125,14 @@ void SkillTree::drawNode(SkillNode* node, sf::RenderTarget& target,
 	if (node != nullptr) {
 		drawNode(node->left, target, states);
 
+		sf::RectangleShape b(sf::Vector2f(50, 50));
+		b.setFillColor(sf::Color::White);
+		b.setOutlineColor(sf::Color(120, 120, 120));
+		b.setOutlineThickness(2);
 
+		b.setPosition(target.getSize().x / 2, 150 * node->depth);
+
+		target.draw(b);
 
 		drawNode(node->right, target, states);
 	}

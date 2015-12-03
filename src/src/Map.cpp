@@ -54,14 +54,9 @@ void Map::update(int diff) {
 
 	for (unsigned int i = 0; i < objects.size(); ++i) {
 		objects[i]->update(diff);
-		// if (objects[i]->getAttackerCount() > 0) {
-		// 	CORE_INFO("%s[%x] has %i attackers", getType(objects[i]).c_str(), objects[i], objects[i]->getAttackerCount());
-		// }
 		if (objects[i]->isToRemove() || !inMap(objects[i])) {
-			// If it's being attacked we can't remove it or Tower's _target
-			// will cause a segfault. We've marked it for removal so the next
-			// update all Objects will update accordingly and the Object will
-			// be deleted from the map
+			// Attacked? Don't remove it, and skip over it. Remove it after
+			// no one is attacking it
 			if (objects[i]->getAttackerCount() == 0) {
 				// Push back before removal or seg faults
 				toRemove.push_back(objects[i]);

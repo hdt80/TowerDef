@@ -2,8 +2,10 @@
 #define _SKILL_TREE_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 
-class Perk;
+#include "Perk.h"
+
 class Object;
 
 // Each Node has 2 child Nodes, each child Node requiring the parent node
@@ -18,6 +20,7 @@ public:
 
 	// A Node is considered unlocked if it has the max points it can hold
 	bool unlocked() { return points >= maxPoints; }
+	std::string name() { return perk->getName(); }
 
 	int points;    // Current points in Node
 	int maxPoints; // Max points in a Node
@@ -37,6 +40,11 @@ public:
 
 	void print(SkillNode* node);
 
+	// Max depth of the tree
+	const int maxDepth(SkillNode* node);
+	// Depth of the specific node
+	const int depth(const SkillNode* node);
+
 	SkillNode* addPerk(SkillNode* parent, Perk* perk);
 
 	SkillNode* getHead() { return _head; }
@@ -48,6 +56,17 @@ protected:
 	Object* _attached; // Object we're attached to
 
 	SkillNode* _head;
+};
+
+class SkillTreeDrawable : public sf::Drawable {
+public:
+	SkillTreeDrawable(SkillTree* tree);
+	~SkillTreeDrawable();
+
+protected:
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+
+
 };
 
 #endif
