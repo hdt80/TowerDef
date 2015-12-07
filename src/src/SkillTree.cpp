@@ -46,18 +46,41 @@ bool SkillNode::add(SkillNode* node) {
 	return true;
 }
 
+// Return true if this Node is to the left of node
+bool SkillNode::isLeft(SkillNode* node) {
+	SkillNode* iter = nodePrereq;
+	int maxIter = depth;
+	int currIter = 0;
+	while (currIter++ < maxIter) {
+		if (iter->left == this) {
+			return true;
+		}
+		iter = iter->nodePrereq;
+	}
+	return false;
+} 
+
 ///////////////////////////////////////////////////////////////////////////////
 // SkillTree
 ///////////////////////////////////////////////////////////////////////////////
-SkillTree::SkillTree() {
+SkillTree::SkillTree(Vector2 size) {
+	_size = size;
 	_attached = nullptr;
 	_head = nullptr;
+	_count = 0;
+	_comp = false;
+
+	_lines.setPrimitiveType(sf::Lines);
+	_nodes.setPrimitiveType(sf::Quads);
 }
 
 SkillTree::~SkillTree() {
 
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Methods
+///////////////////////////////////////////////////////////////////////////////
 void SkillTree::print(SkillNode* node) {
 	if (node != nullptr) {
 		print(node->left);
@@ -79,7 +102,10 @@ void SkillTree::print(SkillNode* node) {
 	}
 }
 
-const int SkillTree::maxDepth(SkillNode* node) {
+///////////////////////////////////////////////////////////////////////////////
+// Tree helper methods
+///////////////////////////////////////////////////////////////////////////////
+const int SkillTree::maxDepth(const SkillNode* node) {
 	if (node == nullptr) {
 		return 0;
 	}
@@ -93,8 +119,42 @@ const int SkillTree::depth(const SkillNode* node) {
 	return depth(node->nodePrereq) + 1;
 }
 
+const int SkillTree::nodesOnDepth(const SkillNode* node, int depth) {
+	if (node == nullptr) {
+		return 0;
+	}
+	int count = nodesOnDepth(node->left, depth);
+	if (node->depth == depth) {
+		++count;
+	}
+	return count + nodesOnDepth(node->right, depth);
+}
+
+const int SkillTree::childCount(const SkillNode* node) {
+	if (node == nullptr || (node->left == nullptr && node->right == nullptr)) {
+		return 0;
+	}
+	int count = childCount(node->left);
+	if (node->left != nullptr) {
+		++count;
+	}
+	if (node->right != nullptr) {
+		++count;
+	}
+	return count + childCount(node->right);
+}
+
+bool SkillTree::left(SkillNode* node) {
+	return node->isLeft(_head);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Tree creation methods
+///////////////////////////////////////////////////////////////////////////////
 SkillNode* SkillTree::addPerk(SkillNode* parent, Perk* perk) {
 	SkillNode* node = new SkillNode(parent, perk);
+	++_count;
+	_data.push_back(node);
 
 	// No head? Newly added Node is it
 	if (_head == nullptr) {
@@ -110,30 +170,72 @@ SkillNode* SkillTree::addPerk(SkillNode* parent, Perk* perk) {
 	return node;
 }
 
-void SkillTree::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	sf::RectangleShape b(sf::Vector2f(target.getSize().x, target.getSize().y));
-	b.setFillColor(sf::Color::Black);
-	b.setOutlineColor(sf::Color(124, 124, 124));
-	b.setOutlineThickness(3);
-	target.draw(b);
-	drawNode(_head, target, states);
+// We've finished adding Node to this tree, create the VertexArrays
+void SkillTree::end() {
+	if (_comp) {
+		CORE_ERROR("Tried to complete an already completed tree");
+		return;
+	}
+	// For each Node a line will be drawn from it to its parent. Lines are 
+	// defined as two points, so we'll have #nodes * 2 for all lines
+	_lines.resize(getCount() * 2);
+	// Each Node will be drawn as a quad, a series of four points. They are
+	// not connected but will be stored in one array for effieciency. Multiples
+	// of 4 are the beginning of each quad
+	_nodes.resize(getCount() * 4);
+
+	// Set the position of each Node
+	for (unsigned int i = 0; i < _data.size(); ++i) {
+		_data[i]->setPos(pos(_data[i]));
+	}
+
+	genLines();
+	genNodes();
+
+	_comp = true;
 }
 
-void SkillTree::drawNode(SkillNode* node, sf::RenderTarget& target,
-	sf::RenderStates states) const {
-
-	if (node != nullptr) {
-		drawNode(node->left, target, states);
-
-		sf::RectangleShape b(sf::Vector2f(50, 50));
-		b.setFillColor(sf::Color::White);
-		b.setOutlineColor(sf::Color(120, 120, 120));
-		b.setOutlineThickness(2);
-
-		b.setPosition(target.getSize().x / 2, 150 * node->depth);
-
-		target.draw(b);
-
-		drawNode(node->right, target, states);
+Vector2 SkillTree::pos(SkillNode* node) {
+	if (node == _head) {
+		return Vector2(getWidth() / 2.0f, getHeight() / 2.0f);
 	}
+	Vector2 pos;
+	pos.X = (getWidth() / 2.0f) / childCount(node) * depth(node);
+	pos.Y = getHeight() / 2.0f;
+	return pos;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Drawing
+///////////////////////////////////////////////////////////////////////////////
+void SkillTree::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	if (!_comp) {
+		CORE_ERROR("Tried to draw an incomplete tree!");
+		return;
+	}
+
+	target.draw(_lines);
+	target.draw(_nodes);
+}
+
+void SkillTree::genLines() {
+	sf::Vertex* line;
+	SkillNode* node;
+	// Draw each line from the Node to its parent
+	for (unsigned int i = 0; i < _data.size(); ++i) {
+		node = _data[i];
+		// Parent? If not, move to next node
+		if (node->nodePrereq == nullptr) {
+			continue;
+		}
+		line = &_lines[i * 2];
+		line[0].position = sf::Vector2f(node->getX(), node->getY());
+		line[1].position = sf::Vector2f(node->nodePrereq->getX(),
+			node->nodePrereq->getY());
+	}
+}
+
+void SkillTree::genNodes() {
+
 }

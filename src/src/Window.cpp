@@ -66,7 +66,7 @@ void Window::start() {
 }
 
 void Window::loop() {
-	SkillTree s;
+	SkillTree s(Vector2(_width, _height));
 	Perk* p1 = new Perk("Tree access", Stats(), -1.0f);
 	Perk* p2 = new Perk("Fast as heck", Stats(), -1.0f);
 	Perk* p3 = new Perk("Fly as heck", Stats(), -1.0f);
@@ -78,7 +78,21 @@ void Window::loop() {
 	SkillNode* n4 = s.addPerk(n2, p4);
 	s.print(s.getHead());
 	CORE_INFO("Max depth: %i", s.maxDepth(s.getHead()));
+	CORE_INFO("Nodes on 0: %i", s.nodesOnDepth(s.getHead(), 0));
+	CORE_INFO("Nodes on 1: %i", s.nodesOnDepth(s.getHead(), 1));
+	CORE_INFO("Nodes on 2: %i", s.nodesOnDepth(s.getHead(), 2));
+	CORE_INFO("Nodes on 3: %i", s.nodesOnDepth(s.getHead(), 3));
+	CORE_INFO("Child Count head: %i", s.childCount(s.getHead()));
+	CORE_INFO("Child count head->left: %i", s.childCount(s.getHead()->left));
+	CORE_INFO("Child count head->right: %i", s.childCount(s.getHead()->right));
+	s.setSize(_width, _height);
+	s.end();
+	CORE_INFO("Data: ");
+	for (unsigned int i = 0; i < s.data().size(); ++i) {
+		CORE_INFO("%i: \'%s\'", i, s.data()[i]->name().c_str());
+	}
 
+	_window.clear(sf::Color::Black);
 	_window.draw(s);
 	_window.display();
 
@@ -225,7 +239,9 @@ void Window::renderSelected() {
 	box.setPosition(_width - PERK_BOX_WIDTH, 0);
 	_window.draw(box);
 
+	// Draw each perk, with stack count and progress bar
 	for (unsigned int i = 0; i < _selected->perkCount(); ++i) {
+		// Max of 8 perks
 		box.setSize(sf::Vector2f(PERK_BOX_WIDTH, _height / 8));
 		box.setFillColor(sf::Color(64, 64, 64));
 		box.setPosition(_width - PERK_BOX_WIDTH, (_height / 8) * i);
@@ -239,6 +255,7 @@ void Window::renderSelected() {
 
 		// Draw red background for duration bar
 		box.setFillColor(sf::Color::Red);
+		// Bar fills up half of the box, so 1/16 is half a box
 		box.setSize(sf::Vector2f(PERK_BOX_WIDTH, _height / 16));
 		box.setPosition(_width - PERK_BOX_WIDTH,
 			(_height / 16) + ((_height / 8) * i));
