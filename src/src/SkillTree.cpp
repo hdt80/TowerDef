@@ -2,6 +2,7 @@
 
 #include "Perk.h"
 #include "Object.h"
+#include "Common.h"
 
 #include "Logger.h"
 
@@ -44,20 +45,6 @@ bool SkillNode::add(SkillNode* node) {
 		return false;
 	}
 	return true;
-}
-
-// Return true if this Node is to the left of node
-bool SkillNode::isLeft(SkillNode* node) {
-	SkillNode* iter = nodePrereq;
-	int maxIter = depth;
-	int currIter = 0;
-	while (currIter++ < maxIter) {
-		if (iter->left == this) {
-			return true;
-		}
-		iter = iter->nodePrereq;
-	}
-	return false;
 } 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,24 +68,28 @@ SkillTree::~SkillTree() {
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
-void SkillTree::print(SkillNode* node) {
+void SkillTree::print(SkillNode* node, bool pos) {
 	if (node != nullptr) {
-		print(node->left);
+		print(node->left, pos);
 		char rel = 'L';
 		if (node->nodePrereq != nullptr) {
 			if (node->nodePrereq->right == node) {
 				rel = 'R';
 			}
-			printf("%s> (\'%s\':%x, %i) [%c:\'%s\':%x]\n",
+			if (pos) {
+				printf("(%g, %g) ", node->getX(), node->getY());
+			}
+			printf("%s> (\'%s\':%x, %i%c) [%c:\'%s\':%x]\n",
 				(node->unlocked() == true) ? "UNLOCK" : " LOCK ",
-				node->name().c_str(), node, node->depth, rel,
+				node->name().c_str(), node, node->depth,
+				(node->isLeft) ? 'L' : 'R', rel,
 				node->nodePrereq->name().c_str(), node->nodePrereq);
 		} else {
 			printf("%s> (\'%s\':%x, %i) [%s]\n",
 				(node->unlocked() == true) ? "UNLOCK" : " LOCK ",
 				node->name().c_str(), node, node->depth, "Root");
 		}
-		print(node->right);
+		print(node->right, pos);
 	}
 }
 
@@ -144,10 +135,6 @@ const int SkillTree::childCount(const SkillNode* node) {
 	return count + childCount(node->right);
 }
 
-bool SkillTree::left(SkillNode* node) {
-	return node->isLeft(_head);
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // Tree creation methods
 ///////////////////////////////////////////////////////////////////////////////
@@ -167,6 +154,15 @@ SkillNode* SkillTree::addPerk(SkillNode* parent, Perk* perk) {
 		return nullptr;
 	}
 	parent->add(node);
+	if (parent == _head) {
+		if (_head->left == node) {
+			node->isLeft = true;
+		} else {
+			node->isLeft = false;
+		}
+	} else {
+		node->isLeft = parent->isLeft;
+	}
 	return node;
 }
 
@@ -199,9 +195,48 @@ Vector2 SkillTree::pos(SkillNode* node) {
 	if (node == _head) {
 		return Vector2(getWidth() / 2.0f, getHeight() / 2.0f);
 	}
+	CORE_INFO("/ Position for \'%s\': %i", node->name().c_str(), node->depth);
+
 	Vector2 pos;
-	pos.X = (getWidth() / 2.0f) / childCount(node) * depth(node);
-	pos.Y = getHeight() / 2.0f;
+	pos.X = getWidth() / 2.0f + getWidth() / _count / 2.0f *
+		(float)((node->isLeft) ? node->depth : -node->depth);
+
+	
+	float origin = node->nodePrereq->pos.Y;
+	int nodeCount = 1;
+	// Only count the same nodes on the same side of the tree
+	for (unsigned int i = 0; i < _data.size(); ++i) {
+		if (_data[i]->isLeft == node->isLeft &&
+			_data[i]->depth == node->depth) {
+
+			++nodeCount;
+		}
+	}
+	float dist = getHeight() / nodeCount;
+
+	// If parent node only has 1 child don't move it up or down
+	// If parent is head, don't move it either cause childs go left and right
+	// to head, not up and down like all other nodes
+	if (node->nodePrereq->left == nullptr ||
+		node->nodePrereq->right == nullptr ||
+		node->nodePrereq == _head) {
+
+		pos.Y = origin;
+		CORE_INFO("| no offset");
+	} else {
+		if (node->nodePrereq->left == node) {
+			pos.Y = origin + dist;
+			CORE_INFO("| offset up");
+		} else {
+			pos.Y = origin - dist;
+			CORE_INFO("| offset down");
+		}
+	}
+	CORE_INFO("| origin.Y: %g", origin);
+	CORE_INFO("| count: %i", nodeCount);
+	CORE_INFO("| dist: %g", dist);
+	CORE_INFO("\\ (%g, %g)\n", pos.X, pos.Y);
+
 	return pos;
 }
 
@@ -237,5 +272,22 @@ void SkillTree::genLines() {
 }
 
 void SkillTree::genNodes() {
+	sf::Vertex* quad;
+	SkillNode* node;
 
+	int nodeWidth  = 15;
+	int nodeHeight = 15;
+
+	for (unsigned int i = 0; i < _data.size(); ++i) {
+		node = _data[i];
+		quad = &_nodes[i * 4];
+		quad[0].position = sf::Vector2f(node->getX() - nodeWidth,
+			node->getY() - nodeHeight);
+		quad[1].position = sf::Vector2f(node->getX() + nodeWidth,
+			node->getY() - nodeHeight);
+		quad[2].position = sf::Vector2f(node->getX() + nodeWidth,
+			node->getY() + nodeHeight);
+		quad[3].position = sf::Vector2f(node->getX() - nodeWidth,
+			node->getY() + nodeHeight);
+	}
 }

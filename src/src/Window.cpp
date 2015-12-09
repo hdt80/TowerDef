@@ -67,16 +67,34 @@ void Window::start() {
 
 void Window::loop() {
 	SkillTree s(Vector2(_width, _height));
-	Perk* p1 = new Perk("Tree access", Stats(), -1.0f);
-	Perk* p2 = new Perk("Fast as heck", Stats(), -1.0f);
-	Perk* p3 = new Perk("Fly as heck", Stats(), -1.0f);
-	Perk* p4 = new Perk("Sanic", Stats(), -1.0f);
-	SkillNode* n1 = new SkillNode(nullptr, p1);
+	s.setSize(_width, _height);
+	Perk* p1 = new Perk("A", Stats(), -1.0f);
+	Perk* p2 = new Perk("B", Stats(), -1.0f);
+	Perk* p3 = new Perk("C", Stats(), -1.0f);
+	Perk* p4 = new Perk("D", Stats(), -1.0f);
+	Perk* p5 = new Perk("E", Stats(), -1.0f);
+	Perk* p6 = new Perk("F", Stats(), -1.0f);
+	Perk* p7 = new Perk("G", Stats(), -1.0f);
+	Perk* p8 = new Perk("H", Stats(), -1.0f);
+	Perk* p9 = new Perk("I", Stats(), -1.0f);
+	Perk* p10 = new Perk("J", Stats(), -1.0f);
+	Perk* p11 = new Perk("K", Stats(), -1.0f);
+
+	SkillNode* n1 = new SkillNode(nullptr, p1); // Head node
 	n1 = s.addPerk(nullptr, p1);
 	SkillNode* n2 = s.addPerk(n1, p2);
-	SkillNode* n3 = s.addPerk(n1, p3);
+	SkillNode* n3 = s.addPerk(n2, p3);
 	SkillNode* n4 = s.addPerk(n2, p4);
-	s.print(s.getHead());
+	SkillNode* n5 = s.addPerk(n1, p5);
+	SkillNode* n6 = s.addPerk(n5, p6);
+	SkillNode* n7 = s.addPerk(n5, p7);
+	SkillNode* n8 = s.addPerk(n4, p8);
+	SkillNode* n9 = s.addPerk(n4, p9);
+	SkillNode* n10 = s.addPerk(n3, p10);
+	SkillNode* n11 = s.addPerk(n3, p11);
+
+	s.end();
+	s.print(s.getHead(), true);
 	CORE_INFO("Max depth: %i", s.maxDepth(s.getHead()));
 	CORE_INFO("Nodes on 0: %i", s.nodesOnDepth(s.getHead(), 0));
 	CORE_INFO("Nodes on 1: %i", s.nodesOnDepth(s.getHead(), 1));
@@ -85,8 +103,6 @@ void Window::loop() {
 	CORE_INFO("Child Count head: %i", s.childCount(s.getHead()));
 	CORE_INFO("Child count head->left: %i", s.childCount(s.getHead()->left));
 	CORE_INFO("Child count head->right: %i", s.childCount(s.getHead()->right));
-	s.setSize(_width, _height);
-	s.end();
 	CORE_INFO("Data: ");
 	for (unsigned int i = 0; i < s.data().size(); ++i) {
 		CORE_INFO("%i: \'%s\'", i, s.data()[i]->name().c_str());

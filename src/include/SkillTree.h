@@ -20,10 +20,6 @@ public:
 	// Add a new child Node in the order of left then right
 	bool add(SkillNode* node);
 
-	// Return if the Node is to the left of the node, including parents
-	bool isLeft(SkillNode* node);
-	bool isLight(SkillNode* node);
-
 	// A Node is considered unlocked if it has the max points it can hold
 	bool unlocked() { return points >= maxPoints; }
 	std::string name() { return perk->getName(); }
@@ -37,6 +33,7 @@ public:
 	int points;    // Current points in Node
 	int maxPoints; // Max points in a Node
 	int depth;     // Level this Node is on
+	bool isLeft;   // Is to the left of the root Node
 
 	SkillNode* nodePrereq; // Node we must have to have this perk, parent Node
 	Perk* perk;
@@ -50,7 +47,7 @@ public:
 	SkillTree(Vector2 size = Vector2(0.0f, 0.0f));
 	~SkillTree();
 
-	void print(SkillNode* node);
+	void print(SkillNode* node, bool pos = false);
 
 	// Max depth of the tree
 	const int maxDepth(const SkillNode* node);
@@ -60,10 +57,6 @@ public:
 	const int nodesOnDepth(const SkillNode* node, int d);
 	// Number of children (Including children of children)
 	const int childCount(const SkillNode* node);
-
-	// Return if that node is to the left/right of head
-	bool left(SkillNode* node);
-	bool right(SkillNode* node);
 
 	// Add a new Perk with a preq. Node
 	SkillNode* addPerk(SkillNode* parent, Perk* perk);
