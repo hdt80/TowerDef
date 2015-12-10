@@ -7,6 +7,7 @@
 #include "Logger.h"
 
 #include <algorithm> // std::max
+#include <cmath>	 // pow
 
 ///////////////////////////////////////////////////////////////////////////////
 // SkillNode
@@ -195,24 +196,38 @@ Vector2 SkillTree::pos(SkillNode* node) {
 	if (node == _head) {
 		return Vector2(getWidth() / 2.0f, getHeight() / 2.0f);
 	}
-	CORE_INFO("/ Position for \'%s\': %i", node->name().c_str(), node->depth);
+	//CORE_INFO("/ Position for \'%s\': %i (\'%s\')", node->name().c_str(), node->depth, node->nodePrereq->name().c_str());
 
-	Vector2 pos;
-	pos.X = getWidth() / 2.0f + getWidth() / _count / 2.0f *
-		(float)((node->isLeft) ? node->depth : -node->depth);
-
-	
-	float origin = node->nodePrereq->pos.Y;
-	int nodeCount = 1;
-	// Only count the same nodes on the same side of the tree
+	// Find how far each branch to the left and right goes to determine
+	// where along the X axis a node's position should be drawn
+	int maxDepthLeft = 0;
+	int maxDepthRight = 0;
 	for (unsigned int i = 0; i < _data.size(); ++i) {
-		if (_data[i]->isLeft == node->isLeft &&
-			_data[i]->depth == node->depth) {
-
-			++nodeCount;
+		if (_data[i]->isLeft && _data[i]->depth > maxDepthLeft) {
+			maxDepthLeft = _data[i]->depth;
+		}
+		if (!_data[i]->isLeft && _data[i]->depth > maxDepthRight) {
+			maxDepthRight = _data[i]->depth;
 		}
 	}
-	float dist = getHeight() / nodeCount;
+
+	//CORE_INFO("max depth left: %i, right: %i", maxDepthLeft, maxDepthRight);
+
+	Vector2 pos;
+	pos.X = (getWidth() / 2.0f); // Start in the center
+	// If it's on the left subtract the distances each node should be from
+	// each other by it's depth, or how far in the tree it is
+	if (node->isLeft) {
+		pos.X -= pos.X / (maxDepthLeft + 1) * node->depth;
+	} else {
+		pos.X += pos.X / (maxDepthRight + 1) * node->depth;
+	}
+
+	// Each node is given half the amount of space from the previous one
+	// so 2^node->depth gives up how much space a node is alloted
+	float dist = getHeight() / (float)(pow(2, node->depth));
+
+	//CORE_INFO("| origin.Y: %g", origin);
 
 	// If parent node only has 1 child don't move it up or down
 	// If parent is head, don't move it either cause childs go left and right
@@ -221,21 +236,19 @@ Vector2 SkillTree::pos(SkillNode* node) {
 		node->nodePrereq->right == nullptr ||
 		node->nodePrereq == _head) {
 
-		pos.Y = origin;
-		CORE_INFO("| no offset");
+		pos.Y = node->nodePrereq->pos.Y;
+		//CORE_INFO("| no offset");
 	} else {
 		if (node->nodePrereq->left == node) {
-			pos.Y = origin + dist;
-			CORE_INFO("| offset up");
+			pos.Y = node->nodePrereq->pos.Y + dist;
+			//CORE_INFO("| offset up");
 		} else {
-			pos.Y = origin - dist;
-			CORE_INFO("| offset down");
+			pos.Y = node->nodePrereq->pos.Y - dist;
+			//CORE_INFO("| offset down");
 		}
+		//CORE_INFO("| dist: %g", dist);
 	}
-	CORE_INFO("| origin.Y: %g", origin);
-	CORE_INFO("| count: %i", nodeCount);
-	CORE_INFO("| dist: %g", dist);
-	CORE_INFO("\\ (%g, %g)\n", pos.X, pos.Y);
+	//CORE_INFO("\\_(%g, %g)\n", pos.X, pos.Y);
 
 	return pos;
 }
@@ -275,12 +288,13 @@ void SkillTree::genNodes() {
 	sf::Vertex* quad;
 	SkillNode* node;
 
-	int nodeWidth  = 15;
+	int nodeWidth  = 15; // Size on the box, from the center, not end to end
 	int nodeHeight = 15;
 
 	for (unsigned int i = 0; i < _data.size(); ++i) {
 		node = _data[i];
 		quad = &_nodes[i * 4];
+		// Draw clockwise, top left, top right, bottom right, bottom left
 		quad[0].position = sf::Vector2f(node->getX() - nodeWidth,
 			node->getY() - nodeHeight);
 		quad[1].position = sf::Vector2f(node->getX() + nodeWidth,

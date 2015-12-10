@@ -79,6 +79,12 @@ void Window::loop() {
 	Perk* p9 = new Perk("I", Stats(), -1.0f);
 	Perk* p10 = new Perk("J", Stats(), -1.0f);
 	Perk* p11 = new Perk("K", Stats(), -1.0f);
+	Perk* p12 = new Perk("L", Stats(), -1.0f);
+	Perk* p13 = new Perk("M", Stats(), -1.0f);
+	Perk* p14 = new Perk("N", Stats(), -1.0f);
+	Perk* p15 = new Perk("O", Stats(), -1.0f);
+	Perk* p16 = new Perk("P", Stats(), -1.0f);
+	Perk* p17 = new Perk("Q", Stats(), -1.0f);
 
 	SkillNode* n1 = new SkillNode(nullptr, p1); // Head node
 	n1 = s.addPerk(nullptr, p1);
@@ -92,21 +98,15 @@ void Window::loop() {
 	SkillNode* n9 = s.addPerk(n4, p9);
 	SkillNode* n10 = s.addPerk(n3, p10);
 	SkillNode* n11 = s.addPerk(n3, p11);
+	SkillNode* n12 = s.addPerk(n9, p12);
+	SkillNode* n13 = s.addPerk(n9, p13);
+	SkillNode* n14 = s.addPerk(n8, p14);
+	SkillNode* n15 = s.addPerk(n8, p15);
+	SkillNode* n16 = s.addPerk(n13, p16);
+	SkillNode* n17 = s.addPerk(n13, p17);
 
 	s.end();
-	s.print(s.getHead(), true);
-	CORE_INFO("Max depth: %i", s.maxDepth(s.getHead()));
-	CORE_INFO("Nodes on 0: %i", s.nodesOnDepth(s.getHead(), 0));
-	CORE_INFO("Nodes on 1: %i", s.nodesOnDepth(s.getHead(), 1));
-	CORE_INFO("Nodes on 2: %i", s.nodesOnDepth(s.getHead(), 2));
-	CORE_INFO("Nodes on 3: %i", s.nodesOnDepth(s.getHead(), 3));
-	CORE_INFO("Child Count head: %i", s.childCount(s.getHead()));
-	CORE_INFO("Child count head->left: %i", s.childCount(s.getHead()->left));
-	CORE_INFO("Child count head->right: %i", s.childCount(s.getHead()->right));
-	CORE_INFO("Data: ");
-	for (unsigned int i = 0; i < s.data().size(); ++i) {
-		CORE_INFO("%i: \'%s\'", i, s.data()[i]->name().c_str());
-	}
+	//s.print(s.getHead(), true);
 
 	_window.clear(sf::Color::Black);
 	_window.draw(s);
