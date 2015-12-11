@@ -12,6 +12,8 @@ public:
 	Perk(std::string name, Stats s, float dur, int maxStacks = 0);
 	~Perk();
 
+	Perk* clone();
+
 	void update(int diff);
 
 	std::string getName() const { return _name; }
@@ -27,6 +29,7 @@ public:
 	bool isToRemove() const { return _toRemove; }
 
 	void setDuration(float d) { _duration = d; }
+	void setStackable(bool b) { _stackable = b; }
 	void addStack();
 	void removeStack() { _stacks--; }
 

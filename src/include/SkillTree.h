@@ -14,11 +14,17 @@ class Object;
 // to be unlocked.
 class SkillNode {
 public:
+	SkillNode();
 	SkillNode(SkillNode* parent, Perk* perk);
 	~SkillNode();
 
+	SkillNode* clone();
+	SkillNode* copy();  // Simply create a copy of the Node, no pointers
+
 	// Add a new child Node in the order of left then right
 	bool add(SkillNode* node);
+
+	void print();
 
 	// A Node is considered unlocked if it has the max points it can hold
 	bool unlocked() { return points >= maxPoints; }
@@ -27,6 +33,7 @@ public:
 	void setPos(Vector2 newPos) { pos = newPos; }
 	float getX() { return pos.X; }
 	float getY() { return pos.Y; }
+	bool contains(float x, float y);
 
 	Vector2 pos; // Position of the Node when drawing
 
@@ -48,6 +55,7 @@ public:
 	~SkillTree();
 
 	void print(SkillNode* node, bool pos = false);
+	SkillTree* clone();
 
 	// Max depth of the tree
 	const int maxDepth(const SkillNode* node);
@@ -60,6 +68,7 @@ public:
 
 	// Add a new Perk with a preq. Node
 	SkillNode* addPerk(SkillNode* parent, Perk* perk);
+	void setHead(SkillNode* h) { _head = h; }
 
 	// We've finished creating this Tree, create the drawable arrays
 	void end();

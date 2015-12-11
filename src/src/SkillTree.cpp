@@ -23,17 +23,29 @@ SkillNode::SkillNode(SkillNode* parent, Perk* perk) :
 	right = nullptr;
 }
 
+SkillNode::SkillNode() {
+	nodePrereq = nullptr;
+	perk = nullptr;
+	maxPoints = 0;
+	points = 0;
+	depth = 0;
+
+	left = nullptr;
+	right = nullptr;
+}
+
 SkillNode::~SkillNode() {
 
 }
 
+// Add a newly created Node as one of our children
 bool SkillNode::add(SkillNode* node) {
 	node->nodePrereq = this;
 	node->depth = depth + 1;
 
 	// Any child options left?
 	if (left != nullptr && right != nullptr) {
-		CORE_ERROR("Node[%i] has 2 children", this);
+		CORE_ERROR("Node[%x] has 2 children and cannot have another", this);
 		return false;
 	}
 	// Find child node in priority, left>right
@@ -46,7 +58,65 @@ bool SkillNode::add(SkillNode* node) {
 		return false;
 	}
 	return true;
-} 
+}
+
+// Is that point within our bounding box?
+bool SkillNode::contains(float px, float py) {
+	return (px >= getX() - SKILL_TREE_NODE_WIDTH &&
+			px <= getX() + SKILL_TREE_NODE_WIDTH &&
+			py >= getY() - SKILL_TREE_NODE_HEIGHT &&
+			py <= getY() + SKILL_TREE_NODE_HEIGHT);
+}
+
+SkillNode* SkillNode::clone() {
+	CORE_INFO("/");
+	if (this == nullptr) {
+		CORE_INFO("| Cloning 0");
+		return nullptr;
+	}
+	SkillNode* node = new SkillNode();
+	CORE_INFO("| Cloning %x -> %x", this, node);
+	printf("ORIG|");
+	print();
+	node->nodePrereq = nodePrereq->copy();
+	node->left = left->clone();
+	node->right = right->clone();
+	printf("CLON|");
+	node->print();
+	CORE_INFO("\\_");
+
+	return node;
+}
+
+SkillNode* SkillNode::copy() {
+	if (this == nullptr) {
+		return nullptr;
+	}
+	SkillNode* node = new SkillNode();
+	node->perk = perk->clone();
+	return node;
+}
+
+void SkillNode::print() {
+	if (this == nullptr) {
+		return;
+	}
+	char rel = 'L';
+		if (nodePrereq != nullptr) {
+			if (nodePrereq->right == this) {
+				rel = 'R';
+			}
+			printf("%s> (\'%s\':%x, %i%c) [%c:\'%s\':%x]\n",
+				(unlocked() == true) ? "UNLOCK" : " LOCK ",
+				name().c_str(), this, depth,
+				(isLeft) ? 'L' : 'R', rel,
+				nodePrereq->name().c_str(), nodePrereq);
+		} else {
+			printf("%s> (\'%s\':%x, %i) [%s]\n",
+				(unlocked() == true) ? "UNLOCK" : " LOCK ",
+				name().c_str(), this, depth, "Root");
+		}
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // SkillTree
@@ -92,6 +162,12 @@ void SkillTree::print(SkillNode* node, bool pos) {
 		}
 		print(node->right, pos);
 	}
+}
+
+SkillTree* SkillTree::clone() {
+	SkillTree* tree = new SkillTree();
+	tree->setHead(_head->clone());
+	return tree;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -150,11 +226,13 @@ SkillNode* SkillTree::addPerk(SkillNode* parent, Perk* perk) {
 		_head = node;
 		return node;
 	}
+	// Dunno why this would be called
 	if (parent == nullptr) {
 		CORE_ERROR("Parent of new Node is nullptr!");
 		return nullptr;
 	}
 	parent->add(node);
+	// Update the Node to tell us if it's to the left or right of the head Node
 	if (parent == _head) {
 		if (_head->left == node) {
 			node->isLeft = true;

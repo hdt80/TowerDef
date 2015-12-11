@@ -106,7 +106,10 @@ void Window::loop() {
 	SkillNode* n17 = s.addPerk(n13, p17);
 
 	s.end();
-	//s.print(s.getHead(), true);
+	s.print(s.getHead(), true);
+
+	SkillTree* cloned = s.clone();
+	cloned->print(cloned->getHead());
 
 	_window.clear(sf::Color::Black);
 	_window.draw(s);

@@ -4,6 +4,7 @@
 #include "Target.h"
 
 #include "Stats.h"
+#include "SkillTree.h"
 
 #include <string>
 #include <vector>
@@ -71,7 +72,8 @@ public:
 	Vector2 getDirection() const { return _direction; }
 	bool isToRemove() const { return _toRemove; }
 	int getCollisionRadius() const { return _collisionRadius; }
-	int getAttackerCount() { return _attackerCount; }
+	SkillTree* getTree() const { return _tree; }
+	int getAttackerCount() const { return _attackerCount; }
 
 	// Utility getters
 	unsigned int perkCount() const { return _perks.size(); }
@@ -83,6 +85,7 @@ public:
 	// Other setters
 	void setTarget(Target* t);
 	void setToRemove(bool b) { _toRemove = b; }
+	void setSkillTree(SkillTree* tree);
 
 	virtual void setPosition(float x, float y);
 
@@ -92,6 +95,7 @@ protected:
 
 	Map* _map; // Map this object is located on
 
+	SkillTree* _tree;
 	std::vector<Perk*> _perks;
 
 	int _attackerCount; // Number of Objects attcking us

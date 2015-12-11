@@ -141,3 +141,7 @@ void Object::setPosition(float nx, float ny) {
 	y = ny;
 	setTarget(nullptr);
 }
+
+void Object::setSkillTree(SkillTree* tree) {
+	
+}
