@@ -51,6 +51,7 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 
 	ParticleEmit::window = this; // Tell the ParticleEmitter what window to use
 	_map.setSize(_width, _height);
+	SkillTrees::createTrees(Vector2(_width, _height));
 }
 
 Window::~Window() {
@@ -66,59 +67,6 @@ void Window::start() {
 }
 
 void Window::loop() {
-	SkillTree s(Vector2(_width, _height));
-	s.setSize(_width, _height);
-	Perk* p1 = new Perk("A", Stats(), -1.0f);
-	Perk* p2 = new Perk("B", Stats(), -1.0f);
-	Perk* p3 = new Perk("C", Stats(), -1.0f);
-	Perk* p4 = new Perk("D", Stats(), -1.0f);
-	Perk* p5 = new Perk("E", Stats(), -1.0f);
-	Perk* p6 = new Perk("F", Stats(), -1.0f);
-	Perk* p7 = new Perk("G", Stats(), -1.0f);
-	Perk* p8 = new Perk("H", Stats(), -1.0f);
-	Perk* p9 = new Perk("I", Stats(), -1.0f);
-	Perk* p10 = new Perk("J", Stats(), -1.0f);
-	Perk* p11 = new Perk("K", Stats(), -1.0f);
-	Perk* p12 = new Perk("L", Stats(), -1.0f);
-	Perk* p13 = new Perk("M", Stats(), -1.0f);
-	Perk* p14 = new Perk("N", Stats(), -1.0f);
-	Perk* p15 = new Perk("O", Stats(), -1.0f);
-	Perk* p16 = new Perk("P", Stats(), -1.0f);
-	Perk* p17 = new Perk("Q", Stats(), -1.0f);
-
-	SkillNode* n1 = new SkillNode(nullptr, p1); // Head node
-	n1 = s.addPerk(nullptr, p1);
-	SkillNode* n2 = s.addPerk(n1, p2);
-	SkillNode* n3 = s.addPerk(n2, p3);
-	SkillNode* n4 = s.addPerk(n2, p4);
-	SkillNode* n5 = s.addPerk(n1, p5);
-	SkillNode* n6 = s.addPerk(n5, p6);
-	SkillNode* n7 = s.addPerk(n5, p7);
-	SkillNode* n8 = s.addPerk(n4, p8);
-	SkillNode* n9 = s.addPerk(n4, p9);
-	SkillNode* n10 = s.addPerk(n3, p10);
-	SkillNode* n11 = s.addPerk(n3, p11);
-	SkillNode* n12 = s.addPerk(n9, p12);
-	SkillNode* n13 = s.addPerk(n9, p13);
-	SkillNode* n14 = s.addPerk(n8, p14);
-	SkillNode* n15 = s.addPerk(n8, p15);
-	SkillNode* n16 = s.addPerk(n13, p16);
-	SkillNode* n17 = s.addPerk(n13, p17);
-
-	s.end();
-	s.print(s.getHead(), true);
-
-	SkillTree* cloned = s.clone();
-	cloned->print(cloned->getHead());
-
-	_window.clear(sf::Color::Black);
-	_window.draw(s);
-	_window.display();
-
-	while (!shouldClose()) {
-		pollEvents();
-	}
-
 	std::chrono::time_point<std::chrono::high_resolution_clock> tStart, tEnd;
 	tStart = std::chrono::high_resolution_clock::now();
 	long long tDiff;
@@ -164,16 +112,19 @@ void Window::render() {
 	if (!_paused) {
 		_window.clear(sf::Color::Black); // Remove anything thats on the window
 
-		renderMap();
-		renderSelected();
-		for (unsigned int i = 0; i < _map.objects.size(); ++i) {
-			_window.draw(*_map.objects[i]);
-		}
-
 		updateEmitters();
 
-		for (unsigned int i = 0; i < emitters.size(); ++i) {
-			_window.draw(*emitters[i]);
+		if (_showTree && _selected) {
+			_window.draw(*_selected->getTree());
+		} else {
+			renderMap();
+			renderSelected();
+			for (unsigned int i = 0; i < _map.objects.size(); ++i) {
+				_window.draw(*_map.objects[i]);
+			}
+			for (unsigned int i = 0; i < emitters.size(); ++i) {
+				_window.draw(*emitters[i]);
+			}
 		}
 
 		_window.display(); // After we're done the drawing end the current frame
@@ -331,12 +282,22 @@ void Window::keyEvent(sf::Event e) {
 	} else if (e.key.code == sf::Keyboard::P) {
 		_paused = !_paused;
 		_pausedDrawn = false;
+	} else if (e.key.code == sf::Keyboard::T) {
+		if (_selected) {
+			_showTree = !_showTree;
+		}
 	}
 }
 
 void Window::mouseEvent(sf::Event e) {
 	int x = e.mouseButton.x;
 	int y = e.mouseButton.y;
+	if (_showTree) {
+		if (_selected && _selected->getTree()) {
+			SkillNode* node = _selected->getTree()->getNode(x, y);
+			node->print();
+		}
+	}
 	if (e.mouseButton.button == sf::Mouse::Left) {
 		if (_map.towerAt(x, y) != nullptr) {
 			_selected = _map.towerAt(x, y);

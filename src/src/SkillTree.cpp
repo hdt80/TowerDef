@@ -69,22 +69,28 @@ bool SkillNode::contains(float px, float py) {
 }
 
 SkillNode* SkillNode::clone() {
-	CORE_INFO("/");
 	if (this == nullptr) {
-		CORE_INFO("| Cloning 0");
 		return nullptr;
 	}
 	SkillNode* node = new SkillNode();
-	CORE_INFO("| Cloning %x -> %x", this, node);
-	printf("ORIG|");
-	print();
-	node->nodePrereq = nodePrereq->copy();
-	node->left = left->clone();
-	node->right = right->clone();
-	printf("CLON|");
-	node->print();
-	CORE_INFO("\\_");
+	node->isLeft = isLeft;
+	node->depth = depth;
+	node->perk = perk->clone();
+	node->points = 0;
+	node->maxPoints = maxPoints;
+	node->pos = pos;
 
+	node->left = left->clone();
+	if (node->left != nullptr) {
+		node->left->nodePrereq = node;
+	}
+	
+	node->right = right->clone();
+	if (node->right != nullptr) {
+		node->right->nodePrereq = node;
+	}
+
+	//tree->data().push_back(node);
 	return node;
 }
 
@@ -167,6 +173,9 @@ void SkillTree::print(SkillNode* node, bool pos) {
 SkillTree* SkillTree::clone() {
 	SkillTree* tree = new SkillTree();
 	tree->setHead(_head->clone());
+	tree->_lines = _lines;
+	tree->_nodes = _nodes;
+	tree->setComp(true);
 	return tree;
 }
 
@@ -210,6 +219,15 @@ const int SkillTree::childCount(const SkillNode* node) {
 		++count;
 	}
 	return count + childCount(node->right);
+}
+
+SkillNode* SkillTree::getNode(float x, float y) {
+	for (unsigned int i = 0; i < _data.size(); ++i) {
+		if (_data[i]->contains(x, y)) {
+			return _data[i];
+		}
+	}
+	return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -381,5 +399,53 @@ void SkillTree::genNodes() {
 			node->getY() + nodeHeight);
 		quad[3].position = sf::Vector2f(node->getX() - nodeWidth,
 			node->getY() + nodeHeight);
+	}
+}
+
+namespace SkillTrees {
+	SkillTree* basicTree;
+
+	void createTrees(Vector2 size) {
+		CORE_INFO("Creating trees with (%g, %g)", size.X, size.Y);
+		basicTree = new SkillTree(size);
+		Perk* p1 = new Perk("A", Stats(), -1.0f);
+		Perk* p2 = new Perk("B", Stats(), -1.0f);
+		Perk* p3 = new Perk("C", Stats(), -1.0f);
+		Perk* p4 = new Perk("D", Stats(), -1.0f);
+		Perk* p5 = new Perk("E", Stats(), -1.0f);
+		Perk* p6 = new Perk("F", Stats(), -1.0f);
+		Perk* p7 = new Perk("G", Stats(), -1.0f);
+		Perk* p8 = new Perk("H", Stats(), -1.0f);
+		Perk* p9 = new Perk("I", Stats(), -1.0f);
+		Perk* p10 = new Perk("J", Stats(), -1.0f);
+		Perk* p11 = new Perk("K", Stats(), -1.0f);
+		Perk* p12 = new Perk("L", Stats(), -1.0f);
+		Perk* p13 = new Perk("M", Stats(), -1.0f);
+		Perk* p14 = new Perk("N", Stats(), -1.0f);
+		Perk* p15 = new Perk("O", Stats(), -1.0f);
+		Perk* p16 = new Perk("P", Stats(), -1.0f);
+		Perk* p17 = new Perk("Q", Stats(), -1.0f);
+
+		SkillNode* n1 = new SkillNode(nullptr, p1); // Head node
+		n1 = basicTree->addPerk(nullptr, p1);
+		SkillNode* n2 = basicTree->addPerk(n1, p2);
+		SkillNode* n3 = basicTree->addPerk(n2, p3);
+		SkillNode* n4 = basicTree->addPerk(n2, p4);
+		SkillNode* n5 = basicTree->addPerk(n1, p5);
+		SkillNode* n6 = basicTree->addPerk(n5, p6);
+		SkillNode* n7 = basicTree->addPerk(n5, p7);
+		SkillNode* n8 = basicTree->addPerk(n4, p8);
+		SkillNode* n9 = basicTree->addPerk(n4, p9);
+		SkillNode* n10 = basicTree->addPerk(n3, p10);
+		SkillNode* n11 = basicTree->addPerk(n3, p11);
+		SkillNode* n12 = basicTree->addPerk(n9, p12);
+		SkillNode* n13 = basicTree->addPerk(n9, p13);
+		SkillNode* n14 = basicTree->addPerk(n8, p14);
+		SkillNode* n15 = basicTree->addPerk(n8, p15);
+		SkillNode* n16 = basicTree->addPerk(n13, p16);
+		SkillNode* n17 = basicTree->addPerk(n13, p17);
+
+		basicTree->end();
+		basicTree->print(basicTree->getHead(), true);
 	}
 }

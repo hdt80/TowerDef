@@ -61,6 +61,7 @@ private:
 	sf::Color _projectileColor;
 
 	Tower* _selected; // Tower we've clicked on and want to see it's stats
+	bool _showTree;   // Show the Object's SkillTree
 
 	// We split the code up so it's easier to fix when stuff breaks
 	void renderMap();

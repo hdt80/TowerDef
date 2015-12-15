@@ -9,6 +9,7 @@
 #include "Vector2.h"
 
 class Object;
+class SkillTree;
 
 // Each Node has 2 child Nodes, each child Node requiring the parent node
 // to be unlocked.
@@ -68,25 +69,34 @@ public:
 
 	// Add a new Perk with a preq. Node
 	SkillNode* addPerk(SkillNode* parent, Perk* perk);
+
+	void setComp(bool b) { _comp = b; }
 	void setHead(SkillNode* h) { _head = h; }
+
+	void setAttached(Object* o) { _attached = o; } 
 
 	// We've finished creating this Tree, create the drawable arrays
 	void end();
+	// Methods for creating the Arrays
+	void genLines();
+	void genNodes();
 
 	void setSize(float w, float h) { _size.X = w; _size.Y = h; }
 	float getWidth() { return _size.X; }
 	float getHeight() { return _size.Y; }
 
+	// Get the Node that is at the (x, y)
+	SkillNode* getNode(float x, float y);
+	
 	const int getCount() { return _count; }
 	SkillNode* getHead() { return _head; }
 	std::vector<SkillNode*> data() { return _data; }
 
+	sf::VertexArray _lines;
+	sf::VertexArray _nodes;
+
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
-
-	// Methods for creating the Arrays
-	void genLines();
-	void genNodes();
 
 	// Return the drawing position of a Node
 	Vector2 pos(SkillNode* node);
@@ -99,10 +109,13 @@ protected:
 	int _count;
 	bool _comp; // If the tree is done being created
 
-	Vector2 _size;
-
-	sf::VertexArray _lines;
-	sf::VertexArray _nodes;
+	Vector2 _size; // Width and Height of the sf::Window it's being drawn to
 };
+
+namespace SkillTrees {
+	extern void createTrees(Vector2 size = Vector2(0.0f, 0.0f));
+
+	extern SkillTree* basicTree;
+}
 
 #endif

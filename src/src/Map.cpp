@@ -101,13 +101,15 @@ void Map::spawnWave() {
 
 // Spawn a tower at (x, y)
 void Map::spawnTower(float x, float y) {
-	CORE_INFO("Spawning tower at (%f, %f)", x, y);
+	CORE_INFO("Spawning tower at (%g, %g)", x, y);
 	Stats towerStats;
 	towerStats.range = 200;
 	towerStats.fireRate = 1.0f;
 	towerStats.damage = 1.0f;
 	towerStats.speed = 0.0f;
 	towerStats.projSpeed = 500.0f;
+	Tower* t = new Tower(this, x, y, towerStats);
+	t->setSkillTree(SkillTrees::basicTree);
 	objects.push_back(new Tower(this, x, y, towerStats));
 }
 
