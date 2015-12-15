@@ -143,6 +143,8 @@ void Object::setPosition(float nx, float ny) {
 }
 
 void Object::setSkillTree(SkillTree* tree) {
+	CORE_INFO("orig size: %i", tree->data().size());
 	_tree = tree->clone();
+	CORE_INFO("clon size: %i", _tree->data().size());
 	_tree->setAttached(this);
 }

@@ -19,8 +19,7 @@ public:
 	SkillNode(SkillNode* parent, Perk* perk);
 	~SkillNode();
 
-	SkillNode* clone();
-	SkillNode* copy();  // Simply create a copy of the Node, no pointers
+	SkillNode* clone(std::vector<SkillNode*>* vec);
 
 	// Add a new child Node in the order of left then right
 	bool add(SkillNode* node);
@@ -73,7 +72,8 @@ public:
 	void setComp(bool b) { _comp = b; }
 	void setHead(SkillNode* h) { _head = h; }
 
-	void setAttached(Object* o) { _attached = o; } 
+	void setAttached(Object* o) { _attached = o; }
+	void setData(std::vector<SkillNode*>* v) { _data = *v; }
 
 	// We've finished creating this Tree, create the drawable arrays
 	void end();

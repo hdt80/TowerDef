@@ -71,7 +71,7 @@ bool SkillNode::contains(float px, float py) {
 			py <= getY() + SKILL_TREE_NODE_HEIGHT);
 }
 
-SkillNode* SkillNode::clone() {
+SkillNode* SkillNode::clone(std::vector<SkillNode*>* vec) {
 	if (this == nullptr) {
 		return nullptr;
 	}
@@ -83,26 +83,17 @@ SkillNode* SkillNode::clone() {
 	node->maxPoints = maxPoints;
 	node->pos = pos;
 
-	node->left = left->clone();
+	node->left = left->clone(vec);
 	if (node->left != nullptr) {
 		node->left->nodePrereq = node;
 	}
 	
-	node->right = right->clone();
+	node->right = right->clone(vec);
 	if (node->right != nullptr) {
 		node->right->nodePrereq = node;
 	}
 
-	//tree->data().push_back(node);
-	return node;
-}
-
-SkillNode* SkillNode::copy() {
-	if (this == nullptr) {
-		return nullptr;
-	}
-	SkillNode* node = new SkillNode();
-	node->perk = perk->clone();
+	vec->push_back(node);
 	return node;
 }
 
@@ -175,9 +166,12 @@ void SkillTree::print(SkillNode* node, bool pos) {
 
 SkillTree* SkillTree::clone() {
 	SkillTree* tree = new SkillTree();
-	tree->setHead(_head->clone());
+	std::vector<SkillNode*>* vec = new std::vector<SkillNode*>;
+
+	tree->setHead(_head->clone(vec));
 	tree->_lines = _lines;
 	tree->_nodes = _nodes;
+	tree->setData(vec);
 	tree->setComp(true);
 	return tree;
 }

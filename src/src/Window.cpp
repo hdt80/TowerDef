@@ -114,18 +114,16 @@ void Window::render() {
 
 		updateEmitters();
 
-		if (_showTree && _selected && _selected->getTree() != nullptr) {
-			CORE_INFO("%x", _selected->getTree());	
+		renderMap();
+		renderSelected();
+		for (unsigned int i = 0; i < _map.objects.size(); ++i) {
+			_window.draw(*_map.objects[i]);
+		}
+		for (unsigned int i = 0; i < emitters.size(); ++i) {
+			_window.draw(*emitters[i]);
+		}
+		if (_showTree && _selected && _selected->getTree()) {
 			_window.draw(*_selected->getTree());
-		} else {
-			renderMap();
-			renderSelected();
-			for (unsigned int i = 0; i < _map.objects.size(); ++i) {
-				_window.draw(*_map.objects[i]);
-			}
-			for (unsigned int i = 0; i < emitters.size(); ++i) {
-				_window.draw(*emitters[i]);
-			}
 		}
 
 		_window.display(); // After we're done the drawing end the current frame
@@ -284,9 +282,7 @@ void Window::keyEvent(sf::Event e) {
 		_paused = !_paused;
 		_pausedDrawn = false;
 	} else if (e.key.code == sf::Keyboard::T) {
-		if (_selected) {
-			_showTree = !_showTree;
-		}
+		_showTree = !_showTree;
 	}
 }
 
@@ -296,8 +292,11 @@ void Window::mouseEvent(sf::Event e) {
 	if (_showTree) {
 		if (_selected && _selected->getTree()) {
 			SkillNode* node = _selected->getTree()->getNode(x, y);
+			SkillNode* origNode = SkillTrees::basicTree->getNode(x, y);
 			node->print();
+			origNode->print();
 		}
+		return;
 	}
 	if (e.mouseButton.button == sf::Mouse::Left) {
 		if (_map.towerAt(x, y) != nullptr) {
