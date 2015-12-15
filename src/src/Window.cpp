@@ -26,7 +26,7 @@ Window::Window(std::string name, int w, int h, bool fullscreen) :
 	_pauseColor(128, 128, 128, 128), _enemyColor(sf::Color::Red),
 	_towerColor(sf::Color::Green), _tracerColor(255, 0, 0, 128),
 	_towerRangeColor(127, 255, 127, 127), _projectileColor(120, 120, 120),
-	_selected(nullptr) {
+	_selected(nullptr), _showTree(false)  {
 
 	sf::VideoMode currVidMode = sf::VideoMode::getDesktopMode();
 	sf::ContextSettings currVidSettings;
@@ -114,7 +114,8 @@ void Window::render() {
 
 		updateEmitters();
 
-		if (_showTree && _selected) {
+		if (_showTree && _selected && _selected->getTree() != nullptr) {
+			CORE_INFO("%x", _selected->getTree());	
 			_window.draw(*_selected->getTree());
 		} else {
 			renderMap();

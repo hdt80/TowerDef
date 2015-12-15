@@ -8,7 +8,7 @@
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
 Object::Object(Map* map, float x, float y, int collRadius, Stats s) :
-	Target(x, y), _map(map), _attackerCount(0), _stats(s), 
+	Target(x, y), _map(map), _tree(nullptr),  _attackerCount(0), _stats(s), 
 	_target(nullptr), _toRemove(false), _collisionRadius(collRadius) {
 
 }

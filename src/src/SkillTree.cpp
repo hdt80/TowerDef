@@ -21,6 +21,8 @@ SkillNode::SkillNode(SkillNode* parent, Perk* perk) :
 
 	left  = nullptr;
 	right = nullptr;
+
+	isLeft = false;
 }
 
 SkillNode::SkillNode() {
@@ -32,6 +34,7 @@ SkillNode::SkillNode() {
 
 	left = nullptr;
 	right = nullptr;
+	isLeft = false;
 }
 
 SkillNode::~SkillNode() {

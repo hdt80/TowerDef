@@ -110,7 +110,7 @@ void Map::spawnTower(float x, float y) {
 	towerStats.projSpeed = 500.0f;
 	Tower* t = new Tower(this, x, y, towerStats);
 	t->setSkillTree(SkillTrees::basicTree);
-	objects.push_back(new Tower(this, x, y, towerStats));
+	objects.push_back(t);
 }
 
 // Return the Object at (x, y)
