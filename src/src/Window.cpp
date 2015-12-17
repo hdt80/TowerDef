@@ -282,7 +282,9 @@ void Window::keyEvent(sf::Event e) {
 		_paused = !_paused;
 		_pausedDrawn = false;
 	} else if (e.key.code == sf::Keyboard::T) {
-		_showTree = !_showTree;
+		if (_selected) {
+			_showTree = !_showTree;
+		}
 	}
 }
 
@@ -292,13 +294,9 @@ void Window::mouseEvent(sf::Event e) {
 	if (_showTree) {
 		if (_selected && _selected->getTree()) {
 			SkillNode* node = _selected->getTree()->getNode(x, y);
-			SkillNode* origNode = SkillTrees::basicTree->getNode(x, y);
 			node->print();
-			origNode->print();
 		}
-		return;
-	}
-	if (e.mouseButton.button == sf::Mouse::Left) {
+	} else if (e.mouseButton.button == sf::Mouse::Left) {
 		if (_map.towerAt(x, y) != nullptr) {
 			_selected = _map.towerAt(x, y);
 		} else {
