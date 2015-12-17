@@ -1,68 +1,44 @@
-#ifndef _RENDER_WINDOW_H
-#define _RENDER_WINDOW_H
+#ifndef _WINDOW_H
+#define _WINDOW_H
 
-#include <string>
-#include <map>
 #include <SFML/Graphics.hpp>
 
-#include "Map.h" // Map, Tower*
-#include "FPS.h" // FPS
 #include "Vector2.h"
-#include "Particle.h"
-#include "Common.h"
 
-class Window {
+class Window : sf::Drawable, sf::Transformable {
 public:
-	Window(std::string name, int width, int height, bool fullscreen = false);
-	~Window();
+	Window(Vector2 size = Vector2(0.0f, 0.0f));
+	virtual ~Window() {}
 
-	// Control methods
-	void start();
-	void loop();
+	enum WindowState {Running, Paused, Uninitalized};
 
-	// Main loop methods
-	void render();
-	void pollEvents();
+	// Initalize the window 
+	virtual void init() = 0;
+	// Reinit the Window
+	virtual void restart() = 0;
+	// Pause the window, stop updating
+	virtual void pause() = 0;
+	// Resume updating
+	virtual void resume() = 0;
+	// Mark the Window for closing
+	virtual void close() = 0;
+
+	// Update the Window. 
+	// diff is the amount of microseconds that have passed since the last call
+	virtual void update(int diff) = 0;
+	virtual void pollEvents() = 0;
 
 	// Event methods
-	void keyEvent(sf::Event e);
-	void mouseEvent(sf::Event e);
-	void resizeEvent(sf::Event e);
+	virtual void keyEvent(sf::Event& e) = 0;
+	virtual void mouseEvent(sf::Event& e) = 0;
+	virtual void resizeEvent(sf::Event& e) = 0;
 
-	bool shouldClose() { return _close; }
-	void setClose(bool b) { _close = b; }
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const = 0;
 
-	std::vector<ParticleEmitter*> emitters;
 private:
-	bool _close; // If the Window is queued to close
-	bool _paused;
-	bool _pausedDrawn; // If the paused box is drawn
-	int  _width;
-	int  _height;
-
-	Map _map;
-	FPS _fps;
-
-	sf::RenderWindow _window;
-	sf::Font _font;
-
-	// Predefined colors
-	sf::Color _pauseColor;
-	sf::Color _enemyColor;
-	sf::Color _towerColor;
-	sf::Color _tracerColor;
-	sf::Color _towerRangeColor;
-	sf::Color _projectileColor;
-
-	Tower* _selected; // Tower we've clicked on and want to see it's stats
-	bool _showTree;   // Show the Object's SkillTree
-
-	// We split the code up so it's easier to fix when stuff breaks
-	void renderMap();
-	void renderSelected();
-
-	// Update all emitters and remove any that are done
-	void updateEmitters();
+	Vector2 _size; // width and height of the Window
+	WindowState _currState;
 };
+
 
 #endif
