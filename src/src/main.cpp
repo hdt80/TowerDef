@@ -5,14 +5,10 @@
 
 #include <stdlib.h>
 #include <random>
-#include <time.h>
 
-#include "Window.h"
 #include "Logger.h"
 
-#include "SkillTree.h"
-#include "Stats.h"
-#include "Perk.h"
+#include "Game.h"
 
 // =================================
 // Main
@@ -22,7 +18,6 @@ int main(int argc, char* argv[]) {
 	Logger::instance().setLogFile("log.html", false, true);
 
 	// The window must be created on the main thread due to OS limitations
-   	Window w("Tower", 900, 600);
-   	w.start();
+   	Game::start();
 	return 0;
 }

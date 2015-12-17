@@ -4,7 +4,7 @@
 #include "Particle.h"
 #include "Color.h"
 
-Window* ParticleEmit::window; // Create a reference to the window
+GameWindow* ParticleEmit::window; // Create a reference to the window
 
 namespace ParticleEmit {
 	void emit(float x, float y, int amount, Color c) {

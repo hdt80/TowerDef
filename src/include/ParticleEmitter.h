@@ -1,7 +1,7 @@
 #ifndef _PARTICLE_EMITTER_H
 #define _PARTICLE_EMITTER_H
 
-#include <SFML/Graphics.hpp>
+#include "GameWindow.h"
 
 class Window;
 struct Color;
@@ -9,7 +9,7 @@ struct Color;
 namespace ParticleEmit {
 	void emit(float x, float y, int amount, Color c);
 
-	extern Window* window;
+	extern GameWindow* window;
 };
 
 #endif

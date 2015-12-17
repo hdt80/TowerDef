@@ -13,27 +13,27 @@ public:
 	enum WindowState {Running, Paused, Uninitalized};
 
 	// Initalize the window 
-	virtual void init() = 0;
+	virtual void init();
 	// Reinit the Window
-	virtual void restart() = 0;
+	virtual void restart();
 	// Pause the window, stop updating
-	virtual void pause() = 0;
+	virtual void pause();
 	// Resume updating
-	virtual void resume() = 0;
+	virtual void resume();
 	// Mark the Window for closing
-	virtual void close() = 0;
+	virtual void close();
 
 	// Update the Window. 
 	// diff is the amount of microseconds that have passed since the last call
-	virtual void update(int diff) = 0;
-	virtual void pollEvents() = 0;
+	virtual void update(int diff);
+	virtual void pollEvents();
 
 	// Event methods
-	virtual void keyEvent(sf::Event& e) = 0;
-	virtual void mouseEvent(sf::Event& e) = 0;
-	virtual void resizeEvent(sf::Event& e) = 0;
+	virtual void keyEvent(sf::Event& e);
+	virtual void mouseEvent(sf::Event& e);
+	virtual void resizeEvent(sf::Event& e);
 
-	virtual void draw(sf::RenderTarget&, sf::RenderStates) const = 0;
+	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 
 private:
 	Vector2 _size; // width and height of the Window

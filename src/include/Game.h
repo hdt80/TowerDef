@@ -21,7 +21,7 @@ public:
 	enum GameState {Uninitalized, Paused, InMenu, Playing, Ending};
 
 	static GameState CurrentGameState;
-	static Window* GameWindow;
+	static Window* CurrentWindow;
 
 private:
 	static sf::RenderWindow _window;
