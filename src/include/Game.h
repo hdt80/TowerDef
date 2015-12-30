@@ -5,27 +5,36 @@
 #include <chrono>
 
 #include "Window.h"
+#include "StateManager.h"
 #include "Vector2.h"
+#include "FPS.h"
 
 #define REFRESH_RATE 16666 // 60 FPS - 16.666ms between each frame
 
 class Game {
 public:
+	// Uninitalized - Game hasn't started. We've just loaded the game
+	// Paused - There is no pause Window, instead that is controlled by Game
+	// Played - Current Window is active and updates are happening
+	// Ending - Game is being closed, start deallocating everything
+	enum GameState {Uninitalized, Paused, Playing, Ending};
+	
 	static void start();
 	static void loop();
 
-	static bool toClose() { return CurrentGameState == Game::Ending; }
+	static bool toClose() { return CurrentGameState == Ending; }
+	static void setState(GameState state) { CurrentGameState = state; }
 
 	static void followWindow(Window* w);
 
-	enum GameState {Uninitalized, Paused, InMenu, Playing, Ending};
-
 	static GameState CurrentGameState;
 	static Window* CurrentWindow;
+	static StateManager WindowManager;
 
-private:
+	static FPS Fps;
+
+protected:
 	static sf::RenderWindow _window;
-
 	Vector2 _size;
 };
 

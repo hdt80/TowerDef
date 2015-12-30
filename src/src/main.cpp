@@ -17,7 +17,6 @@ int main(int argc, char* argv[]) {
 	srand(time(0));
 	Logger::instance().setLogFile("log.html", false, true);
 
-	// The window must be created on the main thread due to OS limitations
    	Game::start();
 	return 0;
 }
