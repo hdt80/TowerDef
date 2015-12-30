@@ -4,6 +4,8 @@
 #include "sfLine.h"
 #include "Common.h"
 #include "SkillTree.h"
+#include "ParticleEmitter.h"
+#include "Convert.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Creation Methods
@@ -25,6 +27,12 @@ GameWindow::~GameWindow() {
 void GameWindow::init() {
 	Window::init();
 	SkillTrees::createTrees(_size);
+	ParticleEmit::window = this;
+	
+	if (!_font.loadFromFile("res\\Pixel.ttf")) {
+		CORE_ERROR("Failed to load \'%s\\res\\Pixel.ttf\'",
+			convert::getWorkingDir().c_str());
+	}
 }
 
 // void GameWindow::reset() {
