@@ -19,8 +19,8 @@ public:
 	// Initalize the window.
 	// Called when the Window is first pushed onto the state stack and another
 	// Window of the same type isn't on the state stack
-	// Init should only be called right before the Window will be made the
-	// current Window to avoid wasting resources
+	// init will be called right before it is made the current state
+	// in StateManager
 	virtual void init();
 	// Reinit the Window
 	// Reinitalize the Window and reset it to default values
@@ -41,6 +41,7 @@ public:
 	const std::string getStateString();
 	const std::string getStateString(WindowState state);
 
+	void setSize(Vector2 size) { _size = size; }
 	int getWidth() { return _size.X; }
 	int getHeight() { return _size.Y; }
 

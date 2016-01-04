@@ -77,6 +77,8 @@ void GameWindow::keyEvent(sf::Event& e) {
 		// if (_selected) {
 		// 	_showTree = !_showTree;
 		// }
+	} else if (e.key.code == sf::Keyboard::Pause) {
+		Game::pause();
 	}
 }
 

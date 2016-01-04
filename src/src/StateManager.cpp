@@ -58,6 +58,10 @@ void StateManager::push(Window* state) {
 		getCurrentState()->pause();
 	}
 
+	if (state->getState() == Window::WindowState::Uninitalized) {
+		state->init();
+	}
+
 	state->setState(Window::WindowState::Running);
 	_stack.push_back(state);
 }
@@ -77,5 +81,6 @@ void StateManager::pop() {
 		Game::CurrentGameState = Game::GameState::Ending;
 	} else {
 		getCurrentState()->resume();
+		Game::CurrentWindow = getCurrentState();
 	}
 }

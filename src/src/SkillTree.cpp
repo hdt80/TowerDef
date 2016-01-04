@@ -102,20 +102,20 @@ void SkillNode::print() {
 		return;
 	}
 	char rel = 'L';
-		if (nodePrereq != nullptr) {
-			if (nodePrereq->right == this) {
-				rel = 'R';
-			}
-			printf("%s> (\'%s\':%x, %i%c) [%c:\'%s\':%x]\n",
-				(unlocked() == true) ? "UNLOCK" : " LOCK ",
-				name().c_str(), this, depth,
-				(isLeft) ? 'L' : 'R', rel,
-				nodePrereq->name().c_str(), nodePrereq);
-		} else {
-			printf("%s> (\'%s\':%x, %i) [%s]\n",
-				(unlocked() == true) ? "UNLOCK" : " LOCK ",
-				name().c_str(), this, depth, "Root");
+	if (nodePrereq != nullptr) {
+		if (nodePrereq->right == this) {
+			rel = 'R';
 		}
+		printf("%s> (\'%s\':%x, %i%c) [%c:\'%s\':%x]\n",
+			(unlocked() == true) ? "UNLOCK" : " LOCK ",
+			name().c_str(), this, depth,
+			(isLeft) ? 'L' : 'R', rel,
+			nodePrereq->name().c_str(), nodePrereq);
+	} else {
+		printf("%s> (\'%s\':%x, %i) [%s]\n",
+			(unlocked() == true) ? "UNLOCK" : " LOCK ",
+			name().c_str(), this, depth, "Root");
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

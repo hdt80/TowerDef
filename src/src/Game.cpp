@@ -13,10 +13,14 @@ void Game::start() {
 	sf::ContextSettings currVidSettings;
 	currVidSettings.antialiasingLevel = 8;
 
+	_size.X = 900; _size.Y = 600;
+
 	_window.create(sf::VideoMode(900, 600, currVidMode.bitsPerPixel),
 		"Tower Defence", sf::Style::Default, currVidSettings);
 
 	CurrentGameState = Playing;
+	_pauseWindow.setSize(_size);
+
 	loop();
 }
 
@@ -25,8 +29,7 @@ void Game::loop() {
 	tStart = std::chrono::high_resolution_clock::now();
 	long long tDiff;
 
-	GameWindow w(Vector2(900, 600));
-	w.init();
+	GameWindow w(_size);
 
 	followWindow(&w);
 
@@ -44,15 +47,17 @@ void Game::loop() {
 			// Likewise, Escape is a hardcoded key that Window's aren't allowed
 			// to handle, only the Game can do that. If Shift is pressed at the
 			// same time don't go up a level, quit the whole game
+			// Likewise, Pause is another hardcoded key to open the PauseWindow
 			if (e.type == sf::Event::Closed) {
 				CurrentGameState = Ending;
 			} else if (e.type == sf::Event::KeyPressed &&
 				e.key.code == sf::Keyboard::Escape) {
-
-				WindowManager.pop();
 				
+				// If Shift is pressed in this sf::Event
 				if (e.key.shift) {
 					CurrentGameState = Ending;
+				} else {
+					WindowManager.pop();
 				}
 			} else {
 				CurrentWindow->handleEvent(e);
@@ -72,11 +77,23 @@ void Game::followWindow(Window* w) {
 	CurrentWindow = w;
 }
 
+void Game::pause() {
+	if (CurrentWindow != &_pauseWindow) {
+		followWindow(&_pauseWindow);
+	} else {
+		WindowManager.pop();
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Static vars
 ///////////////////////////////////////////////////////////////////////////////
 Game::GameState Game::CurrentGameState = Uninitalized;
 Window* Game::CurrentWindow            = nullptr;
+
 StateManager Game::WindowManager;
 FPS Game::Fps;
+
 sf::RenderWindow Game::_window;
+PauseWindow Game::_pauseWindow;
+Vector2 Game::_size;

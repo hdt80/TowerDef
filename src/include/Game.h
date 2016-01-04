@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "Window.h"
+#include "PauseWindow.h"
 #include "StateManager.h"
 #include "Vector2.h"
 #include "FPS.h"
@@ -22,6 +23,9 @@ public:
 	static void start();
 	static void loop();
 
+	// If the Game is already paused unpause, else pause it
+	static void pause();
+
 	static bool toClose() { return CurrentGameState == Ending; }
 	static void setState(GameState state) { CurrentGameState = state; }
 
@@ -35,7 +39,8 @@ public:
 
 protected:
 	static sf::RenderWindow _window;
-	Vector2 _size;
+	static PauseWindow _pauseWindow;
+	static Vector2 _size;
 };
 
 #endif
