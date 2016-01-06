@@ -27,7 +27,7 @@ public:
 	void print();
 
 	// A Node is considered unlocked if it has the max points it can hold
-	bool unlocked() { return points >= maxPoints; }
+	bool unlocked();
 	std::string name() { return perk->getName(); }
 
 	void setPos(Vector2 newPos) { pos = newPos; }

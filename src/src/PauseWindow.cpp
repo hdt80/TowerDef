@@ -34,3 +34,8 @@ void PauseWindow::render(sf::RenderWindow& window) {
 		_drawn = true;
 	}
 }
+
+void PauseWindow::pause() {
+	Window::pause();
+	_drawn = false;
+}

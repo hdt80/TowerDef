@@ -118,6 +118,16 @@ void SkillNode::print() {
 	}
 }
 
+bool SkillNode::unlocked() {
+	if (nodePrereq && nodePrereq->unlocked()) {
+		if (points < maxPoints) {
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // SkillTree
 ///////////////////////////////////////////////////////////////////////////////

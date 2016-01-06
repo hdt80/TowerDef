@@ -16,7 +16,7 @@ public:
 	// // Reinit the Window
 	// virtual void reset();
 	// // Pause the window, stop updating
-	// virtual void pause();
+	virtual void pause();
 	// // Resume updating
 	// virtual void resume();
 	// // Mark the Window for closing
