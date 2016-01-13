@@ -36,6 +36,7 @@ public:
 	bool contains(float x, float y);
 
 	Vector2 pos; // Position of the Node when drawing
+	sf::RectangleShape box;
 
 	int points;    // Current points in Node
 	int maxPoints; // Max points in a Node

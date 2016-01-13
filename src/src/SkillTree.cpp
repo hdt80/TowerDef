@@ -23,6 +23,9 @@ SkillNode::SkillNode(SkillNode* parent, Perk* perk) :
 	right = nullptr;
 
 	isLeft = false;
+	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
+		SKILL_TREE_NODE_HEIGHT * 2));
+	box.setFillColor(sf::Color::Red);
 }
 
 SkillNode::SkillNode() {
@@ -35,6 +38,9 @@ SkillNode::SkillNode() {
 	left = nullptr;
 	right = nullptr;
 	isLeft = false;
+	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
+		SKILL_TREE_NODE_HEIGHT * 2));
+	box.setFillColor(sf::Color::Red);
 }
 
 SkillNode::~SkillNode() {
@@ -119,13 +125,13 @@ void SkillNode::print() {
 }
 
 bool SkillNode::unlocked() {
-	if (nodePrereq && nodePrereq->unlocked()) {
-		if (points < maxPoints) {
-			return true;
-		}
-		return false;
-	}
-	return false;
+    if (!nodePrereq) {
+        return true;
+    }
+    if (!nodePrereq->unlocked() && points < maxPoints) {
+        
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
