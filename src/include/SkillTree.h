@@ -35,6 +35,10 @@ public:
 	float getY() { return pos.Y; }
 	bool contains(float x, float y);
 
+    void setPoints(int p);
+
+    void incPoints() { setPoints(points + 1); }
+    void decPoints() { setPoints(points - 1); }
 	Vector2 pos; // Position of the Node when drawing
 	sf::RectangleShape box;
 
@@ -95,6 +99,9 @@ public:
 
 	sf::VertexArray _lines;
 	sf::VertexArray _nodes;
+
+    int nodeWidth;
+    int nodeHeight;
 
 protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;

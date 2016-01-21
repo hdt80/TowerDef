@@ -2,6 +2,7 @@
 
 #include "SkillTree.h"
 #include "Logger.h"
+#include "Game.h"
 
 SkillTreeWindow::SkillTreeWindow(SkillTree* tree, Vector2 size) {
 	_size = size;
@@ -25,11 +26,23 @@ void SkillTreeWindow::update(int diff) {
 }
 
 void SkillTreeWindow::keyEvent(sf::Event& e) {
-
+    if (e.key.code == sf::Keyboard::T) {
+        Game::WindowManager.pop();
+    } else if (e.key.code == sf::Keyboard::D) {
+        _tree->print(_tree->getHead(), true);
+    }
 }
 
 void SkillTreeWindow::mouseEvent(sf::Event& e) {
-    CORE_INFO("(%g, %g)", e.mouseMove.x, e.mouseMove.y);
+    //CORE_INFO("(%g, %g)", e.mouseButton.x, e.mouseButton.y);
+    SkillNode* node = _tree->getNode(e.mouseButton.x, e.mouseButton.y);
+    node->print();
+    if (node) {
+        CORE_INFO("Clicked on \'%s\'", node->name().c_str());
+        if (node->unlocked()) {
+            node->incPoints();
+        }
+    }
 }
 
 void SkillTreeWindow::render(sf::RenderWindow& window) {

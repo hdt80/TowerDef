@@ -15,32 +15,37 @@
 SkillNode::SkillNode(SkillNode* parent, Perk* perk) : 
 	nodePrereq(parent), perk(perk) {
 
-	maxPoints = perk->getMaxStacks();
-	points = 0;
-	depth = 0;
-
-	left  = nullptr;
+    left  = nullptr;
 	right = nullptr;
 
+	maxPoints = perk->getMaxStacks();
+    points = 0;
+    setPoints(0);
+	depth = 0;
+
 	isLeft = false;
+
 	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
 		SKILL_TREE_NODE_HEIGHT * 2));
-	box.setFillColor(sf::Color::Red);
 }
 
 SkillNode::SkillNode() {
 	nodePrereq = nullptr;
 	perk = nullptr;
-	maxPoints = 0;
-	points = 0;
-	depth = 0;
-
+	
 	left = nullptr;
 	right = nullptr;
-	isLeft = false;
+
+    maxPoints = 0;
+    points = 0;
+    setPoints(0);
+	depth = 0;
+
+
+    isLeft = false;
+
 	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
 		SKILL_TREE_NODE_HEIGHT * 2));
-	box.setFillColor(sf::Color::Red);
 }
 
 SkillNode::~SkillNode() {
@@ -88,7 +93,9 @@ SkillNode* SkillNode::clone(std::vector<SkillNode*>* vec) {
 	node->points = 0;
 	node->maxPoints = maxPoints;
 	node->pos = pos;
+    node->box = box;
 
+    // Set the child Nodes 
 	node->left = left->clone(vec);
 	if (node->left != nullptr) {
 		node->left->nodePrereq = node;
@@ -124,14 +131,46 @@ void SkillNode::print() {
 	}
 }
 
+// No parent? We're head so we're unlocked
+// If nodePrereq is unlocked we're unlocked
 bool SkillNode::unlocked() {
     if (!nodePrereq) {
         return true;
     }
-    if (!nodePrereq->unlocked() && points < maxPoints) {
-        
+    if (nodePrereq->unlocked() && nodePrereq->points >= nodePrereq->maxPoints) {
+        return true;
     }
+    return false;
+}
 
+// Locked? Red
+// Unlocked but no points? White
+// Unlocked and some points? Gray
+// Max points? Green
+void SkillNode::setPoints(int p) {
+    if (p > maxPoints || p < 0) {
+        CORE_WARNING("SkillNode:: p: %i, maxPoints: %i", p, maxPoints);
+        return;
+    }
+    CORE_INFO("[%x] %i -> %i", this, points, p);
+    points = p;
+
+    if (!unlocked()) {
+        box.setFillColor(sf::Color::Red);
+        return;
+    } else if (unlocked() && points == 0) {
+        box.setFillColor(sf::Color::White);
+    } else if (unlocked() && points > 0 && points < maxPoints) {
+        box.setFillColor(sf::Color(128, 128, 128));
+    } else if (points >= maxPoints) {
+        box.setFillColor(sf::Color::Green);
+        if (left) {
+            left->box.setFillColor(sf::Color::White);
+        }
+        if (right) {
+            right->box.setFillColor(sf::Color::White);
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,6 +185,9 @@ SkillTree::SkillTree(Vector2 size) {
 
 	_lines.setPrimitiveType(sf::Lines);
 	_nodes.setPrimitiveType(sf::Quads);
+
+    nodeWidth = 15;
+    nodeHeight = 15;
 }
 
 SkillTree::~SkillTree() {
@@ -303,6 +345,8 @@ void SkillTree::end() {
 
 Vector2 SkillTree::pos(SkillNode* node) {
 	if (node == _head) {
+        node->box.setPosition(sf::Vector2f(getWidth() / 2.0f - nodeWidth,
+                                          getHeight() / 2.0f - nodeHeight));
 		return Vector2(getWidth() / 2.0f, getHeight() / 2.0f);
 	}
 	//CORE_INFO("/ Position for \'%s\': %i (\'%s\')", node->name().c_str(), node->depth, node->nodePrereq->name().c_str());
@@ -359,6 +403,7 @@ Vector2 SkillTree::pos(SkillNode* node) {
 	}
 	//CORE_INFO("\\_(%g, %g)\n", pos.X, pos.Y);
 
+    node->box.setPosition(pos.X - nodeWidth, pos.Y - nodeHeight);
 	return pos;
 }
 
@@ -373,7 +418,9 @@ void SkillTree::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	}
 
 	target.draw(_lines);
-	target.draw(_nodes);
+    for (unsigned int i = 0; i < _data.size(); ++i) {
+        target.draw(_data[i]->box);
+    }
 }
 
 void SkillTree::genLines() {
@@ -397,9 +444,6 @@ void SkillTree::genNodes() {
 	sf::Vertex* quad;
 	SkillNode* node;
 
-	int nodeWidth  = 15; // Size on the box, from the center, not end to end
-	int nodeHeight = 15;
-
 	for (unsigned int i = 0; i < _data.size(); ++i) {
 		node = _data[i];
 		quad = &_nodes[i * 4];
@@ -421,23 +465,23 @@ namespace SkillTrees {
 	void createTrees(Vector2 size) {
 		CORE_INFO("Creating trees with (%g, %g)", size.X, size.Y);
 		basicTree = new SkillTree(size);
-		Perk* p1 = new Perk("A", Stats(), -1.0f);
-		Perk* p2 = new Perk("B", Stats(), -1.0f);
-		Perk* p3 = new Perk("C", Stats(), -1.0f);
-		Perk* p4 = new Perk("D", Stats(), -1.0f);
-		Perk* p5 = new Perk("E", Stats(), -1.0f);
-		Perk* p6 = new Perk("F", Stats(), -1.0f);
-		Perk* p7 = new Perk("G", Stats(), -1.0f);
-		Perk* p8 = new Perk("H", Stats(), -1.0f);
-		Perk* p9 = new Perk("I", Stats(), -1.0f);
-		Perk* p10 = new Perk("J", Stats(), -1.0f);
-		Perk* p11 = new Perk("K", Stats(), -1.0f);
-		Perk* p12 = new Perk("L", Stats(), -1.0f);
-		Perk* p13 = new Perk("M", Stats(), -1.0f);
-		Perk* p14 = new Perk("N", Stats(), -1.0f);
-		Perk* p15 = new Perk("O", Stats(), -1.0f);
-		Perk* p16 = new Perk("P", Stats(), -1.0f);
-		Perk* p17 = new Perk("Q", Stats(), -1.0f);
+		Perk* p1 = new Perk("A", Stats(), -1.0f, 3);
+		Perk* p2 = new Perk("B", Stats(), -1.0f, 3);
+		Perk* p3 = new Perk("C", Stats(), -1.0f, 3);
+		Perk* p4 = new Perk("D", Stats(), -1.0f, 3);
+		Perk* p5 = new Perk("E", Stats(), -1.0f, 3);
+		Perk* p6 = new Perk("F", Stats(), -1.0f, 3);
+		Perk* p7 = new Perk("G", Stats(), -1.0f, 3);
+		Perk* p8 = new Perk("H", Stats(), -1.0f, 3);
+		Perk* p9 = new Perk("I", Stats(), -1.0f, 3);
+		Perk* p10 = new Perk("J", Stats(), -1.0f, 3);
+		Perk* p11 = new Perk("K", Stats(), -1.0f, 3);
+		Perk* p12 = new Perk("L", Stats(), -1.0f, 3);
+		Perk* p13 = new Perk("M", Stats(), -1.0f, 3);
+		Perk* p14 = new Perk("N", Stats(), -1.0f, 3);
+		Perk* p15 = new Perk("O", Stats(), -1.0f, 3);
+		Perk* p16 = new Perk("P", Stats(), -1.0f, 3);
+		Perk* p17 = new Perk("Q", Stats(), -1.0f, 3);
 
 		SkillNode* n1 = new SkillNode(nullptr, p1); // Head node
 		n1 = basicTree->addPerk(nullptr, p1);

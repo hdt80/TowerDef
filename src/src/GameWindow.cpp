@@ -6,6 +6,7 @@
 #include "SkillTree.h"
 #include "ParticleEmitter.h"
 #include "Convert.h"
+#include "SkillTreeWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Creation Methods
@@ -74,9 +75,9 @@ void GameWindow::keyEvent(sf::Event& e) {
 	} else if (e.key.code == sf::Keyboard::N) {
 		_map.spawnWave();
 	} else if (e.key.code == sf::Keyboard::T) {
-		// if (_selected) {
-		// 	_showTree = !_showTree;
-		// }
+        if (_selected) {
+            Game::followWindow(new SkillTreeWindow(_selected->getTree(), _size));
+        }
 	} else if (e.key.code == sf::Keyboard::Pause) {
 		Game::pause();
 	}
@@ -101,14 +102,6 @@ void GameWindow::mouseEvent(sf::Event& e) {
 		_map.getPath()->addPoint(x, y);
 	}
 }
-
-// void GameWindow::resizeEvent(sf::Event& e) {
-// 	CORE_INFO("Resize: %i, %i => %i, %i", _width, _height,
-// 		e.size.width, e.size.height);
-// 	_width  = e.size.width;
-// 	_height = e.size.height;
-// 	//updateAreaSizes();
-// }
 
 void GameWindow::draw(sf::RenderTarget& target, sf::RenderStates) const {
 	// target.clear(sf::Color::Black);

@@ -20,7 +20,8 @@ public:
 	std::string getTitle() const;
 	Stats* getStats() { return &_stats; }
 	float getDuration() const { return _duration; }
-	int getShortDuration() const { return (int)(_duration + 0.5f); }
+    // Add 0.5f so the value is always rounded up
+    int getShortDuration() const { return (int)(_duration + 0.5f); }
 	float getMaxDuration() const { return _maxDuration; }
 	int getShortMaxDuration() const { return (int)_maxDuration; }
 	int getStacks() const { return _stacks; }
