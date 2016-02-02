@@ -15,6 +15,9 @@ public:
 	Perk* clone();
 
 	void update(int diff);
+    void onApply();
+
+    void setAttached();
 
 	std::string getName() const { return _name; }
 	std::string getTitle() const;
@@ -31,11 +34,13 @@ public:
 
 	void setDuration(float d) { _duration = d; }
 	void setStackable(bool b) { _stackable = b; }
+    void setStacks(int c);
 	void addStack();
 	void removeStack() { _stacks--; }
 
 protected:
 	std::string _name; // Display name of the perk
+
 	Stats _stats; // Stats applied to the Object
 	float _duration; // -1 duration means infinite
 	float _maxDuration;

@@ -2,7 +2,7 @@
 
 #include "Logger.h"
 
-Stats::Stats() {
+Stats::Stats(bool perc) : percent(perc)  {
 	range = 0;
 	fireRate = 0.0f;
 	damage = 0.0f;
@@ -22,6 +22,17 @@ Stats Stats::operator- () const {
 	return s;
 }
 
+Stats Stats::operator* (float m) const {
+    Stats s;
+    s.range = range * m;
+    s.fireRate = fireRate * m;
+    s.damage = damage * m;
+    s.speed = speed * m;
+    s.accel = accel * m;
+    s.projSpeed = projSpeed * m;
+    return s;
+}
+
 Stats Stats::operator+ (const Stats& o) const {
 	Stats s;
 	s.range    = range + o.range;
@@ -39,9 +50,9 @@ void Stats::operator+= (const Stats& o) {
 
 void Stats::print() {
 	CORE_INFO("Range: %i", range);
-	CORE_INFO("FireRate: %f", fireRate);
-	CORE_INFO("Damage: %f", damage);
-	CORE_INFO("Speed: %f", speed);
-	CORE_INFO("Projectile Speed: %f", projSpeed);
-	CORE_INFO("Accel: %f", accel);
+	CORE_INFO("FireRate: %g", fireRate);
+	CORE_INFO("Damage: %g", damage);
+	CORE_INFO("Speed: %g", speed);
+	CORE_INFO("Projectile Speed: %g", projSpeed);
+	CORE_INFO("Accel: %g", accel);
 }

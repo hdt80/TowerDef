@@ -35,7 +35,7 @@ void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 void Tower::update(int diff) {
 	_lastShot += diff * 0.000001f;
-	if (_lastShot > _stats.fireRate) {
+	if (_lastShot > getFireRate()) {
 		_lastShot = 0;
 		shoot();
 	}

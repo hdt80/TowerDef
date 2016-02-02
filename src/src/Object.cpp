@@ -8,7 +8,7 @@
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
 Object::Object(Map* map, float x, float y, int collRadius, Stats s) :
-	Target(x, y), _map(map), _tree(nullptr),  _attackerCount(0), _stats(s), 
+	Target(x, y), _map(map), _tree(nullptr),  _attackerCount(0), _baseStats(s),
 	_target(nullptr), _toRemove(false), _collisionRadius(collRadius) {
 
 }
@@ -75,15 +75,33 @@ void Object::update(int diff) {
 	}
 }
 
-void Object::applyStat(Stats s, bool relative) {
+void Object::setStats(Stats s, bool relative) {
 	if (relative) {
-		_stats.range    += s.range;
-		_stats.fireRate += s.fireRate;
-		_stats.damage   += s.damage;
-		_stats.speed    += s.speed;
+		_baseStats.range     += s.range;
+		_baseStats.fireRate  += s.fireRate;
+		_baseStats.damage    += s.damage;
+		_baseStats.speed     += s.speed;
+        _baseStats.projSpeed += s.projSpeed;
+        _baseStats.accel     += s.accel;
 	} else {
-		_stats = s;
+		_baseStats = s;
 	}
+}
+
+void Object::applyStat(Stats s) {
+    if (!s.percent) {
+        CORE_WARNING("Object::applyStat> Stats isn't percent");
+    }
+	CORE_INFO("!!! Stats before !!!");
+	_stats.print();
+    _stats.range += _baseStats.range * s.range;
+    _stats.fireRate += _baseStats.fireRate * s.fireRate;
+    _stats.damage += _baseStats.damage * s.damage;
+    _stats.projSpeed += _baseStats.projSpeed * s.projSpeed;
+    _stats.speed += _baseStats.speed * s.speed;
+    _stats.accel += _baseStats.accel * s.accel;
+	CORE_INFO("!!! Stats after !!!");
+	_stats.print();
 }
 
 void Object::removePerk(Perk* p) {

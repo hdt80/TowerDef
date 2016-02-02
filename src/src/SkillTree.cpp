@@ -24,6 +24,7 @@ SkillNode::SkillNode(SkillNode* parent, Perk* perk) :
 	depth = 0;
 
 	isLeft = false;
+    tree = nullptr;
 
 	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
 		SKILL_TREE_NODE_HEIGHT * 2));
@@ -43,6 +44,7 @@ SkillNode::SkillNode() {
 
 
     isLeft = false;
+    tree = nullptr;
 
 	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
 		SKILL_TREE_NODE_HEIGHT * 2));
@@ -82,10 +84,14 @@ bool SkillNode::contains(float px, float py) {
 			py <= getY() + SKILL_TREE_NODE_HEIGHT);
 }
 
+// Clone a Node into a new Node. This is a deep copy, meaning all pointers
+// are also cloned into new objects
 SkillNode* SkillNode::clone(std::vector<SkillNode*>* vec) {
 	if (this == nullptr) {
 		return nullptr;
 	}
+
+    // Create the new node
 	SkillNode* node = new SkillNode();
 	node->isLeft = isLeft;
 	node->depth = depth;
@@ -105,7 +111,6 @@ SkillNode* SkillNode::clone(std::vector<SkillNode*>* vec) {
 	if (node->right != nullptr) {
 		node->right->nodePrereq = node;
 	}
-
 	vec->push_back(node);
 	return node;
 }
@@ -152,18 +157,23 @@ void SkillNode::setPoints(int p) {
         CORE_WARNING("SkillNode:: p: %i, maxPoints: %i", p, maxPoints);
         return;
     }
-    CORE_INFO("[%x] %i -> %i", this, points, p);
+
     points = p;
 
+    if (perk) {
+        perk->setStacks(points);
+    }
+
+    // Update the color of the box
     if (!unlocked()) {
         box.setFillColor(sf::Color::Red);
-        return;
     } else if (unlocked() && points == 0) {
         box.setFillColor(sf::Color::White);
     } else if (unlocked() && points > 0 && points < maxPoints) {
-        box.setFillColor(sf::Color(128, 128, 128));
+        box.setFillColor(sf::Color(128, 128, 128)); // Gray
     } else if (points >= maxPoints) {
         box.setFillColor(sf::Color::Green);
+        // Child Nodes are now unlocked, reflect that
         if (left) {
             left->box.setFillColor(sf::Color::White);
         }
@@ -231,6 +241,10 @@ SkillTree* SkillTree::clone() {
 	tree->_nodes = _nodes;
 	tree->setData(vec);
 	tree->setComp(true);
+
+    for (unsigned int i = 0; i < vec->size(); ++i) {
+        vec->at(i)->tree = tree;
+    }
 	return tree;
 }
 
@@ -465,7 +479,7 @@ namespace SkillTrees {
 	void createTrees(Vector2 size) {
 		CORE_INFO("Creating trees with (%g, %g)", size.X, size.Y);
 		basicTree = new SkillTree(size);
-		Perk* p1 = new Perk("A", Stats(), -1.0f, 3);
+		Perk* p1 = new Perk("A", Stats(50, 0, 0, 0, 0, 0), -1.0f, 3);
 		Perk* p2 = new Perk("B", Stats(), -1.0f, 3);
 		Perk* p3 = new Perk("C", Stats(), -1.0f, 3);
 		Perk* p4 = new Perk("D", Stats(), -1.0f, 3);

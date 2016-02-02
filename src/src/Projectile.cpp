@@ -12,7 +12,7 @@
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
 Projectile::Projectile(Map* map, Enemy* e, Tower* t, Color c) :
-	Object(map, t->getX(), t->getY(), 1, *t->getStats()),
+	Object(map, t->getX(), t->getY(), 1, t->getStats()),
 	_color(c), _shooter(t) {
 
 	// Speed of this Projectile is stored in Tower's projSpeed, not speed
@@ -43,9 +43,10 @@ void Projectile::onCollision(Object* o) {
 	}
 	ParticleEmit::emit(x, y, 10, _color);
 	e->applyDamage(getDamage());
-	Stats* perk = new Stats;
-	perk->fireRate = -(_shooter->getFireRate() / 2.0f);
-	Perk* p = new Perk("AS", *perk, 3, 3);
+
+	Stats perk(true);
+	perk.fireRate = 0.5f; 
+	Perk* p = new Perk("AS", perk, 3, 3);
 
 	_shooter->addPerk(p);
 

@@ -80,7 +80,14 @@ void GameWindow::keyEvent(sf::Event& e) {
         }
 	} else if (e.key.code == sf::Keyboard::Pause) {
 		Game::pause();
-	}
+	} else if (e.key.code == sf::Keyboard::S) {
+        if (_selected) {
+            CORE_INFO("Stats: ");
+            _selected->getStats().print();
+            CORE_INFO("baseStats: ");
+            _selected->getBaseStats().print();
+        }
+    }
 }
 
 void GameWindow::mouseEvent(sf::Event& e) {

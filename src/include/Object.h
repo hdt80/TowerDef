@@ -13,7 +13,7 @@
 class Map;
 class Perk;
 
-class Object : public Target, public sf::Drawable, sf::Transformable {
+class Object : public Target, public sf::Drawable, public sf::Transformable {
 public:
 	Object();
 	Object(Map* map, float x, float y, int collRadius, Stats s);
@@ -41,15 +41,17 @@ public:
 	// Stats
 	// Apply new stats to the object
 	// If it's relative change stats relative to current stats
-	void applyStat(Stats s, bool relative = true);
+	void applyStat(Stats s);
+    void setStats(Stats s, bool relative = true);
 	// Stats getters
-	Stats* getStats() { return &_stats; }
-	int getSpeed() { return _stats.speed; }
-	int getRange() const { return _stats.range; }
-	float getFireRate() const { return _stats.fireRate; }
-	float getDamage() const { return _stats.damage; }
-	float getAccel() const { return _stats.accel; }
-	float getProjSpeed() const { return _stats.projSpeed; }
+	Stats getStats() { return _stats; }
+    Stats getBaseStats() { return _baseStats; };
+	int getSpeed() { return _stats.speed + _baseStats.speed; }
+	int getRange() const { return _stats.range + _baseStats.range; }
+	float getFireRate() const { return _stats.fireRate + _baseStats.fireRate; }
+	float getDamage() const { return _stats.damage + _baseStats.damage; }
+	float getAccel() const { return _stats.accel + _baseStats.accel; }
+	float getProjSpeed() const { return _stats.projSpeed + _baseStats.projSpeed; }
 	// Stats setters
 	void setRange(int r) { _stats.range = r; }
 	void setFireRate(float r) { _stats.fireRate = r; }
@@ -100,6 +102,7 @@ protected:
 
 	int _attackerCount; // Number of Objects attcking us
 
+    Stats _baseStats;
 	Stats _stats;
 
 	Target* _target; // Target the enemy is running to (can be coord or enemy)

@@ -39,6 +39,9 @@ public:
 
     void incPoints() { setPoints(points + 1); }
     void decPoints() { setPoints(points - 1); }
+
+    SkillTree* tree;
+
 	Vector2 pos; // Position of the Node when drawing
 	sf::RectangleShape box;
 
@@ -99,6 +102,7 @@ public:
 
 	sf::VertexArray _lines;
 	sf::VertexArray _nodes;
+	Object* _attached; // Object we're attached to
 
     int nodeWidth;
     int nodeHeight;
@@ -109,7 +113,6 @@ protected:
 	// Return the drawing position of a Node
 	Vector2 pos(SkillNode* node);
 
-	Object* _attached; // Object we're attached to
 
 	SkillNode* _head;
 	std::vector<SkillNode*> _data;
