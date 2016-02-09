@@ -46,6 +46,7 @@ flags = [
 '-isystem',
 './tests/gmock/include',
 '-Isrc/include',
+'-Iinclude',
 ]
 
 

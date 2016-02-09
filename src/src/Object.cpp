@@ -20,14 +20,77 @@ Object::Object() :
 
 Object::~Object() {}
 
+////////////////////////////////////////////////////////////////////////////////
+// Events
+////////////////////////////////////////////////////////////////////////////////
+void Object::onCollision(Object* o) {
+	CORE_INFO("%x collided with %x", this, o);
+};
+
+void Object::onUpdate(int diff) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Object::onMove(int diff) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onMove").call<void>(diff);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Object::onShoot(Object* target) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onShoot").call<void>(target);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Object::onDamageTaken(int dmg, Object* o) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDamageTaken").call<void>(dmg, o);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Object::onDamageDealt(int dmg, Object* hit) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDamageDealt").call<void>(dmg, hit);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Object::onDeath() {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDeath").call<void>();
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Object::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-}
-
-void Object::onCollision(Object* o) {
-	CORE_INFO("%i collided with %i", this, o);
 }
 
 bool Object::collidesWith(Object* o) {
@@ -66,6 +129,8 @@ void Object::move(int diff) {
 }
 
 void Object::update(int diff) {
+	onUpdate(diff);
+
 	for (unsigned int i = 0; i < _perks.size(); ++i) {
 		_perks[i]->update(diff);
 		if (_perks[i]->isToRemove()) {
@@ -92,16 +157,12 @@ void Object::applyStat(Stats s) {
     if (!s.percent) {
         CORE_WARNING("Object::applyStat> Stats isn't percent");
     }
-	CORE_INFO("!!! Stats before !!!");
-	_stats.print();
     _stats.range += _baseStats.range * s.range;
     _stats.fireRate += _baseStats.fireRate * s.fireRate;
     _stats.damage += _baseStats.damage * s.damage;
     _stats.projSpeed += _baseStats.projSpeed * s.projSpeed;
     _stats.speed += _baseStats.speed * s.speed;
     _stats.accel += _baseStats.accel * s.accel;
-	CORE_INFO("!!! Stats after !!!");
-	_stats.print();
 }
 
 void Object::removePerk(Perk* p) {

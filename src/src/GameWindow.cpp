@@ -82,10 +82,12 @@ void GameWindow::keyEvent(sf::Event& e) {
 		Game::pause();
 	} else if (e.key.code == sf::Keyboard::S) {
         if (_selected) {
-            CORE_INFO("Stats: ");
+            CORE_INFO("\nStats: ");
             _selected->getStats().print();
-            CORE_INFO("baseStats: ");
+            CORE_INFO("\nbaseStats: ");
             _selected->getBaseStats().print();
+			CORE_INFO("\nmodStats: ");
+			_selected->getStatMod().print();
         }
     }
 }

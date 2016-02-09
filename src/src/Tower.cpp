@@ -22,10 +22,43 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	if (getSpeed() <= 0.0f) {
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
+	_lua.loadScript("./lua/tower.lua");
 }
 
 Tower::~Tower() {}
 
+///////////////////////////////////////////////////////////////////////////////
+// Events
+///////////////////////////////////////////////////////////////////////////////
+void Tower::onUpdate(int diff) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Tower::onShoot(Object* target) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onShoot").call<void>(target);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
+
+void Tower::onDamageDealt(int dmg, Object* hit) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDamageDealt").call<void>(dmg, hit);
+		} catch (sol::error e) {
+			CORE_ERROR("[%x] %s", this, e.what());
+		}
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,6 +127,7 @@ void Tower::shoot() {
 		e = static_cast<Enemy*>(_target);
 		Projectile* p = new Projectile(_map, e, this, Color(127, 127, 127, 255));
 		_map->shoot(this, p);
+		onShoot(e);
 	} else {
 		CORE_WARNING("Failed to shoot at %i", _target);
 	}

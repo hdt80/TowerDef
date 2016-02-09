@@ -6,14 +6,13 @@ UNAME := $(shell uname)
 
 # Running Linux? 
 ifeq ($(UNAME), Linux)
-	LINKER_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+	LINKER_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -llua
 # Windows?
 else
 	LINKER_FLAGS = -Llib -lsfml-graphics -lsfml-window -lsfml-system
 endif
 
-CXX_FLAGS = -Wall -c -g -O0 -fbuiltin -std=c++11 -I include -I $(SRCDIR)/../include
-# LINKER_FLAGS = -L lib -lsfml-graphics -lsfml-window -lsfml-system
+CXX_FLAGS = -Wall -c -g -O0 -fbuiltin -fpermissive -std=c++11 -I include -I $(SRCDIR)/../include
 
 # Directories used for input and output
 SRCDIR = src/src
@@ -44,6 +43,7 @@ debug:
 	gdb ./$(EXEDIR)/$(OUTPUT_NAME)
 val:
 	valgrind ./$(EXEDIR)/$(OUTPUT_NAME)
+	
 # Cleaning everything up
 clean:
 	rm $(BUILDDIR)/*.o && rm $(EXEDIR)/$(OUTPUT_NAME).exe

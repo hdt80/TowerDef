@@ -10,6 +10,11 @@ public:
 	Tower(Map* map, float x, float y, Stats s);
 	~Tower();
 
+	// Events
+	void onUpdate(int diff);
+	void onShoot(Object* target);
+	void onDamageDealt(int dmg, Object* hit);
+
 	void update(int diff);
 	// Shoot at the target
 	void shoot();

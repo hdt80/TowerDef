@@ -45,7 +45,7 @@ void Projectile::onCollision(Object* o) {
 	e->applyDamage(getDamage());
 
 	Stats perk(true);
-	perk.fireRate = 0.5f; 
+	perk.fireRate = -0.1f; 
 	Perk* p = new Perk("AS", perk, 3, 3);
 
 	_shooter->addPerk(p);

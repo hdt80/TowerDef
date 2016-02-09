@@ -5,6 +5,7 @@
 
 #include "Stats.h"
 #include "SkillTree.h"
+#include "LuaScript.h"
 
 #include <string>
 #include <vector>
@@ -19,8 +20,16 @@ public:
 	Object(Map* map, float x, float y, int collRadius, Stats s);
 	virtual ~Object();
 
-	virtual void onCollision(Object* o);
 	bool collidesWith(Object* o);
+
+	// Events
+	virtual void onCollision(Object* o);
+	virtual void onUpdate(int diff);
+	virtual void onMove(int diff);
+	virtual void onShoot(Object* target);
+	virtual void onDamageTaken(int dmg, Object* attacker);
+	virtual void onDamageDealt(int dmg, Object* hit);
+	virtual void onDeath();
 
 	// If that point is within our collision box
 	bool contains(float x, float y);
@@ -44,9 +53,11 @@ public:
 	void applyStat(Stats s);
     void setStats(Stats s, bool relative = true);
 	// Stats getters
-	Stats getStats() { return _stats; }
+	Stats getStatMod() { return _stats; }
+	Stats getStats() { return _stats + _baseStats; }
     Stats getBaseStats() { return _baseStats; };
-	int getSpeed() { return _stats.speed + _baseStats.speed; }
+
+	int getSpeed() const { return _stats.speed + _baseStats.speed; }
 	int getRange() const { return _stats.range + _baseStats.range; }
 	float getFireRate() const { return _stats.fireRate + _baseStats.fireRate; }
 	float getDamage() const { return _stats.damage + _baseStats.damage; }
@@ -97,10 +108,12 @@ protected:
 
 	Map* _map; // Map this object is located on
 
+	LuaScript _lua;
+
 	SkillTree* _tree;
 	std::vector<Perk*> _perks;
 
-	int _attackerCount; // Number of Objects attcking us
+	int _attackerCount; // Number of Objects attacking us
 
     Stats _baseStats;
 	Stats _stats;
