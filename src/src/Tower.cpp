@@ -32,31 +32,16 @@ Tower::~Tower() {}
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::onUpdate(int diff) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Tower::onShoot(Object* target) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onShoot").call<void>(target);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Tower::onDamageDealt(int dmg, Object* hit) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onDamageDealt").call<void>(dmg, hit);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////

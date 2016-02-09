@@ -2,25 +2,21 @@
 #define _LUA_SCRIPT_H
 
 #include <string>
-#include "sol/sol.hpp"
+#include "lua/selene.h"
+
 class LuaScript {
 public:
-	LuaScript(bool defineClasses = false);
+	LuaScript();
 
 	bool isLoaded() { return _loaded; }
 	void setLoaded(bool b) { _loaded = b; }
 
 	void loadScript(const std::string& name);
 
-	sol::table getTable(const std::string& name);
-
-	sol::state lua;
+	sel::State lua;
 
 protected:
 	bool _loaded;
-
-private:
-	void addObject();
 };
 
 #endif

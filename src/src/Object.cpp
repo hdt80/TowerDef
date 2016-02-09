@@ -29,61 +29,31 @@ void Object::onCollision(Object* o) {
 
 void Object::onUpdate(int diff) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Object::onMove(int diff) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onMove").call<void>(diff);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Object::onShoot(Object* target) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onShoot").call<void>(target);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Object::onDamageTaken(int dmg, Object* o) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onDamageTaken").call<void>(dmg, o);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Object::onDamageDealt(int dmg, Object* hit) {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onDamageDealt").call<void>(dmg, hit);
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
 void Object::onDeath() {
 	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onDeath").call<void>();
-		} catch (sol::error e) {
-			CORE_ERROR("[%x] %s", this, e.what());
-		}
 	}
 }
 
