@@ -22,7 +22,6 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	if (getSpeed() <= 0.0f) {
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
-	_lua.loadScript("./lua/tower.lua");
 }
 
 Tower::~Tower() {}
@@ -31,18 +30,12 @@ Tower::~Tower() {}
 // Events
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::onUpdate(int diff) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Tower::onShoot(Object* target) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Tower::onDamageDealt(int dmg, Object* hit) {
-	if (_lua.isLoaded()) {
-	}
 }
 ///////////////////////////////////////////////////////////////////////////////
 // Methods

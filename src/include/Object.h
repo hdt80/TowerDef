@@ -5,7 +5,6 @@
 
 #include "Stats.h"
 #include "SkillTree.h"
-#include "LuaScript.h"
 
 #include <string>
 #include <vector>
@@ -107,8 +106,6 @@ protected:
 	sf::CircleShape _shape;
 
 	Map* _map; // Map this object is located on
-
-	LuaScript _lua;
 
 	SkillTree* _tree;
 	std::vector<Perk*> _perks;

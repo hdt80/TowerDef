@@ -28,33 +28,21 @@ void Object::onCollision(Object* o) {
 };
 
 void Object::onUpdate(int diff) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Object::onMove(int diff) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Object::onShoot(Object* target) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Object::onDamageTaken(int dmg, Object* o) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Object::onDamageDealt(int dmg, Object* hit) {
-	if (_lua.isLoaded()) {
-	}
 }
 
 void Object::onDeath() {
-	if (_lua.isLoaded()) {
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
