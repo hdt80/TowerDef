@@ -9,7 +9,7 @@ ifeq ($(UNAME), Linux)
 	LINKER_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -llua
 # Windows?
 else
-	LINKER_FLAGS = -Llib -lsfml-graphics -lsfml-window -lsfml-system
+	LINKER_FLAGS = -Llib -lsfml-graphics -lsfml-window -lsfml-system -llua
 endif
 
 CXX_FLAGS = -Wall -c -g -O0 -fbuiltin -fpermissive -std=c++11 -I include -I $(SRCDIR)/../include
