@@ -11,7 +11,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Constuctor and deconstrctor
 ///////////////////////////////////////////////////////////////////////////////
-Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s), 
+Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	_lastShot(0.0f) {
 
 	_shape.setRadius(TOWER_WIDTH);
@@ -23,15 +23,33 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
 	_lua.loadScript("./lua/tower.lua");
+	loadLua();
 }
 
 Tower::~Tower() {}
+
+void Tower::loadLua() {
+	if (!_lua.isLoaded()) {
+		CORE_ERROR("[%s] Setting up an unloaded script", this);
+		return;
+	}
+	Object::loadLua();
+
+	_lua.lua["getX"] = [this](){
+		return this->getX();
+	};
+}
+
+void Tower::ret3() {
+	CORE_INFO("hihihi");
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Events
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::onUpdate(int diff) {
 	if (_lua.isLoaded()) {
+		_lua.lua["onUpdate"](diff);
 	}
 }
 
@@ -47,6 +65,14 @@ void Tower::onDamageDealt(int dmg, Object* hit) {
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
+void Tower::setProjectile(Object& o) {
+	if (&o == _projectile) {
+		return;
+	}
+	delete _projectile;
+	_projectile = &o;
+}
+
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_shape);
 }

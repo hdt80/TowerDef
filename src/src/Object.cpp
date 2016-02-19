@@ -27,8 +27,17 @@ void Object::onCollision(Object* o) {
 	CORE_INFO("%x collided with %x", this, o);
 };
 
+// Load all the functions related to the Object
+void Object::loadLua() {
+	CORE_INFO("[%x] Loading script at %x", this, &_lua);
+	if (!_lua.isLoaded()) {
+		CORE_ERROR("Script is not loaded!");
+	}
+}
+
 void Object::onUpdate(int diff) {
 	if (_lua.isLoaded()) {
+		_lua.lua["onUpdate"](diff);
 	}
 }
 

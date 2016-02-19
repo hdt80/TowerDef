@@ -21,6 +21,7 @@ public:
 	virtual ~Object();
 
 	bool collidesWith(Object* o);
+	virtual void loadLua();
 
 	// Events
 	virtual void onCollision(Object* o);

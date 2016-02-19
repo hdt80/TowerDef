@@ -19,7 +19,7 @@ private:
     std::unique_ptr<ExceptionHandler> _exception_handler;
 
 public:
-    State() : State(false) {}
+    State() : State(true) {}
     State(bool should_open_libs) : _l(nullptr), _l_owner(true), _exception_handler(new ExceptionHandler) {
         _l = luaL_newstate();
         if (_l == nullptr) throw 0;

@@ -6,7 +6,7 @@
 
 class LuaScript {
 public:
-	LuaScript();
+	LuaScript(bool loadedClasses = true);
 
 	bool isLoaded() { return _loaded; }
 	void setLoaded(bool b) { _loaded = b; }
@@ -14,9 +14,17 @@ public:
 	void loadScript(const std::string& name);
 
 	sel::State lua;
+	
 
 protected:
 	bool _loaded;
+
+	void defineEnemy();
+	void defineTower();
+	void defineObject();
+	void defineTarget();
+	void defineMap();
+	void defineStats();
 };
 
 #endif

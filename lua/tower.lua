@@ -1,5 +1,6 @@
 function onUpdate(diff)
-
+	print("diff" .. diff);
+	print(getX());
 end
 
 function onShoot(target)
