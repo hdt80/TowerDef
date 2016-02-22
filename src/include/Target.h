@@ -10,10 +10,10 @@ public:
 	Target(Vector2* v) : x(v->X), y(v->Y) {}
 	virtual ~Target(){}
 
-	float distanceWith(Target* t);
 	float distanceWith(float dx, float dy);
-	float distanceWithSqr(Target* t);
+	float distanceWith(Target* t);
 	float distanceWithSqr(float dx, float dy);
+	float distanceWithSqr(Target* t);
 
 	float getX() const { return x; }
 	float getY() const { return y; }

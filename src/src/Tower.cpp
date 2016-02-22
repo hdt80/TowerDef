@@ -22,26 +22,27 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	if (getSpeed() <= 0.0f) {
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
-	_lua.loadScript("./lua/tower.lua");
 	loadLua();
+	_lua.loadScript("./lua/tower.lua");
 }
 
 Tower::~Tower() {}
 
 void Tower::loadLua() {
-	if (!_lua.isLoaded()) {
-		CORE_ERROR("[%s] Setting up an unloaded script", this);
-		return;
+	CORE_INFO("Loading lua[%x] for Tower[%x]", &_lua, this);
+	if (_lua.isLoaded()) {
+		CORE_ERROR("[%x] Setting up an unloaded script", this);
+//		return;
 	}
 	Object::loadLua();
 
-	_lua.lua["getX"] = [this](){
-		return this->getX();
-	};
-}
+//	_lua.lua.set_function("getTowerX", [this]() {
+//		return this->getX();
+//	});
 
-void Tower::ret3() {
-	CORE_INFO("hihihi");
+	_lua.lua.set("me", this);
+
+	CORE_INFO("[%x] Loaded Lua at %x", this, &_lua);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,12 @@ void Tower::ret3() {
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::onUpdate(int diff) {
 	if (_lua.isLoaded()) {
-		_lua.lua["onUpdate"](diff);
+		//_lua.lua["onUpdate"](diff);
+		try {
+			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
+		} catch (sol::error e) {
+			CORE_ERROR("%s", e.what());
+		}
 	}
 }
 
@@ -73,7 +79,7 @@ void Tower::setProjectile(Object& o) {
 	_projectile = &o;
 }
 
-void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Tower::draw(sf::RenderTarget& target, sf::RenderStates luas) const {
 	target.draw(_shape);
 }
 

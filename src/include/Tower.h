@@ -12,8 +12,6 @@ public:
 
 	void loadLua();
 
-	void ret3();
-
 	// Events
 	void onUpdate(int diff);
 	void onShoot(Object* target);

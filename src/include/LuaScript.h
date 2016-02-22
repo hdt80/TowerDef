@@ -3,6 +3,7 @@
 
 #include <string>
 #include "lua/selene.h"
+#include "sol/sol.hpp"
 
 class LuaScript {
 public:
@@ -13,8 +14,7 @@ public:
 
 	void loadScript(const std::string& name);
 
-	sel::State lua;
-	
+	sol::state lua;
 
 protected:
 	bool _loaded;
