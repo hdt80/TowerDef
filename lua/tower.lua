@@ -1,10 +1,9 @@
 function onUpdate(diff)
-	print("diff" .. diff);
-	print(getX());
+	--print(me:getX() .. ", " .. me:getY());
 end
 
 function onShoot(target)
-	print("shot shit " .. target)
+	print("Shooting at (" .. target:getX() .. ", " .. target:getY() .. ")");
 end
 
 function onDamageDealt(dmg, hit)

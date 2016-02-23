@@ -29,8 +29,8 @@ void Object::onCollision(Object* o) {
 
 // Load all the functions related to the Object
 void Object::loadLua() {
-	if (!_lua.isLoaded()) {
-		CORE_ERROR("Script is not loaded!");
+	if (_lua.isLoaded()) {
+		CORE_ERROR("Setting up a loaded Lua script!");
 	}
 }
 

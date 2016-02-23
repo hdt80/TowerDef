@@ -8,10 +8,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Constuctor and deconstrctor
 ///////////////////////////////////////////////////////////////////////////////
-// Enemy::Enemy() : Target(0, 0) {
-// 	Enemy(0, 0, nullptr);
-// }
-
 Enemy::Enemy(Map* map, float health, Stats s, Path* p, int collRadius) :
 	Object(map, 0, 0, collRadius, s),
 	_health(health), _maxHealth(health), _path(p), _pathPoint(0),
@@ -24,7 +20,15 @@ Enemy::Enemy(Map* map, float health, Stats s, Path* p, int collRadius) :
 
 	setPosition(p->getPoint(0)->X, p->getPoint(0)->Y);
 	_target = new Target(p->getPoint(1));
+
+	loadLua();
+	_lua.loadScript("./lua/enemy.lua");
 }
+
+Enemy::Enemy() {
+	Enemy(nullptr, 20, Stats(), nullptr, 20);
+}
+
 
 Enemy::~Enemy() {
 	if (_ended) {
@@ -32,10 +36,39 @@ Enemy::~Enemy() {
 	}
 	ParticleEmit::emit(x, y, 50, Color(255, 0, 0, 255));
 }
+////////////////////////////////////////////////////////////////////////////////
+// Events
+////////////////////////////////////////////////////////////////////////////////
+void Enemy::onUpdate(int diff) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
+		} catch (sol::error e) {
+			CORE_ERROR("[Enemy %x] %s", this, e.what());
+		}
+	}
+}
+
+void Enemy::onDamageTaken(int dmg, Object* hitter) {
+
+}
+
+void Enemy::onDeath() {
+	
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////
+void Enemy::loadLua() {
+	if (_lua.isLoaded()) {
+		CORE_ERROR("[Enemy: %x] Setting up a loaded Lua at %x", this, &_lua);
+	}
+	Object::loadLua();
+
+	_lua.lua.set("me", this);
+}
+
 void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_shape);
 	target.draw(_hpBar);
@@ -69,6 +102,7 @@ void Enemy::update(int diff) {
 			setTarget(new Target(_path->getPoint(_pathPoint)));
 		}
 	}
+	Object::update(diff);
 }
 
 // Positive damage values take health away while negative values add health

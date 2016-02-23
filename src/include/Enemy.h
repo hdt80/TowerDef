@@ -7,9 +7,16 @@
 
 class Enemy : public Object {
 public:
-	//Enemy();
+	Enemy();
 	Enemy(Map* map, float health, Stats s, Path* p, int collRadius);
 	virtual ~Enemy();
+
+	void loadLua();
+
+	// Events
+	void onUpdate(int diff);
+	void onDamageTaken(int, Object*);
+	void onDeath();
 
 	// Update the enemy depending on its target, updating its coords
 	// @param diff - Amounts of milliseconds the object is supposed to move

@@ -29,9 +29,8 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 Tower::~Tower() {}
 
 void Tower::loadLua() {
-	CORE_INFO("Loading lua[%x] for Tower[%x]", &_lua, this);
 	if (_lua.isLoaded()) {
-		CORE_ERROR("[%x] Setting up an unloaded script", this);
+		CORE_ERROR("[Tower: %x] Setting up an loaded script", this);
 //		return;
 	}
 	Object::loadLua();
@@ -42,7 +41,7 @@ void Tower::loadLua() {
 
 	_lua.lua.set("me", this);
 
-	CORE_INFO("[%x] Loaded Lua at %x", this, &_lua);
+	CORE_INFO("[Tower: %x] Loaded Lua at %x", this, &_lua);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,22 +49,31 @@ void Tower::loadLua() {
 ///////////////////////////////////////////////////////////////////////////////
 void Tower::onUpdate(int diff) {
 	if (_lua.isLoaded()) {
-		//_lua.lua["onUpdate"](diff);
 		try {
 			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
 		} catch (sol::error e) {
-			CORE_ERROR("%s", e.what());
+			CORE_ERROR("[Tower %x] %s", this, e.what());
 		}
 	}
 }
 
 void Tower::onShoot(Object* target) {
 	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onShoot").call<void>(target);
+		} catch (sol::error e) {
+			CORE_ERROR("[Tower %x] %s", this, e.what());
+		}
 	}
 }
 
 void Tower::onDamageDealt(int dmg, Object* hit) {
 	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDamageDealt").call<void>(dmg, hit);
+		} catch (sol::error e) {
+			CORE_ERROR("[Tower %x] %s", this, e.what());
+		}
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,7 +87,7 @@ void Tower::setProjectile(Object& o) {
 	_projectile = &o;
 }
 
-void Tower::draw(sf::RenderTarget& target, sf::RenderStates luas) const {
+void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_shape);
 }
 

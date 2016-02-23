@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "Tower.h"
 #include "Target.h"
+#include "Enemy.h"
 
 LuaScript::LuaScript(bool defineClasses) {
 	_loaded = false;
@@ -14,8 +15,8 @@ LuaScript::LuaScript(bool defineClasses) {
 	if (defineClasses) {
 		CORE_INFO("Defining classes for %x", this);
 		defineTarget();
-		defineEnemy();
 		defineTower();
+		defineEnemy();
 		defineObject();
 		defineMap();
 		defineStats();
@@ -28,7 +29,6 @@ void LuaScript::loadScript(const std::string& name) {
 }
 
 void LuaScript::defineTower() {
-	CORE_INFO("Defining Tower");
 	sol::constructors<sol::types<Map*, float, float, Stats>> towerCon;
 	sol::userdata<Tower> towerUserData (
 		"Tower", towerCon,
@@ -55,11 +55,22 @@ void LuaScript::defineTower() {
 }
 
 void LuaScript::defineObject() {
-	CORE_INFO("Defining Object");
+	sol::constructors<sol::types<>> objCon;
+	sol::userdata<Object> objectUserData (
+		"Object", objCon,
+		"getX", &Object::getX,
+		"getY", &Object::getY,
+		// Object methods
+		"contains", &Object::contains,
+		"applyStat", &Object::applyStat,
+		"setStats", &Object::setStats,
+		"getSpeed", &Object::getSpeed,
+		"getRange", &Object::getRange
+	);
+	lua.set_userdata(objectUserData);
 }
 
 void LuaScript::defineTarget() {
-	CORE_INFO("Defining Target");
 	// Define the constructor used by a Target
 	sol::constructors<sol::types<float, float>> targetConstuctor;
 	// Create the user_data so we can call Target's methods within Lua
@@ -74,16 +85,42 @@ void LuaScript::defineTarget() {
 }
 
 void LuaScript::defineMap() {
-	CORE_INFO("Defining Map");
 
 }
 
 void LuaScript::defineStats() {
-	CORE_INFO("Defining Stats");
 
 }
 
 void LuaScript::defineEnemy() {
-	CORE_INFO("Defining Enemy");
-
+	sol::constructors<sol::types<>> enemyCon;
+		//sol::types<Map*, float, Stats, Path*, int>> enemyCon;
+	sol::userdata<Enemy> enemyUserData (
+		"Enemy", enemyCon,
+		// Target methods
+		"getX", &Enemy::getX,
+		"getY", &Enemy::getY,
+		//"distanceWith", &Enemy::distanceWith,
+		//"distanceWithSqr", &Enemy::distanceWithSqr,
+		"isSimpleTarget", &Enemy::isSimpleTarget,
+		// Object methods
+		"contains", &Enemy::contains,
+		"applyStat", &Enemy::applyStat,
+		"setStats", &Enemy::setStats,
+		"getSpeed", &Enemy::getSpeed,
+		"getRange", &Enemy::getRange,
+		"getFireRate", &Enemy::getFireRate,
+		"getDamage", &Enemy::getDamage,
+		"getAccel", &Enemy::getAccel,
+		// Enemy methods
+		"applyDamage", &Enemy::applyDamage,
+		"getHealth", &Enemy::getHealth,
+		"getMaxHealth", &Enemy::getMaxHealth,
+		"getPath", &Enemy::getPath,
+		"setHealth", &Enemy::setHealth,
+		"setMaxHealth", &Enemy::setMaxHealth,
+		"setTarget", &Enemy::setTarget,
+		"setPath", &Enemy::setPath
+	);
+	lua.set_userdata(enemyUserData);
 }

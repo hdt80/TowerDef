@@ -12,7 +12,8 @@ else
 	LINKER_FLAGS = -Llib -lsfml-graphics -lsfml-window -lsfml-system -llua
 endif
 
-CXX_FLAGS = -Wall -c -g -O0 -fbuiltin -fpermissive -std=c++11 -I include -I $(SRCDIR)/../include
+# Enable all warnings but format and unused variables
+CXX_FLAGS = -Wall -Wno-format -Wno-unused-variable -c -g -O0 -fbuiltin -fpermissive -std=c++11 -I include -I $(SRCDIR)/../include
 
 # Directories used for input and output
 SRCDIR = src/src
