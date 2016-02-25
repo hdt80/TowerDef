@@ -42,13 +42,9 @@ void Projectile::onCollision(Object* o) {
 		return;
 	}
 	ParticleEmit::emit(x, y, 10, _color);
-	e->applyDamage(getDamage());
+	e->applyDamage(getDamage(), _shooter);
 
-	Stats perk(true);
-	perk.fireRate = -0.1f; 
-	Perk* p = new Perk("AS", perk, 3, 3);
-
-	_shooter->addPerk(p);
+	_shooter->onDamageDealt(getDamage(), e);
 
 	_toRemove = true;
 }

@@ -25,7 +25,7 @@ public:
 
 	sf::FloatRect getCollisionBox() { return _shape.getGlobalBounds(); }
 
-	void applyDamage(float d);
+	void applyDamage(float d, Object* hitter);
 
 	float getHealth() const { return _health; }
 	float getMaxHealth() const { return _maxHealth; }

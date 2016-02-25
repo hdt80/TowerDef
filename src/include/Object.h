@@ -16,11 +16,16 @@ class Perk;
 
 class Object : public Target, public sf::Drawable, public sf::Transformable {
 public:
+	// A default constructor must be defined for Sol for some reason.
+	// This constructor should never be used and is only for Sol
 	Object();
 	Object(Map* map, float x, float y, int collRadius, Stats s);
 	virtual ~Object();
 
+	// If Object* o collides with us
 	bool collidesWith(Object* o);
+
+	// Load the Lua file and define all helper Lua methods
 	virtual void loadLua();
 
 	// Events
@@ -66,6 +71,7 @@ public:
 	float getProjSpeed() const { return _stats.projSpeed + _baseStats.projSpeed; }
 	// Stats setters
 	void setRange(int r) { _stats.range = r; }
+	//void setRange(int r);
 	void setFireRate(float r) { _stats.fireRate = r; }
 	void setDamage(float d) { _stats.damage = d; }
 	void setSpeed(int s) { _stats.speed = s; }
@@ -114,7 +120,7 @@ protected:
 	SkillTree* _tree;
 	std::vector<Perk*> _perks;
 
-	int _attackerCount; // Number of Objects attacking us
+	int _attackerCount; // Number of Objects that have targetted us
 
     Stats _baseStats;
 	Stats _stats;

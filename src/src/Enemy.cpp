@@ -49,12 +49,24 @@ void Enemy::onUpdate(int diff) {
 	}
 }
 
-void Enemy::onDamageTaken(int dmg, Object* hitter) {
-
+void Enemy::onDamageTaken(int dmg, Object* who) {
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDamageTaken").call<void>(dmg, who);
+		} catch (sol::error e) {
+			CORE_ERROR("[Enemy %x] %s", this, e.what());
+		}
+	}
 }
 
 void Enemy::onDeath() {
-	
+	if (_lua.isLoaded()) {
+		try {
+			_lua.lua.get<sol::function>("onDeath").call<void>();
+		} catch (sol::error e) {
+			CORE_ERROR("[Enemy %x] %s", this, e.what());
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,7 +118,9 @@ void Enemy::update(int diff) {
 }
 
 // Positive damage values take health away while negative values add health
-void Enemy::applyDamage(float amount) {
+// Hitter is the Tower that hit us, not the projectile
+void Enemy::applyDamage(float amount, Object* hitter) {
+	onDamageTaken(amount, hitter);
 	_health -= amount;
 	_hpBar.setSize(sf::Vector2f(
 		ENEMY_WIDTH * 2 * (getHealth() / getMaxHealth()), 4));

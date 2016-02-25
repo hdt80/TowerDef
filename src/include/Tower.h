@@ -21,6 +21,8 @@ public:
 	// Shoot at the target
 	void shoot();
 
+	void setPosition(float x, float y);
+
 	Object* getProjectile() { return _projectile; }
 	void setProjectile(Object& o);
 

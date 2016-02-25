@@ -13,11 +13,10 @@ LuaScript::LuaScript(bool defineClasses) {
 		sol::lib::package, sol::lib::math, sol::lib::debug);
 
 	if (defineClasses) {
-		CORE_INFO("Defining classes for %x", this);
 		defineTarget();
+		defineObject();
 		defineTower();
 		defineEnemy();
-		defineObject();
 		defineMap();
 		defineStats();
 	}
@@ -35,6 +34,7 @@ void LuaScript::defineTower() {
 		// Target methods
 		"getX", &Tower::getX,
 		"getY", &Tower::getY,
+		"setPosition", &Tower::setPosition,
 		//"distanceWith", &Tower::distanceWith,
 		//"distanceWithSqr", &Tower::distanceWithSqr,
 		"isSimpleTarget", &Tower::isSimpleTarget,
@@ -47,6 +47,13 @@ void LuaScript::defineTower() {
 		"getFireRate", &Tower::getFireRate,
 		"getDamage", &Tower::getDamage,
 		"getAccel", &Tower::getAccel,
+		"getProjSpeed", &Tower::getProjSpeed,
+		//"setRange", &Tower::setRange,
+		//"setFireRate", &Tower::setFireRate,
+		//"setDamage", &Tower::setDamage,
+		//"setSpeed", &Tower::setSpeed,
+		//"setAccel", &Tower::setAccel,
+		//"setProjSpeed", &Tower::setProjSpeed,
 		// Tower methods
 		"getProjectile", &Tower::getProjectile,
 		"setProjectile", &Tower::setProjectile
@@ -65,7 +72,8 @@ void LuaScript::defineObject() {
 		"applyStat", &Object::applyStat,
 		"setStats", &Object::setStats,
 		"getSpeed", &Object::getSpeed,
-		"getRange", &Object::getRange
+		"getRange", &Object::getRange,
+		"setRange", &Object::setRange
 	);
 	lua.set_userdata(objectUserData);
 }
@@ -89,7 +97,12 @@ void LuaScript::defineMap() {
 }
 
 void LuaScript::defineStats() {
-
+	sol::constructors<sol::types<bool>,
+		sol::types<float, float, float, float, float, float>> statsCon;
+	sol::userdata<Stats> statsUserData (
+		"Stats", statsCon
+	);
+	lua.set_userdata(statsUserData);
 }
 
 void LuaScript::defineEnemy() {

@@ -87,6 +87,16 @@ void Tower::setProjectile(Object& o) {
 	_projectile = &o;
 }
 
+void Tower::setPosition(float x, float y) {
+	this->x = x;
+	this->y = y;
+	_shape.setPosition(x, y);
+}
+
+//void Tower::setRange(int r) {
+//	_stats.range = r;
+//}
+
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_shape);
 }
