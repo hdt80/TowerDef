@@ -1,5 +1,6 @@
 # Compilers
 CXX = g++
+#CXX = clang++
 CC = gcc
 
 UNAME := $(shell uname)
@@ -13,7 +14,7 @@ else
 endif
 
 # Enable all warnings but format and unused variables
-CXX_FLAGS = -Wall -Wno-format -Wno-unused-variable -c -g -O0 -fbuiltin -fpermissive -std=c++11 -I include -I $(SRCDIR)/../include
+CXX_FLAGS = -Wall -Wno-format -Wno-unused-variable -Wno-varargs -c -g -O0 -fbuiltin -fpermissive -std=c++14 -I include -I $(SRCDIR)/../include
 
 # Directories used for input and output
 SRCDIR = src/src

@@ -29,13 +29,13 @@ void LuaScript::loadScript(const std::string& name) {
 
 void LuaScript::defineTower() {
 	sol::constructors<sol::types<Map*, float, float, Stats>> towerCon;
-	sol::userdata<Tower> towerUserData (
+	sol::usertype<Tower> towerUserData (
 		"Tower", towerCon,
 		// Target methods
 		"getX", &Tower::getX,
 		"getY", &Tower::getY,
 		"setPosition", &Tower::setPosition,
-		//"distanceWith", &Tower::distanceWith,
+		//"distanceWith", &Tower::distanceWith, // Doesn't work
 		//"distanceWithSqr", &Tower::distanceWithSqr,
 		"isSimpleTarget", &Tower::isSimpleTarget,
 		// Object methods
@@ -48,22 +48,22 @@ void LuaScript::defineTower() {
 		"getDamage", &Tower::getDamage,
 		"getAccel", &Tower::getAccel,
 		"getProjSpeed", &Tower::getProjSpeed,
-		//"setRange", &Tower::setRange,
-		//"setFireRate", &Tower::setFireRate,
-		//"setDamage", &Tower::setDamage,
-		//"setSpeed", &Tower::setSpeed,
-		//"setAccel", &Tower::setAccel,
-		//"setProjSpeed", &Tower::setProjSpeed,
+		"setRange", &Tower::setRange,
+		"setFireRate", &Tower::setFireRate,
+		"setDamage", &Tower::setDamage,
+		"setSpeed", &Tower::setSpeed,
+		"setAccel", &Tower::setAccel,
+		"setProjSpeed", &Tower::setProjSpeed,
 		// Tower methods
 		"getProjectile", &Tower::getProjectile,
 		"setProjectile", &Tower::setProjectile
 	);
-	lua.set_userdata(towerUserData);
+	lua.set_usertype(towerUserData);
 }
 
 void LuaScript::defineObject() {
 	sol::constructors<sol::types<>> objCon;
-	sol::userdata<Object> objectUserData (
+	sol::usertype<Object> objectUserData (
 		"Object", objCon,
 		"getX", &Object::getX,
 		"getY", &Object::getY,
@@ -75,21 +75,21 @@ void LuaScript::defineObject() {
 		"getRange", &Object::getRange,
 		"setRange", &Object::setRange
 	);
-	lua.set_userdata(objectUserData);
+	lua.set_usertype(objectUserData);
 }
 
 void LuaScript::defineTarget() {
 	// Define the constructor used by a Target
 	sol::constructors<sol::types<float, float>> targetConstuctor;
 	// Create the user_data so we can call Target's methods within Lua
-	sol::userdata<Target> targetUserData(
+	sol::usertype<Target> targetUserData(
 		"Target", targetConstuctor,
 		"getX", &Target::getX,
 		"getY", &Target::getY,
 		"setPosition", &Target::setPosition,
 		"isSimpleTarget", &Target::isSimpleTarget
 	);
-	lua.set_userdata(targetUserData);
+	lua.set_usertype(targetUserData);
 }
 
 void LuaScript::defineMap() {
@@ -99,16 +99,16 @@ void LuaScript::defineMap() {
 void LuaScript::defineStats() {
 	sol::constructors<sol::types<bool>,
 		sol::types<float, float, float, float, float, float>> statsCon;
-	sol::userdata<Stats> statsUserData (
+	sol::usertype<Stats> statsUserData (
 		"Stats", statsCon
 	);
-	lua.set_userdata(statsUserData);
+	lua.set_usertype(statsUserData);
 }
 
 void LuaScript::defineEnemy() {
 	sol::constructors<sol::types<>> enemyCon;
 		//sol::types<Map*, float, Stats, Path*, int>> enemyCon;
-	sol::userdata<Enemy> enemyUserData (
+	sol::usertype<Enemy> enemyUserData (
 		"Enemy", enemyCon,
 		// Target methods
 		"getX", &Enemy::getX,
@@ -135,5 +135,5 @@ void LuaScript::defineEnemy() {
 		"setTarget", &Enemy::setTarget,
 		"setPath", &Enemy::setPath
 	);
-	lua.set_userdata(enemyUserData);
+	lua.set_usertype(enemyUserData);
 }

@@ -1,3 +1,8 @@
+#ifdef LUA_COMPACT_USE
+#warning "ACK"
+#endif
+
+
 #ifndef _TOWER_H
 #define _TOWER_H
 
