@@ -7,6 +7,8 @@
 #include "Target.h"
 #include "Enemy.h"
 
+#include <utility>
+
 LuaScript::LuaScript(bool defineClasses) {
 	_loaded = false;
 	lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table,
@@ -27,6 +29,21 @@ void LuaScript::loadScript(const std::string& name) {
 	setLoaded(true);
 }
 
+//template<typename... Args>
+//void LuaScript::callFunction(const char* name, Args&&... args) {
+//	if (isLoaded()) {
+//		try {
+//			lua.get<sol::function>(name).template call<void>(args...);
+//		} catch (sol::error e) {
+//			CORE_ERROR("[Lua Script %x] %s", this, e.what());
+//		}
+//	}
+//}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Object defenitions for Lua scripts
+///////////////////////////////////////////////////////////////////////////////
 void LuaScript::defineTower() {
 	sol::constructors<sol::types<Map*, float, float, Stats>> towerCon;
 	sol::usertype<Tower> towerUserData (

@@ -1,6 +1,6 @@
 # Compilers
 CXX = g++
-#CXX = clang++
+CXX = clang++
 CC = gcc
 
 UNAME := $(shell uname)

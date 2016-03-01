@@ -71,7 +71,6 @@ public:
 	float getProjSpeed() const { return _stats.projSpeed + _baseStats.projSpeed; }
 	// Stats setters
 	void setRange(int r) { _stats.range = r; }
-	//void setRange(int r);
 	void setFireRate(float r) { _stats.fireRate = r; }
 	void setDamage(float d) { _stats.damage = d; }
 	void setSpeed(int s) { _stats.speed = s; }

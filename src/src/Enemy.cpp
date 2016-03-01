@@ -40,33 +40,15 @@ Enemy::~Enemy() {
 // Events
 ////////////////////////////////////////////////////////////////////////////////
 void Enemy::onUpdate(int diff) {
-	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onUpdate").call<void>(diff);
-		} catch (sol::error e) {
-			CORE_ERROR("[Enemy %x] %s", this, e.what());
-		}
-	}
+	_lua.callFunction("onUpdate", diff);
 }
 
 void Enemy::onDamageTaken(int dmg, Object* who) {
-	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onDamageTaken").call<void>(dmg, who);
-		} catch (sol::error e) {
-			CORE_ERROR("[Enemy %x] %s", this, e.what());
-		}
-	}
+	_lua.callFunction("onDamageTaken", dmg, who);
 }
 
 void Enemy::onDeath() {
-	if (_lua.isLoaded()) {
-		try {
-			_lua.lua.get<sol::function>("onDeath").call<void>();
-		} catch (sol::error e) {
-			CORE_ERROR("[Enemy %x] %s", this, e.what());
-		}
-	}
+	_lua.callFunction("onDeath");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
