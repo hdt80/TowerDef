@@ -4,6 +4,8 @@
 #include <string>
 #include <stdio.h>
 
+#include "Colors.h"
+
 class Logger {
 public:
 	static Logger& instance() {

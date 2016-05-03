@@ -49,7 +49,7 @@ void Stats::operator+= (const Stats& o) {
 }
 
 void Stats::print() {
-	CORE_INFO("Range: %i", range);
+	CORE_INFO("Range: %g", range);
 	CORE_INFO("FireRate: %g", fireRate);
 	CORE_INFO("Damage: %g", damage);
 	CORE_INFO("Speed: %g", speed);

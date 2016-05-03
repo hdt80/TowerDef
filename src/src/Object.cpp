@@ -30,37 +30,49 @@ void Object::onCollision(Object* o) {
 // Load all the functions related to the Object
 void Object::loadLua() {
 	if (_lua.isLoaded()) {
-		CORE_ERROR("Setting up a loaded Lua script!");
+		CORE_WARNING("Setting up a loaded Lua script!");
 	}
 }
 
 void Object::onUpdate(int diff) {
-	if (_lua.isLoaded()) {
+	_lua.callFunction("onUpdate", diff);
+	for (unsigned int i = 0; i < _perks.size(); ++i) {
+		_perks[i]->onUpdate(diff);
 	}
 }
 
 void Object::onMove(int diff) {
-	if (_lua.isLoaded()) {
+	_lua.callFunction("onMove", diff);
+	for (unsigned int i = 0; i < _perks.size(); ++i) {
+		_perks[i]->onMove(diff);
 	}
 }
 
 void Object::onShoot(Object* target) {
-	if (_lua.isLoaded()) {
+	_lua.callFunction("onShoot", target);
+	for (unsigned int i = 0; i < _perks.size(); ++i) {
+		_perks[i]->onShoot(target);
 	}
 }
 
 void Object::onDamageTaken(int dmg, Object* o) {
-	if (_lua.isLoaded()) {
+	_lua.callFunction("onDamageTaken", dmg, o);
+	for (unsigned int i = 0; i < _perks.size(); ++i) {
+		_perks[i]->onDamageTaken(dmg, o);
 	}
 }
 
 void Object::onDamageDealt(int dmg, Object* hit) {
-	if (_lua.isLoaded()) {
+	_lua.callFunction("onDamageDealt", dmg, hit);
+	for (unsigned int i = 0; i < _perks.size(); ++i) {
+		_perks[i]->onDamageDealt(dmg, hit);
 	}
 }
 
 void Object::onDeath() {
-	if (_lua.isLoaded()) {
+	_lua.callFunction("onDeath");
+	for (unsigned int i = 0; i < _perks.size(); ++i) {
+		_perks[i]->onDeath();
 	}
 }
 
@@ -150,6 +162,8 @@ void Object::addPerk(Perk* p) {
 	// If we already have the buff
 	if (getPerk(p->getName()) != nullptr) {
 		Perk* curP = getPerk(p->getName());
+		curP->setAttached(this);
+
 		// Stackable and we can add a stack? Apply stat change and add 1 stack
 		if (p->isStackable() && (curP->getStacks() < curP->getMaxStacks())) {
 			// Add the stat mod to the current perk so removal is correct
@@ -160,6 +174,7 @@ void Object::addPerk(Perk* p) {
 		// Reset duration
 		curP->setDuration(p->getDuration());
 	} else {
+		p->setAttached(this);
 		_perks.push_back(p);
 		applyStat(*p->getStats());
 	}

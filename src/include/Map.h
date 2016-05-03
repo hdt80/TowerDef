@@ -39,6 +39,8 @@ public:
 	Tower* towerAt(float x, float y);
 	bool inMap(Object* o);
 
+	std::vector<Object*> getObjectsInRange(Target* t, float range);
+
 	std::vector<Object*> objects;
 
 	std::vector<Object*> toRemove;

@@ -7,8 +7,6 @@
 #include "Target.h"
 #include "Enemy.h"
 
-#include <utility>
-
 LuaScript::LuaScript(bool defineClasses) {
 	_loaded = false;
 	lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table,
@@ -24,31 +22,33 @@ LuaScript::LuaScript(bool defineClasses) {
 	}
 }
 
-void LuaScript::loadScript(const std::string& name) {
-	lua.open_file(name);
-	setLoaded(true);
+void LuaScript::loadScript(const std::string& path) {
+	try {
+		_name = path;
+		lua.script_file(path);
+		_loaded = true;
+	} catch (sol::error e) {
+		setLoaded(false);
+		CORE_ERROR("[Lua Script %x] Error when loading from \"%s\": %s",
+			this, path.c_str(), e.what());
+	}
 }
 
-//template<typename... Args>
-//void LuaScript::callFunction(const char* name, Args&&... args) {
-//	if (isLoaded()) {
-//		try {
-//			lua.get<sol::function>(name).template call<void>(args...);
-//		} catch (sol::error e) {
-//			CORE_ERROR("[Lua Script %x] %s", this, e.what());
-//		}
-//	}
-//}
-
+void LuaScript::printTable() {
+	auto iter = lua.begin();
+	CORE_INFO("[LuaScript %x] Print %s", this, _name.c_str());
+	while (iter != lua.end()) {
+		CORE_INFO("%s", (*iter).first.as<std::string>().c_str());
+		++iter;
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Object defenitions for Lua scripts
 ///////////////////////////////////////////////////////////////////////////////
 void LuaScript::defineTower() {
-	sol::constructors<sol::types<Map*, float, float, Stats>> towerCon;
-	sol::usertype<Tower> towerUserData (
-		"Tower", towerCon,
-		// Target methods
+	lua.new_usertype<Tower> (
+		"Tower", sol::constructors<sol::types<Map*, float, float, Stats>>(),
 		"getX", &Tower::getX,
 		"getY", &Tower::getY,
 		"setPosition", &Tower::setPosition,
@@ -75,13 +75,12 @@ void LuaScript::defineTower() {
 		"getProjectile", &Tower::getProjectile,
 		"setProjectile", &Tower::setProjectile
 	);
-	lua.set_usertype(towerUserData);
 }
 
 void LuaScript::defineObject() {
-	sol::constructors<sol::types<>> objCon;
-	sol::usertype<Object> objectUserData (
-		"Object", objCon,
+	lua.new_usertype<Object> (
+		"Object", sol::constructors<
+				sol::types<Map*, float, float, int, Stats>>(),
 		"getX", &Object::getX,
 		"getY", &Object::getY,
 		// Object methods
@@ -92,21 +91,16 @@ void LuaScript::defineObject() {
 		"getRange", &Object::getRange,
 		"setRange", &Object::setRange
 	);
-	lua.set_usertype(objectUserData);
 }
 
 void LuaScript::defineTarget() {
-	// Define the constructor used by a Target
-	sol::constructors<sol::types<float, float>> targetConstuctor;
-	// Create the user_data so we can call Target's methods within Lua
-	sol::usertype<Target> targetUserData(
-		"Target", targetConstuctor,
+	lua.new_usertype<Target> (
+		"Target", sol::constructors<sol::types<float, float>>(),
 		"getX", &Target::getX,
 		"getY", &Target::getY,
 		"setPosition", &Target::setPosition,
 		"isSimpleTarget", &Target::isSimpleTarget
 	);
-	lua.set_usertype(targetUserData);
 }
 
 void LuaScript::defineMap() {
@@ -114,19 +108,32 @@ void LuaScript::defineMap() {
 }
 
 void LuaScript::defineStats() {
-	sol::constructors<sol::types<bool>,
-		sol::types<float, float, float, float, float, float>> statsCon;
-	sol::usertype<Stats> statsUserData (
-		"Stats", statsCon
+	lua.new_usertype<Stats> (
+		"Stats", sol::constructors<
+			sol::types<bool>,
+			sol::types<float, float, float, float, float, float, bool>
+		>(),		
+		"range", &Stats::range,
+		"fireRate", &Stats::fireRate,
+		"damage", &Stats::damage,
+		"projSpeed", &Stats::projSpeed,
+		"accel", &Stats::accel
 	);
-	lua.set_usertype(statsUserData);
+}
+
+void LuaScript::definePerk() {
+	lua.new_usertype<Perk> (
+		"Perk", sol::constructors<sol::types<std::string, Stats, float, int>>(),
+		"getName", &Perk::getName,
+		"getTitle", &Perk::getTitle,
+		"getStats", &Perk::getStats
+	);
 }
 
 void LuaScript::defineEnemy() {
-	sol::constructors<sol::types<>> enemyCon;
-		//sol::types<Map*, float, Stats, Path*, int>> enemyCon;
-	sol::usertype<Enemy> enemyUserData (
-		"Enemy", enemyCon,
+	lua.new_usertype<Enemy> (
+		"Enemy", sol::constructors<
+				sol::types<Map*, float, Stats, Path*, int>>(),
 		// Target methods
 		"getX", &Enemy::getX,
 		"getY", &Enemy::getY,
@@ -151,6 +158,6 @@ void LuaScript::defineEnemy() {
 		"setMaxHealth", &Enemy::setMaxHealth,
 		"setTarget", &Enemy::setTarget,
 		"setPath", &Enemy::setPath
+
 	);
-	lua.set_usertype(enemyUserData);
 }

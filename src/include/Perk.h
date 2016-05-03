@@ -3,21 +3,36 @@
 
 #include <string>
 #include "Stats.h"
+#include "LuaScript.h"
+
+class Object;
 
 // A permentant stat change. When a Perk is added the base stats will be
-// changed, and when removed the opposite of the Perk is removed. 
+// changed, and when removed the opposite of the Perk is removed.
 class Perk {
 public:
 	// More than one max stack means a perk is stackable
 	Perk(std::string name, Stats s, float dur, int maxStacks = 0);
 	~Perk();
 
+	void loadLua();
+
 	Perk* clone();
 
 	void update(int diff);
-    void onApply();
 
-    void setAttached();
+	// Each event is called when the attached Object calls it
+	void onUpdate(int diff);
+	void onMove(int diff);
+	void onShoot(Object* target);
+	void onDamageDealt(int dmg, Object* hit);
+	void onDamageTaken(int dmg, Object* hitter);
+	void onDeath();
+    void onApply(Object* attached);
+
+	void setAttached(Object* attached);
+//    void setAttached(Object* attached) { _attached = attached; }
+	Object* getAttached() { return _attached; }
 
 	std::string getName() const { return _name; }
 	std::string getTitle() const;
@@ -41,9 +56,14 @@ public:
 protected:
 	std::string _name; // Display name of the perk
 
+	// Scripts to be called when the Object calls each respective Method
+	// _name is the path of the script under ./lua/$(_name).lua
+	LuaScript _lua;
+	Object* _attached; // Object we're attached to
+
 	Stats _stats; // Stats applied to the Object
 	float _duration; // -1 duration means infinite
-	float _maxDuration;
+	float _maxDuration; //_duration changes each update, but _maxDuration doesnt
 
 	int _stacks;
 	int _maxStacks;

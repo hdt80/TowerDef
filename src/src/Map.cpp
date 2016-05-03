@@ -124,6 +124,16 @@ Tower* Map::towerAt(float x, float y) {
 	return nullptr;
 }
 
+std::vector<Object*> Map::getObjectsInRange(Target* t, float r) {
+	std::vector<Object*> objs;
+	for (unsigned int i = 0; i < objects.size(); ++i) {
+		if (objects[i]->distanceWith(t->getX(), t->getY()) <= r) {
+			objs.push_back(objects[i]);	
+		}
+	}
+	return objs;
+}
+
 bool Map::inMap(Object* o) {
 	return (o->getX() > 0 || o->getX() < _width ||
 			o->getY() > 0 || o->getY() < _height);

@@ -12,7 +12,9 @@ public:
 	bool isLoaded() { return _loaded; }
 	void setLoaded(bool b) { _loaded = b; }
 
-	void loadScript(const std::string& name);
+	// Load the file at that path. Any filetype can be used
+	void loadScript(const std::string& path);
+	void printTable();
 
 	template<typename... Args>
 	void callFunction(const char* name, Args&&... args) {
@@ -20,7 +22,8 @@ public:
 			try {
 				lua.get<sol::function>(name).template call<void>(args...);
 			} catch (sol::error e) {
-				CORE_ERROR("[Lua Scripts %x] %s", this, e.what());
+				CORE_ERROR("[Lua Script %x: %s] Error when calling \"%s\": %s",
+					this, _name.c_str(), name, e.what());
 			}
 		}
 	}
@@ -28,6 +31,7 @@ public:
 	sol::state lua;
 
 protected:
+	std::string _name; // File name that's loaded
 	bool _loaded;
 
 	void defineEnemy();
@@ -36,6 +40,7 @@ protected:
 	void defineTarget();
 	void defineMap();
 	void defineStats();
+	void definePerk();
 };
 
 #endif

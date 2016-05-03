@@ -34,13 +34,16 @@ void SkillTreeWindow::keyEvent(sf::Event& e) {
 }
 
 void SkillTreeWindow::mouseEvent(sf::Event& e) {
-    //CORE_INFO("(%g, %g)", e.mouseButton.x, e.mouseButton.y);
     SkillNode* node = _tree->getNode(e.mouseButton.x, e.mouseButton.y);
     node->print();
     if (node) {
         CORE_INFO("Clicked on \'%s\'", node->name().c_str());
         if (node->unlocked()) {
             node->incPoints();
+			if (node->points > 0) {
+				node->attached = _tree->_attached;
+				_tree->_attached->addPerk(node->perk);
+			}
         }
     }
 }

@@ -40,8 +40,8 @@ protected:
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 	sf::RectangleShape _hpBar;
 
-	float _health;	// Current health of an enemy
-	float _maxHealth;	// Max health of the enemy
+	float _health;	  // Current health of an enemy
+	float _maxHealth; // Max health of the enemy
 
 	Path* _path;	// Path the enemy will follow
 	unsigned int _pathPoint;// Index in path of the point it's travelling to

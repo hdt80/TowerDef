@@ -25,6 +25,7 @@ SkillNode::SkillNode(SkillNode* parent, Perk* perk) :
 
 	isLeft = false;
     tree = nullptr;
+	attached = nullptr;
 
 	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
 		SKILL_TREE_NODE_HEIGHT * 2));
@@ -42,9 +43,9 @@ SkillNode::SkillNode() {
     setPoints(0);
 	depth = 0;
 
-
     isLeft = false;
     tree = nullptr;
+	attached = nullptr;
 
 	box.setSize(sf::Vector2f(SKILL_TREE_NODE_WIDTH * 2,
 		SKILL_TREE_NODE_HEIGHT * 2));
@@ -85,13 +86,13 @@ bool SkillNode::contains(float px, float py) {
 }
 
 // Clone a Node into a new Node. This is a deep copy, meaning all pointers
-// are also cloned into new objects
+// are also cloned as new objects
 SkillNode* SkillNode::clone(std::vector<SkillNode*>* vec) {
 	if (this == nullptr) {
 		return nullptr;
 	}
 
-    // Create the new node
+    // Create the new node with the same values for each variable
 	SkillNode* node = new SkillNode();
 	node->isLeft = isLeft;
 	node->depth = depth;
@@ -101,7 +102,7 @@ SkillNode* SkillNode::clone(std::vector<SkillNode*>* vec) {
 	node->pos = pos;
     node->box = box;
 
-    // Set the child Nodes 
+    // Set the child Nodes after we clone the child so child's child's are ok
 	node->left = left->clone(vec);
 	if (node->left != nullptr) {
 		node->left->nodePrereq = node;
@@ -363,7 +364,6 @@ Vector2 SkillTree::pos(SkillNode* node) {
                                           getHeight() / 2.0f - nodeHeight));
 		return Vector2(getWidth() / 2.0f, getHeight() / 2.0f);
 	}
-	//CORE_INFO("/ Position for \'%s\': %i (\'%s\')", node->name().c_str(), node->depth, node->nodePrereq->name().c_str());
 
 	// Find how far each branch to the left and right goes to determine
 	// where along the X axis a node's position should be drawn
@@ -419,6 +419,14 @@ Vector2 SkillTree::pos(SkillNode* node) {
 
     node->box.setPosition(pos.X - nodeWidth, pos.Y - nodeHeight);
 	return pos;
+}
+
+void SkillTree::setAttached(Object* o) {
+	_attached = o;
+	for (unsigned int i = 0; i <_data.size(); ++i) {
+		_data[i]->attached = o;
+		_data[i]->perk->setAttached(o);
+	}
 }
 
 
@@ -479,7 +487,7 @@ namespace SkillTrees {
 	void createTrees(Vector2 size) {
 		CORE_INFO("Creating trees with (%g, %g)", size.X, size.Y);
 		basicTree = new SkillTree(size);
-		Perk* p1 = new Perk("A", Stats(50, 0, 0, 0, 0, 0), -1.0f, 3);
+		Perk* p1 = new Perk("A", Stats(0.5, 0, 0, 0, 0, 0), -1.0f, 3);
 		Perk* p2 = new Perk("B", Stats(), -1.0f, 3);
 		Perk* p3 = new Perk("C", Stats(), -1.0f, 3);
 		Perk* p4 = new Perk("D", Stats(), -1.0f, 3);

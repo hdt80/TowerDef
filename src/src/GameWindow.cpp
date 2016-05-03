@@ -113,20 +113,7 @@ void GameWindow::mouseEvent(sf::Event& e) {
 }
 
 void GameWindow::draw(sf::RenderTarget& target, sf::RenderStates) const {
-	// target.clear(sf::Color::Black);
-
-	// renderMap();
-	// renderSelected();
-
-	// for (unsigned int i = 0; i < _map.objects.size(); ++i) {
-	// 	target.draw(*_map.objects[i]);
-	// }
-	// for (unsigned int i = 0; i < emitters.size(); ++i) {
-	// 	target.draw(*emitters[i]);
-	// }
-	// // if (_showTree && _selected && _selected->getTree()) {
-	// // 	target.draw(*_selected->getTree());
-	// // }
+	
 }
 
 void GameWindow::render(sf::RenderWindow& window) {

@@ -1,8 +1,3 @@
-#ifdef LUA_COMPACT_USE
-#warning "ACK"
-#endif
-
-
 #ifndef _TOWER_H
 #define _TOWER_H
 
@@ -17,13 +12,7 @@ public:
 
 	void loadLua();
 
-	// Events
-	void onUpdate(int diff);
-	void onShoot(Object* target);
-	void onDamageDealt(int dmg, Object* hit);
-
 	void update(int diff);
-	// Shoot at the target
 	void shoot();
 
 	void setPosition(float x, float y);

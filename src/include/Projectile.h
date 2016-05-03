@@ -12,6 +12,8 @@ public:
 	Projectile(Map* map, Enemy* e, Tower* t, Color c);
 	virtual ~Projectile();
 
+	virtual void loadLua();
+
 	// Called when the projectile hits their target
 	void onCollision(Object* o);
 

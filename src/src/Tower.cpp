@@ -22,42 +22,23 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	if (getSpeed() <= 0.0f) {
 		_shape.setPosition(getX() - TOWER_WIDTH, getY() - TOWER_WIDTH);
 	}
-	loadLua();
 	_lua.loadScript("./lua/tower.lua");
+	loadLua();
 }
 
 Tower::~Tower() {}
 
 void Tower::loadLua() {
 	if (_lua.isLoaded()) {
-		CORE_ERROR("[Tower: %x] Setting up an loaded script", this);
-//		return;
+		CORE_WARNING("[Tower: %x] Loading a loaded script [%x]", this, &_lua);
 	}
 	Object::loadLua();
 
-//	_lua.lua.set_function("getTowerX", [this]() {
-//		return this->getX();
-//	});
-
 	_lua.lua.set("me", this);
-
-	CORE_INFO("[Tower: %x] Loaded Lua at %x", this, &_lua);
+	
+	CORE_INFO("[Tower %x] Loaded lua at %x", this, &_lua);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Events
-///////////////////////////////////////////////////////////////////////////////
-void Tower::onUpdate(int diff) {
-	_lua.callFunction("onUpdate", diff);
-}
-
-void Tower::onShoot(Object* target) {
-	_lua.callFunction("onShoot", target);
-}
-
-void Tower::onDamageDealt(int dmg, Object* hit) {
-	_lua.callFunction("onDamageDealt", dmg, hit);
-}
 ///////////////////////////////////////////////////////////////////////////////
 // Methods
 ///////////////////////////////////////////////////////////////////////////////

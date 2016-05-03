@@ -19,6 +19,7 @@ public:
 	SkillNode(SkillNode* parent, Perk* perk);
 	~SkillNode();
 
+	// When cloning a Node, it must also be put into a vector for the new tree
 	SkillNode* clone(std::vector<SkillNode*>* vec);
 
 	// Add a new child Node in the order of left then right
@@ -26,7 +27,7 @@ public:
 
 	void print();
 
-	// A Node is considered unlocked if it has the max points it can hold
+	// Unlocked if no parent, if parent is unlocked, and we dont have max points
 	bool unlocked();
 	std::string name() { return perk->getName(); }
 
@@ -41,8 +42,9 @@ public:
     void decPoints() { setPoints(points - 1); }
 
     SkillTree* tree;
+	Object* attached; // What object this Node is attached to
 
-	Vector2 pos; // Position of the Node when drawing
+	Vector2 pos; // Position of the Node when drawing. From the center
 	sf::RectangleShape box;
 
 	int points;    // Current points in Node
@@ -51,8 +53,9 @@ public:
 	bool isLeft;   // Is to the left of the root Node
 
 	SkillNode* nodePrereq; // Node we must have to have this perk, parent Node
-	Perk* perk;
+	Perk* perk; // Perk attached to this Node
 
+	// Child Nodes
 	SkillNode* left;
 	SkillNode* right;
 };
@@ -80,7 +83,7 @@ public:
 	void setComp(bool b) { _comp = b; }
 	void setHead(SkillNode* h) { _head = h; }
 
-	void setAttached(Object* o) { _attached = o; }
+	void setAttached(Object* o);// { _attached = o; }
 	void setData(std::vector<SkillNode*>* v) { _data = *v; }
 
 	// We've finished creating this Tree, create the drawable arrays
@@ -95,7 +98,7 @@ public:
 
 	// Get the Node that is at the (x, y)
 	SkillNode* getNode(float x, float y);
-	
+
 	const int getCount() { return _count; }
 	SkillNode* getHead() { return _head; }
 	std::vector<SkillNode*> data() { return _data; }

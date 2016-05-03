@@ -3,5 +3,4 @@ function onUpdate(diff)
 end
 
 function onDamageTaken(dmg, who)
-	print("I took " .. dmg .. " dmg from " .. tostring(who));
 end
