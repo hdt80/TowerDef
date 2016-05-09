@@ -42,10 +42,12 @@ void Perk::loadLua() {
 		return _attached->getMap()->getObjectsInRange(t, r);
 	});
 
+	_lua.lua.set_function("getObjectsInRange", [this](float x, float y, float r) {
+		return _attached->getMap()->getObjectsInRange(x, y, r);	
+	});
+
 	_lua.lua.set("attached", _attached);
 	_lua.lua.set("me", this);
-
-	CORE_INFO("[Perk %x: %s] Loaded script at %x", this, _name.c_str(), &_lua);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

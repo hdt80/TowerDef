@@ -19,6 +19,7 @@ LuaScript::LuaScript(bool defineClasses) {
 		defineEnemy();
 		defineMap();
 		defineStats();
+		definePerk();
 	}
 }
 

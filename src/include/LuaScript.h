@@ -14,8 +14,11 @@ public:
 
 	// Load the file at that path. Any filetype can be used
 	void loadScript(const std::string& path);
+	// Print the table of the script loaded. 
+	// Useful for debug when objects are nil
 	void printTable();
 
+	// Call a function loaded from a script
 	template<typename... Args>
 	void callFunction(const char* name, Args&&... args) {
 		if (isLoaded()) {

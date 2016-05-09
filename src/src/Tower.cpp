@@ -35,8 +35,6 @@ void Tower::loadLua() {
 	Object::loadLua();
 
 	_lua.lua.set("me", this);
-	
-	CORE_INFO("[Tower %x] Loaded lua at %x", this, &_lua);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,10 +53,6 @@ void Tower::setPosition(float x, float y) {
 	this->y = y;
 	_shape.setPosition(x, y);
 }
-
-//void Tower::setRange(int r) {
-//	_stats.range = r;
-//}
 
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_shape);

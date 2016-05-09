@@ -40,6 +40,7 @@ public:
 	bool inMap(Object* o);
 
 	std::vector<Object*> getObjectsInRange(Target* t, float range);
+	std::vector<Object*> getObjectsInRange(float x, float y, float range);
 
 	std::vector<Object*> objects;
 
