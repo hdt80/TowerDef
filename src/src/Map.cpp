@@ -126,13 +126,6 @@ Tower* Map::towerAt(float x, float y) {
 
 std::vector<Object*> Map::getObjectsInRange(Target* t, float r) {
 	return getObjectsInRange(t->getX(), t->getY(), r);
-//	std::vector<Object*> objs;
-//	for (unsigned int i = 0; i < objects.size(); ++i) {
-//		if (objects[i]->distanceWith(t->getX(), t->getY()) <= r) {
-//			objs.push_back(objects[i]);	
-//		}
-//	}
-//	return objs;
 }
 
 std::vector<Object*> Map::getObjectsInRange(float x, float y, float r) {
@@ -140,6 +133,16 @@ std::vector<Object*> Map::getObjectsInRange(float x, float y, float r) {
 	for (unsigned int i = 0; i < objects.size(); ++i) {
 		if (objects[i]->distanceWith(x, y) <= r) {
 			objs.push_back(objects[i]);
+		}
+	}
+	return objs;
+}
+
+std::vector<Enemy*> Map::getEnemiesInRange(float x, float y, float r) {
+	std::vector<Enemy*> objs;	
+	for (unsigned int i = 0; i < objects.size(); ++i) {
+		if ((objects[i]->distanceWith(x, y) <= r) && isEnemy(objects[i])) {
+			objs.push_back(dynamic_cast<Enemy*>(objects[i]));
 		}
 	}
 	return objs;

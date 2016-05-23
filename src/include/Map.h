@@ -42,6 +42,8 @@ public:
 	std::vector<Object*> getObjectsInRange(Target* t, float range);
 	std::vector<Object*> getObjectsInRange(float x, float y, float range);
 
+	std::vector<Enemy*> getEnemiesInRange(float x, float y, float range);
+
 	std::vector<Object*> objects;
 
 	std::vector<Object*> toRemove;

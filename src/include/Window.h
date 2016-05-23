@@ -62,13 +62,13 @@ public:
 	// Drawing
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 
-	// 
+	// Render to the target window
 	virtual void render(sf::RenderWindow&);
 
 protected:
 	Window();
 
-	std::string _name;
+	std::string _name; // Internal name of the Window, should be unique
 
 	Vector2 _size; // width and height of the Window
 	WindowState _currState;

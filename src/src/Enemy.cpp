@@ -104,8 +104,11 @@ void Enemy::update(int diff) {
 void Enemy::applyDamage(float amount, Object* hitter) {
 	onDamageTaken(amount, hitter);
 	_health -= amount;
+
+	// Update the healthbar
 	_hpBar.setSize(sf::Vector2f(
 		ENEMY_WIDTH * 2 * (getHealth() / getMaxHealth()), 4));
+
 	if (_health <= 0) {
 		_toRemove = true;
 	}

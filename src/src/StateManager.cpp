@@ -33,7 +33,8 @@ void StateManager::print() {
 	CORE_INFO("/ States");
 	for (unsigned int i = 0; i < _stack.size(); ++i) {
 		CORE_INFO("|%i: %s (%s, %i) @%x", i, _stack[i]->getName().c_str(),
-			_stack[i]->getStateString().c_str(), _stack[i]->getState(), _stack[i]);
+			_stack[i]->getStateString().c_str(),
+			_stack[i]->getState(), _stack[i]);
 	}
 	CORE_INFO("\\\n");
 }
@@ -54,10 +55,13 @@ void StateManager::push(Window* state) {
 		CORE_ERROR("Cannot add state, it's nullptr!");
 		return;
 	}
+
+	// Pause the current state
 	if (getCurrentState() != nullptr) {
 		getCurrentState()->pause();
 	}
-
+	
+	// If pushed Window hasn't been initalized, do so
 	if (state->getState() == Window::WindowState::Uninitalized) {
 		state->init();
 	}

@@ -2,15 +2,12 @@ function onUpdate(diff)
 end
 
 function onShoot(target)
-	print(attached:getX() .. ", " .. attached:getY() .. " || shot");
 end
 
 function onDamageDealt(dmg, hit)
-	local objs = getObjectsInRange(hit:getX(), hit:getY(), 50);
-	Print(objs);
+	local objs = getEnemiesInRange(hit:getX(), hit:getY(), 50);
 	for k, v in pairs(objs) do
-		Print(v);
-		--v:applyDamage(1, attached);
+		v:applyDamage(1.0, attached);
 	end
 end
 
