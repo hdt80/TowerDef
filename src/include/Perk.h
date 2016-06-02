@@ -31,7 +31,6 @@ public:
     void onApply(Object* attached);
 
 	void setAttached(Object* attached);
-//    void setAttached(Object* attached) { _attached = attached; }
 	Object* getAttached() { return _attached; }
 
 	std::string getName() const { return _name; }

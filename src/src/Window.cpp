@@ -1,6 +1,7 @@
 #include "Window.h"
 
 #include "Logger.h"
+#include "GuiComponent.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor
@@ -93,7 +94,11 @@ const std::string Window::getStateString(WindowState state) {
 // Updating Methods
 ///////////////////////////////////////////////////////////////////////////////
 void Window::update(int diff) {
-
+	for (GuiComponent* comp : _components) {
+		if (comp->isUpdating()) {
+			comp->update(diff);
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,22 +116,21 @@ void Window::handleEvent(sf::Event& e) {
 	}
 }
 
-void Window::keyEvent(sf::Event& e) {
+void Window::keyEvent(sf::Event& e) {}
+void Window::mouseEvent(sf::Event& e) {}
+void Window::resizeEvent(sf::Event& e) {}
 
-}
-
-void Window::mouseEvent(sf::Event& e) {
-
-}
-
-void Window::resizeEvent(sf::Event& e) {
-
-}
-
-void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-
-}
+void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 
 void Window::render(sf::RenderWindow& target) {
-
+//	target.clear(sf::Color::Black);
+	for (GuiComponent* comp : _components) {
+		if (comp->isVisible()) {
+			// Drawing a component is relative to it's origin
+			target.setView(comp->getView());
+			target.draw(*comp);
+		}
+	}
+	// After drawing all components reset where we're drawing to
+	target.setView(target.getDefaultView());
 }

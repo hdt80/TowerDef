@@ -110,15 +110,12 @@ void LuaScript::defineMap() {
 
 void LuaScript::defineStats() {
 	lua.new_usertype<Stats> (
-		"Stats", sol::constructors<
-			sol::types<bool>,
-			sol::types<float, float, float, float, float, float, bool>
-		>(),		
-		"range", &Stats::range,
-		"fireRate", &Stats::fireRate,
-		"damage", &Stats::damage,
-		"projSpeed", &Stats::projSpeed,
-		"accel", &Stats::accel
+		"Stats", sol::constructors<sol::types<bool>>(),		
+		"print", &Stats::print,
+		"addStat", &Stats::addStat,
+		"setStat", &Stats::setStat,
+		"hasStat", &Stats::hasStat,
+		"getStat", &Stats::getStat
 	);
 }
 

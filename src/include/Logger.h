@@ -94,6 +94,13 @@ private:
     } \
     while(0)\
 
+#define CORE_WARN(...) \
+    do {\
+        Logger::instance().log("WARNING", __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__);\
+        Logger::instance().flush(); \
+    } \
+    while(0)\
+
 #define CORE_DEBUG(...) \
     do {\
         Logger::instance().log("DEBUG", __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); \
@@ -133,6 +140,12 @@ private:
     while(0)\
 
 #define CORE_WARNING(...) \
+    do {\
+        Logger::instance().log("WARNING", NULL, NULL, 0, __VA_ARGS__);\
+    } \
+    while(0)\
+
+#define CORE_WARN(...) \
     do {\
         Logger::instance().log("WARNING", NULL, NULL, 0, __VA_ARGS__);\
     } \

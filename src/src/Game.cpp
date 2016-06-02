@@ -66,8 +66,7 @@ void Game::loop() {
 
 		CurrentWindow->update(tDiff);
 		CurrentWindow->render(_window);
-        _window.setTitle(CurrentWindow->getName()); 
-		//_window.draw(*CurrentWindow);
+        _window.setTitle(CurrentWindow->getName());
 		Fps.update();
 		_window.display();
 	}

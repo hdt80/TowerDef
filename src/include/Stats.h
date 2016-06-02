@@ -1,13 +1,12 @@
 #ifndef _STATS_H
 #define _STATS_H
 
+#include <string>
+#include <map>
+
 class Stats {
 public:
 	Stats(bool perc = false);
-    Stats(float range, float fireRate, float damage, float projSpeed,
-        float speed, float accel, bool perc = false) :
-		range(range), fireRate(fireRate), damage(damage), projSpeed(projSpeed),
-		speed(speed), accel(accel), percent(perc) {};
 
 	// Negative operator
 	Stats operator- () const;
@@ -16,14 +15,16 @@ public:
 	void operator+=(const Stats& s);
     Stats operator* (float m) const;
 
+	// Bracket operators to get specific stats
+	float& operator[](std::string s);
+	float operator[](std::string s) const;
+
 	void print();
 
-	float range;   	// Range in pixels
-	float fireRate; // Time between each shot
-	float damage;   // Damage of one shot
-	float projSpeed;// Projectile speed, pixels per second
-	float speed;	// Objects speed, pixels per second
-	float accel;	// How much the speed will change each second
+	void addStat(std::string name, float value);
+	void setStat(std::string name, float value);
+	bool hasStat(std::string name) const;
+	float getStat(std::string name) const;
 
     //A percentage Stat is used by Perks. Percent stats take base stats
     //To calculate new values.
@@ -31,6 +32,8 @@ public:
     //With a base stat of 500 range a 0.5 (50%) increase will add 250 range
     //to make 500 range
     bool percent;
+
+	std::map<std::string, float> stats;
 
 };
 

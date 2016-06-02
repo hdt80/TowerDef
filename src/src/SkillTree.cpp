@@ -487,7 +487,9 @@ namespace SkillTrees {
 	void createTrees(Vector2 size) {
 		CORE_INFO("Creating trees with (%g, %g)", size.X, size.Y);
 		basicTree = new SkillTree(size);
-		Perk* p1 = new Perk("A", Stats(0.5, 0, 0, 0, 0, 0), -1.0f, 3);
+		Stats s1(true);
+		s1["range"] = 0.5f;
+		Perk* p1 = new Perk("A", s1, -1.0f, 3);
 		Perk* p2 = new Perk("B", Stats(), -1.0f, 3);
 		Perk* p3 = new Perk("C", Stats(), -1.0f, 3);
 		Perk* p4 = new Perk("D", Stats(), -1.0f, 3);

@@ -41,4 +41,6 @@ dep/SFML-build
 dep/Lua-build
 *.swp
 
-/bin/*
+bin/*
+
+log.html

@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "Particle.h"
 #include "Vector2.h"
+#include <memory>
 
 class GameWindow : public Window {
 public:
@@ -13,14 +14,6 @@ public:
 
 	// Initalize the window 
 	virtual void init();
-	// // Reinit the Window
-	// virtual void reset();
-	// // Pause the window, stop updating
-	// virtual void pause();
-	// // Resume updating
-	// virtual void resume();
-	// // Mark the Window for closing
-	// virtual void close();
 
 	// Update the Window. 
 	// diff is the amount of microseconds that have passed since the last call
@@ -36,6 +29,8 @@ public:
 	virtual void render(sf::RenderWindow& window);
 
 	std::vector<ParticleEmitter*> emitters;
+
+	Tower* getSelected() { return _selected; }
 
 protected:
 	// Rendering submethods

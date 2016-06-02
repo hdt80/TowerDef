@@ -5,6 +5,8 @@
 
 #include "Vector2.h"
 
+class GuiComponent;
+
 // Window
 // A Window is a state the Game is in that determines what game flow
 // should be followed. The Game holds what Window we're using and controls
@@ -42,6 +44,7 @@ public:
 	const std::string getStateString(WindowState state);
 
 	void setSize(Vector2 size) { _size = size; }
+	Vector2 getSize() const { return _size; }
 	int getWidth() { return _size.X; }
 	int getHeight() { return _size.Y; }
 
@@ -72,6 +75,7 @@ protected:
 
 	Vector2 _size; // width and height of the Window
 	WindowState _currState;
+	std::vector<GuiComponent*> _components;
 };
 
 

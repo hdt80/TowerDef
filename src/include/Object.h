@@ -63,19 +63,19 @@ public:
 	Stats getStats() { return _stats + _baseStats; }
     Stats getBaseStats() { return _baseStats; };
 
-	int getSpeed() const { return _stats.speed + _baseStats.speed; }
-	int getRange() const { return _stats.range + _baseStats.range; }
-	float getFireRate() const { return _stats.fireRate + _baseStats.fireRate; }
-	float getDamage() const { return _stats.damage + _baseStats.damage; }
-	float getAccel() const { return _stats.accel + _baseStats.accel; }
-	float getProjSpeed() const { return _stats.projSpeed + _baseStats.projSpeed; }
+	int getSpeed() const { return _stats["speed"] + _baseStats["speed"]; }
+	int getRange() const { return _stats["range"] + _baseStats["range"]; }
+	float getFireRate() const { return _stats["fireRate"] + _baseStats["fireRate"]; }
+	float getDamage() const { return _stats["damage"] + _baseStats["damage"] ; }
+	float getAccel() const { return _stats["accel"] + _baseStats["accel"] ; }
+	float getProjSpeed() const { return _stats["projSpeed"] + _baseStats["projSpeed"]; }
 	// Stats setters
-	void setRange(int r) { _stats.range = r; }
-	void setFireRate(float r) { _stats.fireRate = r; }
-	void setDamage(float d) { _stats.damage = d; }
-	void setSpeed(int s) { _stats.speed = s; }
-	void setAccel(float f) { _stats.accel = f; }
-	void setProjSpeed(float f) { _stats.projSpeed = f; }
+	void setRange(int r) { _stats["range"] = r; }
+	void setFireRate(float r) { _stats["fireRate"] = r; }
+	void setDamage(float d) { _stats["damage"] = d; }
+	void setSpeed(int s) { _stats["speed"] = s; }
+	void setAccel(float f) { _stats["accel"] = f; }
+	void setProjSpeed(float f) { _stats["projSpeed"] = f; }
 
 	// Perk methods
 	virtual void addPerk(Perk* p);

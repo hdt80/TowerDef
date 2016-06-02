@@ -95,7 +95,7 @@ void Map::calcCollisions() {
 void Map::spawnWave() { 
 	CORE_INFO("Spawning wave %i", ++_wave);
 	Stats enemyStats;
-	enemyStats.speed = 50;
+	enemyStats["speed"] = 50;
 	objects.push_back(new Enemy(this, 10.0f, enemyStats, &_enemyPath, 20));
 }
 
@@ -103,11 +103,11 @@ void Map::spawnWave() {
 void Map::spawnTower(float x, float y) {
 	CORE_INFO("Spawning tower at (%g, %g)", x, y);
 	Stats towerStats;
-	towerStats.range = 200;
-	towerStats.fireRate = 1.0f;
-	towerStats.damage = 1.0f;
-	towerStats.speed = 0.0f;
-	towerStats.projSpeed = 500.0f;
+	towerStats["range"] = 200;
+	towerStats["fireRate"] = 1.0f;
+	towerStats["damage"] = 1.0f;
+	towerStats["speed"] = 0.0f;
+	towerStats["projSpeed"] = 500.0f;
 	Tower* t = new Tower(this, x, y, towerStats);
 	t->setSkillTree(SkillTrees::basicTree);
 	objects.push_back(t);

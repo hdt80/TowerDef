@@ -3,44 +3,40 @@
 #include "Logger.h"
 
 Stats::Stats(bool perc) : percent(perc)  {
-	range = 0;
-	fireRate = 0.0f;
-	damage = 0.0f;
-	speed = 0.0f;
-	projSpeed = 0.0f;
-	accel = 0.0f;
+	addStat("range", 0.0f);
+	addStat("fireRate", 0.0f);
+	addStat("damage", 0.0f);
+	addStat("speed", 0.0f);
+	addStat("projSpeed", 0.0f);
+	addStat("accel", 0.0f);
 }
 
+// Return all the stats of this Stats, but negative
 Stats Stats::operator- () const {
 	Stats s;
-	s.range    = -range;
-	s.fireRate = -fireRate;
-	s.damage   = -damage;
-	s.speed    = -speed;
-	s.accel	   = -accel;
-	s.projSpeed = -projSpeed;
+	for (auto i : stats) {
+		s.addStat(i.first, -1 * i.second);
+	}
 	return s;
 }
 
 Stats Stats::operator* (float m) const {
     Stats s;
-    s.range = range * m;
-    s.fireRate = fireRate * m;
-    s.damage = damage * m;
-    s.speed = speed * m;
-    s.accel = accel * m;
-    s.projSpeed = projSpeed * m;
-    return s;
+	for (auto i : stats) {
+		s.addStat(i.first, i.second * m);
+	}
+	return s;
 }
 
 Stats Stats::operator+ (const Stats& o) const {
 	Stats s;
-	s.range    = range + o.range;
-	s.fireRate = fireRate + o.fireRate;
-	s.damage   = damage + o.damage;
-	s.speed    = speed + o.speed;
-	s.accel	   = accel + o.accel;
-	s.projSpeed= projSpeed + o.projSpeed;
+	for (auto i : stats) {
+		if (o.hasStat(i.first)) {
+			s.setStat(i.first, (getStat(i.first) + o.getStat(i.first)));
+		} else {
+			s.addStat(i.first, (getStat(i.first) + o.getStat(i.first)));
+		}
+	}
 	return s;
 }
 
@@ -48,11 +44,48 @@ void Stats::operator+= (const Stats& o) {
 	*this = *this + o;
 }
 
+float Stats::operator[](std::string s) const {
+	if (hasStat(s)) {
+		return getStat(s);
+	}
+	return 0.0f;
+}
+
+float& Stats::operator[](std::string s) {
+	return stats[s];
+}
+
 void Stats::print() {
-	CORE_INFO("Range: %g", range);
-	CORE_INFO("FireRate: %g", fireRate);
-	CORE_INFO("Damage: %g", damage);
-	CORE_INFO("Speed: %g", speed);
-	CORE_INFO("Projectile Speed: %g", projSpeed);
-	CORE_INFO("Accel: %g", accel);
+	CORE_INFO("[Stats %x]", this);
+	for (auto i : stats) {
+		CORE_INFO("\t%s:%g", i.first.c_str(), i.second);
+	}
+}
+
+bool Stats::hasStat(std::string name) const {
+	return (stats.find(name) != stats.end());
+}
+
+float Stats::getStat(std::string name) const {
+	if (!hasStat(name)) {
+		CORE_WARN("[Stats %x] \'%s\' isn't in this stats", this, name.c_str());
+		return 0;
+	}
+	try {
+		return stats.at(name);
+	} catch (std::out_of_range e) {
+		return 0;
+	}
+}
+
+void Stats::addStat(std::string name, float value) {
+	if (hasStat(name)) {
+		CORE_WARN("[Stats %x] Already contains \'%s\': %g",
+			this, name.c_str(), getStat(name));
+	}
+	stats.insert({name, value});
+}
+
+void Stats::setStat(std::string name, float value) {
+	stats.at(name) = value;
 }

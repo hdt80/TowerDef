@@ -131,12 +131,7 @@ void Object::update(int diff) {
 
 void Object::setStats(Stats s, bool relative) {
 	if (relative) {
-		_baseStats.range     += s.range;
-		_baseStats.fireRate  += s.fireRate;
-		_baseStats.damage    += s.damage;
-		_baseStats.speed     += s.speed;
-        _baseStats.projSpeed += s.projSpeed;
-        _baseStats.accel     += s.accel;
+		_baseStats += s;
 	} else {
 		_baseStats = s;
 	}
@@ -146,12 +141,12 @@ void Object::applyStat(Stats s) {
     if (!s.percent) {
         CORE_WARNING("Object::applyStat> Stats isn't percent");
     }
-    _stats.range += _baseStats.range * s.range;
-    _stats.fireRate += _baseStats.fireRate * s.fireRate;
-    _stats.damage += _baseStats.damage * s.damage;
-    _stats.projSpeed += _baseStats.projSpeed * s.projSpeed;
-    _stats.speed += _baseStats.speed * s.speed;
-    _stats.accel += _baseStats.accel * s.accel;
+    _stats["range"]     += _baseStats["range"]     * s["range"];
+    _stats["fireRate"]  += _baseStats["fireRate"]  * s["fireRate"];
+    _stats["damage"]    += _baseStats["damage"]    * s["damage"];
+    _stats["projSpeed"] += _baseStats["projSpeed"] * s["projSpeed"];
+    _stats["speed"]     += _baseStats["speed"]     * s["speed"];
+    _stats["accel"]     += _baseStats["accel"]     * s["accel"];
 }
 
 void Object::removePerk(Perk* p) {

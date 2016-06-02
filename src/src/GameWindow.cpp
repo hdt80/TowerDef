@@ -7,6 +7,8 @@
 #include "ParticleEmitter.h"
 #include "Convert.h"
 #include "SkillTreeWindow.h"
+#include "GuiComponent.h"
+#include "components/SelectedComponent.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Creation Methods
@@ -16,6 +18,11 @@ GameWindow::GameWindow(Vector2 size) {
 	_name = "Game Window";
 	_map.setSize(size.X, size.Y);
 	_selected = nullptr;
+
+	SelectedComponent* selcComp = new SelectedComponent(this);
+
+	_components.push_back(selcComp);
+	CORE_INFO("game window: %x", &_selected);
 }
 
 GameWindow::~GameWindow() {
@@ -36,26 +43,11 @@ void GameWindow::init() {
 	}
 }
 
-// void GameWindow::reset() {
-
-// }
-
-// void GameWindow::pause() {
-
-// }
-
-// void GameWindow::resume() {
-
-// }
-
-// void GameWindow::close() {
-
-// }
-
 ///////////////////////////////////////////////////////////////////////////////
 // Updating Methods
 ///////////////////////////////////////////////////////////////////////////////
 void GameWindow::update(int diff) {
+	Window::update(diff);
 	for (unsigned int i = 0; i < emitters.size(); ++i) {
 		emitters[i]->update(diff);
 	}
@@ -118,7 +110,6 @@ void GameWindow::draw(sf::RenderTarget& target, sf::RenderStates) const {
 
 void GameWindow::render(sf::RenderWindow& window) {
 	window.clear(sf::Color::Black);
-
 	renderMap(window);
 	renderSelected(window);
 
@@ -128,6 +119,7 @@ void GameWindow::render(sf::RenderWindow& window) {
 	for (unsigned int i = 0; i < emitters.size(); ++i) {
 		window.draw(*emitters[i]);
 	}
+	Window::render(window);
 }
 
 void GameWindow::renderMap(sf::RenderWindow& window) {
@@ -170,7 +162,7 @@ void GameWindow::renderSelected(sf::RenderWindow& window) {
 	r.setPosition(_selected->getX() - _selected->getRange(),
 		_selected->getY() - _selected->getRange());
 
-	r.setFillColor(sf::Color(127, 255, 127, 127));
+	r.setFillColor(sf::Color(127, 255, 127, 86));
 	window.draw(r);
 
 	// Tower is shooting at something? Draw on top of range
