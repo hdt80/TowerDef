@@ -16,8 +16,12 @@ public:
 	void update(int diff);
 	void draw(sf::RenderTarget&, sf::RenderStates) const;
 
+	Tower* getSelected() { return _selected; }
+	std::shared_ptr<Tower> getSel() { return _sel; }
+
 private:
-	const Tower* _selected;
+	Tower* _selected;
+	std::shared_ptr<Tower> _sel;
 };
 
 #endif

@@ -8,7 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
-Perk::Perk(std::string name, Stats s, float dur, int maxStacks) :
+Perk::Perk(std::string name, Stats s, float dur, bool lua, int maxStacks) :
 	_name(name), _attached(nullptr), _stats(s), _duration(dur), _maxDuration(dur),
     _stacks(1),	_maxStacks(maxStacks), _stackable(false), _toRemove(false) {
 
@@ -16,8 +16,10 @@ Perk::Perk(std::string name, Stats s, float dur, int maxStacks) :
 		_stackable = true;
 	}
 
-	_lua.loadScript("./lua/" + name + ".lua");
-	loadLua();
+	if (lua) {
+		_lua.loadScript("./lua/" + name + ".lua");
+		loadLua();
+	}
 }
 
 Perk::~Perk() {

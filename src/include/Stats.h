@@ -19,7 +19,7 @@ public:
 	float& operator[](std::string s);
 	float operator[](std::string s) const;
 
-	void print();
+	void print() const;
 
 	void addStat(std::string name, float value);
 	void setStat(std::string name, float value);
@@ -33,6 +33,7 @@ public:
     //to make 500 range
     bool percent;
 
+protected:
 	std::map<std::string, float> stats;
 
 };

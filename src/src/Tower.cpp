@@ -26,7 +26,9 @@ Tower::Tower(Map* map, float x, float y, Stats s) : Object(map, x, y, 20, s),
 	loadLua();
 }
 
-Tower::~Tower() {}
+Tower::~Tower() {
+	CORE_INFO("~~!!~~%x", this);
+}
 
 void Tower::loadLua() {
 	if (_lua.isLoaded()) {

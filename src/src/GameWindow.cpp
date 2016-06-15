@@ -20,9 +20,6 @@ GameWindow::GameWindow(Vector2 size) {
 	_selected = nullptr;
 
 	SelectedComponent* selcComp = new SelectedComponent(this);
-
-	_components.push_back(selcComp);
-	CORE_INFO("game window: %x", &_selected);
 }
 
 GameWindow::~GameWindow() {
@@ -67,9 +64,12 @@ void GameWindow::keyEvent(sf::Event& e) {
 	} else if (e.key.code == sf::Keyboard::N) {
 		_map.spawnWave();
 	} else if (e.key.code == sf::Keyboard::T) {
-        if (_selected) {
+		if (_sel) {
             Game::followWindow(new SkillTreeWindow(_selected->getTree(), _size));
-        }
+		}
+        //if (_selected) {
+        //    Game::followWindow(new SkillTreeWindow(_selected->getTree(), _size));
+        //}
 	} else if (e.key.code == sf::Keyboard::Pause) {
 		Game::pause();
 	} else if (e.key.code == sf::Keyboard::S) {
@@ -90,14 +90,24 @@ void GameWindow::mouseEvent(sf::Event& e) {
 	if (e.mouseButton.button == sf::Mouse::Left) {
 		// If there is a Tower where we clicked, selected that
 		if (_map.towerAt(x, y) != nullptr) {
-			_selected = _map.towerAt(x, y);
+			//_selected = _map.towerAt(x, y);
+			CORE_INFO("tower, spawning %x", _map.towerAt(x, y));
+			_sel.reset(_map.towerAt(x, y));
+			CORE_INFO("_sel clicked: %x", _sel.get());
 		} else {
 			// If there's no Tower but we have something selected unselect it
-			if (_selected != nullptr) {
-				_selected = nullptr;
+			if (_sel) {
+				CORE_INFO("_sel reset");
+				_sel = nullptr;
 			} else {
+				CORE_INFO("spawning");
 				_map.spawnTower(x, y);
 			}
+			//if (_selected != nullptr) {
+			//	_selected = nullptr;
+			//} else {
+			//	_map.spawnTower(x, y);
+			//}
 		}
 	} else if (e.mouseButton.button == sf::Mouse::Middle) {
 		_map.getPath()->addPoint(x, y);

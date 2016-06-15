@@ -485,27 +485,28 @@ namespace SkillTrees {
 	SkillTree* basicTree;
 
 	void createTrees(Vector2 size) {
-		CORE_INFO("Creating trees with (%g, %g)", size.X, size.Y);
 		basicTree = new SkillTree(size);
+
 		Stats s1(true);
-		s1["range"] = 0.5f;
-		Perk* p1 = new Perk("A", s1, -1.0f, 3);
-		Perk* p2 = new Perk("B", Stats(), -1.0f, 3);
-		Perk* p3 = new Perk("C", Stats(), -1.0f, 3);
-		Perk* p4 = new Perk("D", Stats(), -1.0f, 3);
-		Perk* p5 = new Perk("E", Stats(), -1.0f, 3);
-		Perk* p6 = new Perk("F", Stats(), -1.0f, 3);
-		Perk* p7 = new Perk("G", Stats(), -1.0f, 3);
-		Perk* p8 = new Perk("H", Stats(), -1.0f, 3);
-		Perk* p9 = new Perk("I", Stats(), -1.0f, 3);
-		Perk* p10 = new Perk("J", Stats(), -1.0f, 3);
-		Perk* p11 = new Perk("K", Stats(), -1.0f, 3);
-		Perk* p12 = new Perk("L", Stats(), -1.0f, 3);
-		Perk* p13 = new Perk("M", Stats(), -1.0f, 3);
-		Perk* p14 = new Perk("N", Stats(), -1.0f, 3);
-		Perk* p15 = new Perk("O", Stats(), -1.0f, 3);
-		Perk* p16 = new Perk("P", Stats(), -1.0f, 3);
-		Perk* p17 = new Perk("Q", Stats(), -1.0f, 3);
+		s1["range"] = 0.25f; // Increase range by 50%
+
+		Perk* p1 = new Perk("A", s1, -1.0f, true, 3);
+		Perk* p2 = new Perk("B", Stats(), -1.0f, true, 3);
+		Perk* p3 = new Perk("C", Stats(), -1.0f, true, 3);
+		Perk* p4 = new Perk("D", Stats(), -1.0f, true, 3);
+		Perk* p5 = new Perk("E", Stats(), -1.0f, true, 3);
+		Perk* p6 = new Perk("F", Stats(), -1.0f, true, 3);
+		Perk* p7 = new Perk("G", Stats(), -1.0f, true, 3);
+		Perk* p8 = new Perk("H", Stats(), -1.0f, true, 3);
+		Perk* p9 = new Perk("I", Stats(), -1.0f, true, 3);
+		Perk* p10 = new Perk("J", Stats(), -1.0f, true, 3);
+		Perk* p11 = new Perk("K", Stats(), -1.0f, true, 3);
+		Perk* p12 = new Perk("L", Stats(), -1.0f, true, 3);
+		Perk* p13 = new Perk("M", Stats(), -1.0f, true, 3);
+		Perk* p14 = new Perk("N", Stats(), -1.0f, true, 3);
+		Perk* p15 = new Perk("O", Stats(), -1.0f, true, 3);
+		Perk* p16 = new Perk("P", Stats(), -1.0f, true, 3);
+		Perk* p17 = new Perk("Q", Stats(), -1.0f, true, 3);
 
 		SkillNode* n1 = new SkillNode(nullptr, p1); // Head node
 		n1 = basicTree->addPerk(nullptr, p1);

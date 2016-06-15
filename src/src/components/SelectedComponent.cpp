@@ -11,8 +11,7 @@ SelectedComponent::SelectedComponent(GameWindow* window) :
 			Vector2(240, window->getHeight()),
 			window->getSize()) {
 
-	this->_selected = window->getSelected();
-	CORE_INFO("comp sel: %x", &this->_selected);
+	this->_sel = window->getSel();
 }
 
 SelectedComponent::~SelectedComponent() {

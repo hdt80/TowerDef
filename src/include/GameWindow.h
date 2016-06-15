@@ -23,7 +23,6 @@ public:
 	virtual void handleEvent(sf::Event& e);
 	virtual void keyEvent(sf::Event& e);
 	virtual void mouseEvent(sf::Event& e);
-	//virtual void resizeEvent(sf::Event& e);
 
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 	virtual void render(sf::RenderWindow& window);
@@ -31,6 +30,7 @@ public:
 	std::vector<ParticleEmitter*> emitters;
 
 	Tower* getSelected() { return _selected; }
+	std::shared_ptr<Tower> getSel() { return _sel; }
 
 protected:
 	// Rendering submethods
@@ -43,7 +43,7 @@ protected:
 
 	// Tower we've selected with our mouse and want to see it's Perks
 	Tower* _selected;
-
+	std::shared_ptr<Tower> _sel;
 };
 
 #endif

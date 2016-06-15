@@ -12,7 +12,7 @@ class Object;
 class Perk {
 public:
 	// More than one max stack means a perk is stackable
-	Perk(std::string name, Stats s, float dur, int maxStacks = 0);
+	Perk(std::string name, Stats s, float dur, bool lua, int maxStacks = 0);
 	~Perk();
 
 	void loadLua();
