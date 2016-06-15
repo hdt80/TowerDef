@@ -42,5 +42,7 @@ dep/Lua-build
 *.swp
 
 bin/*
+bin/Tower
+bin/Tower.exe
 
 log.html
